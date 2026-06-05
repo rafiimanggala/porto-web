@@ -6,7 +6,7 @@ export default function About() {
   return (
     <Section
       id="about"
-      index="05"
+      index="06"
       label="About"
       title="A freelance engineer who treats agents as a team."
     >

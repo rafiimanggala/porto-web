@@ -35,6 +35,11 @@ export const mascotLines: Record<string, string[]> = {
     "fleets of agents. i'm one of the lazy ones.",
     "a 4-agent panel reviews the work. tough crowd.",
   ],
+  native: [
+    "yes, claude really drives the simulator. boot, build, screenshot, fix.",
+    "react native, maui, swiftui. it ships to all of them.",
+    "the phone's a mockup. the workflow is very real.",
+  ],
   index: [
     "forty-odd repos. yes, he should sleep more.",
     "half of these run themselves. the other half are getting there.",

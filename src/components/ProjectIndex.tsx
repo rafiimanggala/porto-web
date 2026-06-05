@@ -6,7 +6,7 @@ export default function ProjectIndex() {
   return (
     <Section
       id="index"
-      index="04"
+      index="05"
       label="The rest of the shelf"
       title="More things I've shipped."
       intro="A sample of the other 40-odd repos: autonomous bots, full-stack products, financial terminals, native apps, and developer tooling."

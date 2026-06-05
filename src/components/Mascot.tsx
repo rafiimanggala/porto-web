@@ -10,7 +10,7 @@ import {
 } from "framer-motion";
 import { mascotLines, mascotGreetings, mascotIdle } from "@/data/mascot";
 
-const SECTIONS = ["top", "work", "toolkit", "capabilities", "index", "about", "contact"];
+const SECTIONS = ["top", "work", "toolkit", "capabilities", "native", "index", "about", "contact"];
 const pick = (a: string[]) => a[Math.floor(Math.random() * a.length)];
 
 export default function Mascot() {
