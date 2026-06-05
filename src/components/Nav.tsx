@@ -1,4 +1,5 @@
 import { profile } from "@/data/portfolio";
+import CmdkHint from "./ui/CmdkHint";
 
 const links = [
   { href: "#work", label: "Work" },
@@ -21,18 +22,21 @@ export default function Nav() {
             <a
               key={l.href}
               href={l.href}
-              className="inline-flex h-11 cursor-pointer items-center text-sm text-dim transition-colors duration-200 hover:text-fg"
+              className="link-underline inline-flex h-11 cursor-pointer items-center text-sm text-dim transition-colors duration-200 hover:text-fg"
             >
               {l.label}
             </a>
           ))}
         </div>
-        <a
-          href="#contact"
-          className="mono cursor-pointer rounded-full border border-line px-4 py-1.5 text-xs text-fg transition-colors duration-200 hover:border-accent hover:text-accent"
-        >
-          Get in touch
-        </a>
+        <div className="flex items-center gap-2">
+          <CmdkHint />
+          <a
+            href="#contact"
+            className="mono cursor-pointer rounded-full border border-line px-4 py-1.5 text-xs text-fg transition-colors duration-200 hover:border-accent hover:text-accent"
+          >
+            Get in touch
+          </a>
+        </div>
       </nav>
     </header>
   );

@@ -1,6 +1,7 @@
 import { profile, techStack } from "@/data/portfolio";
 import Reveal from "./ui/Reveal";
 import Magnetic from "./ui/Magnetic";
+import Marquee from "./ui/Marquee";
 
 export default function Contact() {
   return (
@@ -19,30 +20,24 @@ export default function Contact() {
           </h2>
         </Reveal>
 
-        <div className="mt-7 grid gap-10 lg:grid-cols-[1.3fr_0.7fr]">
-          <Reveal>
-            <p className="t-lead text-balance text-dim">{profile.thesis}</p>
-            <p className="t-body mt-5 text-pretty text-dim/90">
-              I ship across stacks and domains, from clinical health scoring to
-              high-frequency paper trading. What I review and own is the
-              architecture: the boundaries, the failure handling, the
-              verification. The agents handle volume; I own the judgment.
-            </p>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <h3 className="eyebrow mb-4">Stack I ship with</h3>
-            <div data-unit="stack" className="flex flex-wrap gap-2">
-              {techStack.map((t) => (
-                <span
-                  key={t}
-                  className="mono rounded-lg border border-line bg-surface-1 px-3 py-1.5 text-xs text-dim transition-colors duration-200 hover:border-line-strong hover:text-fg"
-                >
-                  {t}
-                </span>
-              ))}
-            </div>
-          </Reveal>
-        </div>
+        <Reveal>
+          <p className="t-lead mt-7 max-w-3xl text-balance text-dim">
+            {profile.thesis}
+          </p>
+          <p className="t-body mt-5 max-w-3xl text-pretty text-dim/90">
+            I ship across stacks and domains, from clinical health scoring to
+            high-frequency paper trading. What I review and own is the
+            architecture: the boundaries, the failure handling, the
+            verification. The agents handle volume; I own the judgment.
+          </p>
+        </Reveal>
+
+        <Reveal delay={0.1}>
+          <h3 className="eyebrow mb-3 mt-12">Stack I ship with</h3>
+          <div data-unit="stack">
+            <Marquee items={techStack} />
+          </div>
+        </Reveal>
 
         {/* Contact CTA */}
         <div className="mt-20 border-t border-line pt-16">
