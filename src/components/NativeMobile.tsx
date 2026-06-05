@@ -45,12 +45,12 @@ export default function NativeMobile() {
   return (
     <Section
       id="native"
-      index="04"
+      index="03"
       label="Native, AI-driven"
       title="I let Claude drive the simulator."
       intro="React Native, .NET MAUI, SwiftUI. The agent boots the simulator, builds the screen, screenshots it, fixes what's off, and verifies, while I review the architecture."
     >
-      <div ref={ref}>
+      <div ref={ref} data-unit="native">
         <Reveal>
           <div className="flex flex-col items-stretch gap-5 lg:flex-row lg:items-center lg:gap-0">
             {/* terminal */}

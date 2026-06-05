@@ -3,10 +3,9 @@ import { profile } from "@/data/portfolio";
 const links = [
   { href: "#work", label: "Work" },
   { href: "#toolkit", label: "Toolkit" },
-  { href: "#capabilities", label: "Capabilities" },
   { href: "#native", label: "Native" },
   { href: "#index", label: "Index" },
-  { href: "#about", label: "About" },
+  { href: "#contact", label: "About" },
 ];
 
 export default function Nav() {
@@ -17,7 +16,7 @@ export default function Nav() {
           {profile.handle}
           <span className="text-accent">.</span>
         </a>
-        <div className="hidden items-center gap-7 md:flex">
+        <div data-unit="nav" className="hidden items-center gap-7 md:flex">
           {links.map((l) => (
             <a
               key={l.href}

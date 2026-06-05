@@ -3,13 +3,7 @@ import Reveal from "./ui/Reveal";
 import Scramble from "./ui/Scramble";
 import Magnetic from "./ui/Magnetic";
 import CountUp from "./ui/CountUp";
-import Terminal from "./ui/Terminal";
-
-const term = [
-  { p: "amadeus status", o: "● pulse daemon · uptime 14d · next wake in 2h" },
-  { p: "trading consensus --pair BTC", o: "claude: HOLD  groq: BUY  → HOLD · capital safe" },
-  { p: "inbox react", o: "client mail · warmed repo · fix on branch · reply drafted" },
-];
+import CommandCenter from "./CommandCenter";
 
 export default function Hero() {
   return (
@@ -62,6 +56,7 @@ export default function Hero() {
               <Magnetic>
                 <a
                   href="#work"
+                  data-unit="cta:work"
                   className="block cursor-pointer rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-bg transition-colors"
                 >
                   View selected work
@@ -72,6 +67,7 @@ export default function Hero() {
                   href={profile.github}
                   target="_blank"
                   rel="noreferrer"
+                  data-unit="cta:github"
                   className="mono block cursor-pointer rounded-full border border-line px-5 py-2.5 text-sm text-fg transition-colors hover:border-line-strong"
                 >
                   GitHub ↗
@@ -79,6 +75,7 @@ export default function Hero() {
               </Magnetic>
               <a
                 href={`mailto:${profile.email}`}
+                data-unit="cta:email"
                 className="mono cursor-pointer px-2 py-2.5 text-sm text-dim underline-offset-4 transition-colors hover:text-fg hover:underline"
               >
                 {profile.email}
@@ -87,9 +84,9 @@ export default function Hero() {
           </Reveal>
         </div>
 
-        {/* terminal */}
+        {/* live command center */}
         <Reveal delay={0.2}>
-          <Terminal lines={term} title="rafii@command-center" />
+          <CommandCenter />
         </Reveal>
       </div>
 

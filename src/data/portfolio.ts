@@ -244,6 +244,7 @@ export const projectIndex: IndexGroup[] = [
   {
     group: "Autonomous & AI systems",
     items: [
+      { name: "Market Intelligence Agent", note: "13F whale + Form-4 insider + factor signals into briefings", stack: "FastAPI · Anthropic SDK · SEC EDGAR" },
       { name: "ClaudeClaw", note: "Multi-agent Telegram bot (Haiku UI + Opus workers)", stack: "Node · Haiku/Opus · Groq" },
       { name: "Auto-Approve / PC Monitor", note: "Headless Mac controlled fully from iPhone over Telegram", stack: "launchd · Telegram · AppleScript" },
       { name: "Personal Assistant Bot", note: "Telegram twin: voice transcribe + life-category classify + WHOOP", stack: "Node · Claude CLI · Groq" },
@@ -253,6 +254,7 @@ export const projectIndex: IndexGroup[] = [
   {
     group: "Full-stack products",
     items: [
+      { name: "K-12 Education SaaS", note: "Curriculum learning platform + AI tutoring, 995 schools (AU client)", stack: ".NET 9 · Angular · PostgreSQL" },
       { name: "Employee Wellbeing App", note: "Psychosocial-risk mapping + ISO 45003 reports (AU client)", stack: "React Native · Express · MongoDB" },
       { name: "AI Surf Forecasting", note: "200+ spots, 16-day forecast, 'Surf DNA' matching (AU client)", stack: "React · Express · MongoDB" },
       { name: "open-wearables", note: "Wearables data full-stack + MCP, full CI/CD", stack: "React/Vite · FastAPI · MCP" },

@@ -7,9 +7,11 @@ import { useRef } from "react";
 export default function SpotlightCard({
   children,
   className = "",
+  dataUnit,
 }: {
   children: ReactNode;
   className?: string;
+  dataUnit?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -22,7 +24,12 @@ export default function SpotlightCard({
   };
 
   return (
-    <div ref={ref} onMouseMove={onMove} className={`card spot ${className}`}>
+    <div
+      ref={ref}
+      onMouseMove={onMove}
+      data-unit={dataUnit}
+      className={`card spot ${className}`}
+    >
       {children}
     </div>
   );

@@ -1,8 +1,20 @@
+"use client";
+
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { featured, type Project } from "@/data/portfolio";
 import Section from "./ui/Section";
 import Reveal from "./ui/Reveal";
 import SpotlightCard from "./ui/SpotlightCard";
 import ProjectVisual from "./visuals/projectVisuals";
+
+// The 4 strongest showcases; the rest live in the index strip.
+const FEATURED_IDS = [
+  "trading-command-center",
+  "amadeus",
+  "testengine",
+  "health-platform",
+];
 
 const statusDot: Record<string, string> = {
   Live: "bg-accent",
@@ -27,16 +39,48 @@ function Meta({ p }: { p: Project }) {
   );
 }
 
-function Highlights({ items }: { items: string[] }) {
+function Item({ text }: { text: string }) {
   return (
-    <ul className="space-y-2.5">
-      {items.map((h) => (
-        <li key={h} className="flex gap-2.5 text-sm leading-relaxed text-dim">
-          <span className="mt-1.5 select-none text-accent">▸</span>
-          <span>{h}</span>
-        </li>
-      ))}
-    </ul>
+    <li className="flex gap-2.5 text-sm leading-relaxed text-dim">
+      <span className="mt-1.5 select-none text-accent">▸</span>
+      <span>{text}</span>
+    </li>
+  );
+}
+
+// First highlight always shown; the rest collapse behind a toggle.
+function Highlights({ items }: { items: string[] }) {
+  const [open, setOpen] = useState(false);
+  const rest = items.slice(1);
+  return (
+    <div>
+      <ul className="space-y-2.5">
+        <Item text={items[0]} />
+        <AnimatePresence initial={false}>
+          {open &&
+            rest.map((h) => (
+              <motion.div
+                key={h}
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.28, ease: [0.19, 1, 0.22, 1] }}
+              >
+                <Item text={h} />
+              </motion.div>
+            ))}
+        </AnimatePresence>
+      </ul>
+      {rest.length > 0 && (
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className="mono mt-3 cursor-pointer text-xs text-mute transition-colors hover:text-accent"
+        >
+          {open ? "− less" : `+ ${rest.length} more detail${rest.length > 1 ? "s" : ""}`}
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -68,30 +112,33 @@ function Tags({ p }: { p: Project }) {
 }
 
 export default function Featured() {
-  const [hero, ...rest] = featured;
+  const items = FEATURED_IDS.map(
+    (id) => featured.find((p) => p.id === id)!
+  ).filter(Boolean);
+  const [hero, ...rest] = items;
+
   return (
     <Section
       id="work"
       index="01"
       label="Selected work"
       title="Systems that run themselves."
-      intro="A few builds where the AI isn't a sidekick, it's the engine making decisions in production. Client work is anonymized; personal projects link to source."
+      intro="Four builds where the AI isn't a sidekick, it's the engine making decisions in production. Click a card for the deeper version. Client work is anonymized."
     >
       <div className="grid gap-5 md:grid-cols-2">
         {/* wide hero card */}
         <Reveal className="md:col-span-2">
-          <SpotlightCard className="flex h-full flex-col p-6 sm:p-8 lg:grid lg:grid-cols-[1fr_1.1fr] lg:gap-10">
+          <SpotlightCard
+            dataUnit={`project:${hero.id}`}
+            className="flex h-full flex-col p-6 sm:p-8 lg:grid lg:grid-cols-[1fr_1.1fr] lg:gap-10"
+          >
             <div className="flex flex-col">
               <Meta p={hero} />
               <h3 className="t-h3 mt-4 text-fg">{hero.title}</h3>
               <p className="mt-3 text-sm leading-relaxed text-dim">
                 {hero.oneLiner}
               </p>
-              <ProjectVisual
-                id={hero.id}
-                accent={hero.accent}
-                className="mt-6 h-32"
-              />
+              <ProjectVisual id={hero.id} accent={hero.accent} className="mt-6 h-32" />
               <div className="hidden lg:block">
                 <Tags p={hero} />
               </div>
@@ -107,7 +154,10 @@ export default function Featured() {
 
         {rest.map((p, i) => (
           <Reveal key={p.id} delay={(i % 2) * 0.08} className="h-full">
-            <SpotlightCard className="flex h-full flex-col p-6 sm:p-7">
+            <SpotlightCard
+              dataUnit={`project:${p.id}`}
+              className="flex h-full flex-col p-6 sm:p-7"
+            >
               <ProjectVisual id={p.id} accent={p.accent} className="mb-5 h-28" />
               <Meta p={p} />
               <h3 className="t-h3 mt-4 text-fg">{p.title}</h3>
