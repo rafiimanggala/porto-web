@@ -195,6 +195,16 @@ body {
   background: linear-gradient(90deg, transparent, var(--color-line-strong) 25%, var(--color-line-strong) 75%, transparent);
 }
 
+/* Shimmer skeleton (used in the simulator build animation) */
+.shimmer {
+  background: linear-gradient(100deg, #1a1a20 30%, #26262e 50%, #1a1a20 70%);
+  background-size: 200% 100%;
+  animation: shimmer 1.3s linear infinite;
+}
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
