@@ -1,6 +1,7 @@
 import { toolkit } from "@/data/portfolio";
 import Section from "./ui/Section";
 import Reveal from "./ui/Reveal";
+import ToolVisual from "./visuals/toolVisuals";
 
 export default function Toolkit() {
   return (
@@ -15,6 +16,7 @@ export default function Toolkit() {
         {toolkit.map((t, i) => (
           <Reveal key={t.name} delay={(i % 2) * 0.06} className="h-full">
             <div className="group flex h-full flex-col bg-surface-1 p-6 transition-colors duration-200 hover:bg-surface-2">
+              <ToolVisual name={t.name} />
               <div className="flex items-center justify-between">
                 <code className="mono text-xs text-accent">
                   <span className="text-mute">$</span> {t.cmd}

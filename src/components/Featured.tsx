@@ -2,6 +2,7 @@ import { featured, type Project } from "@/data/portfolio";
 import Section from "./ui/Section";
 import Reveal from "./ui/Reveal";
 import SpotlightCard from "./ui/SpotlightCard";
+import ProjectVisual from "./visuals/projectVisuals";
 
 const statusDot: Record<string, string> = {
   Live: "bg-accent",
@@ -86,6 +87,11 @@ export default function Featured() {
               <p className="mt-3 text-sm leading-relaxed text-dim">
                 {hero.oneLiner}
               </p>
+              <ProjectVisual
+                id={hero.id}
+                accent={hero.accent}
+                className="mt-6 h-32"
+              />
               <div className="hidden lg:block">
                 <Tags p={hero} />
               </div>
@@ -102,6 +108,7 @@ export default function Featured() {
         {rest.map((p, i) => (
           <Reveal key={p.id} delay={(i % 2) * 0.08} className="h-full">
             <SpotlightCard className="flex h-full flex-col p-6 sm:p-7">
+              <ProjectVisual id={p.id} accent={p.accent} className="mb-5 h-28" />
               <Meta p={p} />
               <h3 className="t-h3 mt-4 text-fg">{p.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-dim">
