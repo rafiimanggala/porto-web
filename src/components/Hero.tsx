@@ -3,6 +3,7 @@ import Reveal from "./ui/Reveal";
 import Scramble from "./ui/Scramble";
 import Magnetic from "./ui/Magnetic";
 import CountUp from "./ui/CountUp";
+import Terminal from "./ui/Terminal";
 
 const term = [
   { p: "amadeus status", o: "● pulse daemon · uptime 14d · next wake in 2h" },
@@ -88,30 +89,7 @@ export default function Hero() {
 
         {/* terminal */}
         <Reveal delay={0.2}>
-          <div className="card overflow-hidden p-0">
-            <div className="flex items-center gap-2 border-b border-line bg-surface-1 px-4 py-3">
-              <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
-              <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
-              <span className="h-3 w-3 rounded-full bg-[#28c840]" />
-              <span className="mono ml-3 text-xs text-mute">
-                rafii@command-center
-              </span>
-            </div>
-            <div className="mono space-y-4 p-5 text-[13px] leading-relaxed">
-              {term.map((t) => (
-                <div key={t.p}>
-                  <div className="text-fg">
-                    <span className="text-accent">~ $</span> {t.p}
-                  </div>
-                  <div className="mt-1 pl-5 text-dim">{t.o}</div>
-                </div>
-              ))}
-              <div className="text-fg">
-                <span className="text-accent">~ $</span>{" "}
-                <span className="inline-block h-4 w-2 translate-y-0.5 animate-pulse bg-accent" />
-              </div>
-            </div>
-          </div>
+          <Terminal lines={term} title="rafii@command-center" />
         </Reveal>
       </div>
 
