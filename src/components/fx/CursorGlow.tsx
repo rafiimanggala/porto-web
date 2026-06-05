@@ -15,6 +15,7 @@ export default function CursorGlow() {
   useEffect(() => {
     if (reduce) return;
     if (!window.matchMedia("(pointer: fine)").matches) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only feature gate
     setEnabled(true);
     const move = (e: MouseEvent) => {
       x.set(e.clientX);

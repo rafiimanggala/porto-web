@@ -20,8 +20,8 @@ export default function Hero() {
         style={{ background: "radial-gradient(circle, var(--color-accent), transparent 70%)" }}
       />
       <div
-        className="glow-blob right-0 top-10 h-[22rem] w-[22rem] opacity-15"
-        style={{ background: "radial-gradient(circle, #6e8bff, transparent 70%)" }}
+        className="glow-blob right-0 top-10 h-[22rem] w-[22rem] opacity-[0.12]"
+        style={{ background: "radial-gradient(circle, var(--color-accent), transparent 70%)" }}
       />
 
       <div className="mx-auto grid w-full max-w-[1120px] gap-14 px-6 pb-16 pt-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:px-8 lg:pt-28">

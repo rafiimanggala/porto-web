@@ -15,7 +15,7 @@ export default function Contact() {
       />
       <div className="mx-auto w-full max-w-[1120px] px-6 py-24 sm:py-32 lg:px-8">
         <Reveal>
-          <span className="eyebrow">// 06 · Contact</span>
+          <span className="eyebrow">{"// 06 · Contact"}</span>
           <h2 className="t-h2 mt-4 max-w-3xl text-fg">
             Let&apos;s build something that{" "}
             <span className="text-accent">runs without you.</span>

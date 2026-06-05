@@ -21,7 +21,7 @@ export default function Nav() {
             <a
               key={l.href}
               href={l.href}
-              className="cursor-pointer text-sm text-dim transition-colors duration-200 hover:text-fg"
+              className="inline-flex h-11 cursor-pointer items-center text-sm text-dim transition-colors duration-200 hover:text-fg"
             >
               {l.label}
             </a>

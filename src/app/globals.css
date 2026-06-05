@@ -11,8 +11,8 @@
   --color-line: rgba(255, 255, 255, 0.08);
   --color-line-strong: rgba(255, 255, 255, 0.13);
   --color-fg: #ededef;
-  --color-dim: #8a8a94;
-  --color-mute: #5a5a63;
+  --color-dim: #9a9aa4;
+  --color-mute: #74747f;
 
   /* One accent: signal mint (live / agents running) */
   --color-accent: #5fe9ad;
@@ -65,6 +65,16 @@ body {
 ::selection {
   background: color-mix(in oklab, var(--color-accent) 30%, transparent);
   color: #fff;
+}
+
+/* Keyboard focus — visible ring on interactive elements */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+:focus:not(:focus-visible) {
+  outline: none;
 }
 
 ::-webkit-scrollbar { width: 10px; height: 10px; }

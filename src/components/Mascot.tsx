@@ -59,6 +59,7 @@ export default function Mascot() {
 
   // init
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only mount gate
     setMounted(true);
     mountedAt.current = Date.now();
     setFine(window.matchMedia("(pointer: fine)").matches);
