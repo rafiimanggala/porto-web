@@ -1,5 +1,6 @@
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
+import SelectedWork from "@/components/SelectedWork";
 import Featured from "@/components/Featured";
 import Toolkit from "@/components/Toolkit";
 import NativeMobile from "@/components/NativeMobile";
@@ -11,6 +12,7 @@ export default function Home() {
     <main className="relative">
       <Nav />
       <Hero />
+      <SelectedWork />
       <Featured />
       <Toolkit />
       <NativeMobile />

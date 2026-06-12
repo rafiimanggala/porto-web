@@ -2,6 +2,7 @@ import { profile } from "@/data/portfolio";
 import CmdkHint from "./ui/CmdkHint";
 
 const links = [
+  { href: "#uiux", label: "Design" },
   { href: "#work", label: "Work" },
   { href: "#toolkit", label: "Toolkit" },
   { href: "#native", label: "Native" },

@@ -1,0 +1,374 @@
+/* ===========================================================================
+   Streak design system (scoped). Warm, light-first, personal.
+   Distinct identity from the portfolio site so it reads as its own product.
+   Tokens live on .streak-scope; the per-habit accent can be overridden inline.
+   =========================================================================== */
+
+.streak-scope {
+  /* Canvas + surfaces */
+  --st-bg: #f6f1e9;        /* warm paper */
+  --st-bg-2: #efe7da;      /* deeper paper (gutters) */
+  --st-surface: #fffdf9;   /* card */
+  --st-surface-2: #f4eee4; /* inset / track */
+
+  /* Ink */
+  --st-ink: #211b14;       /* warm near-black */
+  --st-ink-2: #6c6358;     /* muted */
+  --st-ink-3: #9a9082;     /* faint */
+  --st-line: #e7ddcd;      /* hairline */
+
+  /* Brand: one primary (ember), one success */
+  --st-accent: #ff5a3c;
+  --st-accent-ink: #b43417;
+  --st-accent-wash: #ffeee9;
+  --st-success: #1fa97b;
+  --st-success-wash: #e4f6ee;
+
+  /* Heatmap tints (built from accent at runtime via opacity) */
+  --st-radius-sm: 12px;
+  --st-radius: 18px;
+  --st-radius-lg: 26px;
+  --st-radius-pill: 999px;
+
+  /* Soft warm elevation */
+  --st-shadow-sm: 0 1px 2px rgba(58, 42, 24, 0.06), 0 1px 1px rgba(58, 42, 24, 0.04);
+  --st-shadow: 0 8px 24px -12px rgba(58, 42, 24, 0.18), 0 2px 6px rgba(58, 42, 24, 0.06);
+  --st-shadow-lg: 0 28px 60px -28px rgba(58, 42, 24, 0.32);
+
+  --st-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  font-family: var(--font-inter-st), ui-sans-serif, system-ui, sans-serif;
+  color: var(--st-ink);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+
+/* ---------- Display type ---------- */
+.st-display {
+  font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+}
+.st-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--st-ink-3);
+}
+
+/* ---------- App frame ---------- */
+.st-stage {
+  min-height: 100dvh;
+  background:
+    radial-gradient(120% 80% at 50% -10%, #fbf7f0 0%, var(--st-bg) 46%, var(--st-bg-2) 100%);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(0px, 4vw, 48px);
+}
+.st-device {
+  position: relative;
+  width: 100%;
+  max-width: 412px;
+  background: var(--st-surface);
+  border-radius: clamp(0px, 6vw, 40px);
+  box-shadow: var(--st-shadow-lg);
+  overflow: hidden;
+  min-height: 100dvh;
+}
+@media (min-width: 520px) {
+  .st-device {
+    min-height: 760px;
+    height: 820px;
+    border: 1px solid var(--st-line);
+  }
+}
+.st-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: inherit;
+}
+.st-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 20px 112px;
+}
+.st-scroll::-webkit-scrollbar { width: 0; }
+
+/* ---------- Top bar ---------- */
+.st-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 6px;
+}
+.st-iconbtn {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--st-radius-pill);
+  background: var(--st-surface-2);
+  color: var(--st-ink-2);
+  border: 1px solid transparent;
+  transition: background 0.18s var(--st-ease), color 0.18s var(--st-ease);
+}
+.st-iconbtn:hover { background: #ece4d6; color: var(--st-ink); }
+
+/* ---------- Cards ---------- */
+.st-card {
+  background: var(--st-surface);
+  border: 1px solid var(--st-line);
+  border-radius: var(--st-radius);
+  box-shadow: var(--st-shadow-sm);
+}
+
+/* ---------- Buttons ---------- */
+.st-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 52px;
+  padding: 0 22px;
+  border-radius: var(--st-radius-pill);
+  font-weight: 600;
+  font-size: 0.97rem;
+  transition: transform 0.16s var(--st-ease), box-shadow 0.16s var(--st-ease),
+    background 0.16s var(--st-ease), opacity 0.16s var(--st-ease);
+  user-select: none;
+}
+.st-btn:active { transform: translateY(1px) scale(0.99); }
+.st-btn-primary {
+  background: var(--st-accent);
+  color: #fff;
+  box-shadow: 0 10px 22px -10px color-mix(in oklab, var(--st-accent) 75%, transparent);
+}
+.st-btn-primary:hover { box-shadow: 0 14px 28px -10px color-mix(in oklab, var(--st-accent) 80%, transparent); }
+.st-btn-primary:disabled { opacity: 0.45; box-shadow: none; }
+.st-btn-ghost {
+  background: var(--st-surface-2);
+  color: var(--st-ink);
+}
+.st-btn-ghost:hover { background: #ece4d6; }
+.st-btn-block { width: 100%; }
+
+/* ---------- Chips (suggestions / pickers) ---------- */
+.st-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 15px 11px 12px;
+  border-radius: var(--st-radius-pill);
+  background: var(--st-surface);
+  border: 1.5px solid var(--st-line);
+  color: var(--st-ink);
+  font-weight: 550;
+  font-size: 0.92rem;
+  transition: all 0.16s var(--st-ease);
+}
+.st-chip[data-on="true"] {
+  border-color: var(--st-accent);
+  background: var(--st-accent-wash);
+  color: var(--st-accent-ink);
+}
+.st-chip-ic {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--st-radius-pill);
+  background: var(--st-surface-2);
+  color: var(--st-ink-2);
+}
+.st-chip[data-on="true"] .st-chip-ic {
+  background: #fff;
+  color: var(--st-accent);
+}
+
+/* ---------- Habit row ---------- */
+.st-habit {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border-radius: var(--st-radius);
+  background: var(--st-surface);
+  border: 1px solid var(--st-line);
+  box-shadow: var(--st-shadow-sm);
+  transition: transform 0.16s var(--st-ease), box-shadow 0.16s var(--st-ease);
+  width: 100%;
+  text-align: left;
+}
+.st-habit:hover { transform: translateY(-1px); box-shadow: var(--st-shadow); }
+.st-habit-ic {
+  display: inline-grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: var(--st-accent-wash);
+  color: var(--st-accent);
+  flex: none;
+}
+.st-habit-name { font-weight: 600; font-size: 0.98rem; }
+.st-habit-sub {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  color: var(--st-ink-2);
+  margin-top: 2px;
+}
+
+/* Check toggle */
+.st-check {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--st-radius-pill);
+  border: 2px solid var(--st-line);
+  background: var(--st-surface);
+  color: transparent;
+  display: grid;
+  place-items: center;
+  transition: all 0.18s var(--st-ease);
+}
+.st-check[data-on="true"] {
+  background: var(--st-success);
+  border-color: var(--st-success);
+  color: #fff;
+}
+
+/* ---------- Streak ring (wraps an SVG) ---------- */
+.st-ringwrap { position: relative; display: inline-grid; place-items: center; }
+.st-ringwrap .st-ringlabel {
+  position: absolute;
+  text-align: center;
+}
+
+/* ---------- Heatmap ---------- */
+.st-heat {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, 1fr);
+  gap: 4px;
+}
+.st-heatcell {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  background: var(--st-surface-2);
+}
+
+/* ---------- Stat / bars ---------- */
+.st-stat { padding: 16px; border-radius: var(--st-radius); }
+.st-stat-num { font-size: 1.7rem; line-height: 1; }
+.st-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  height: 120px;
+}
+.st-bar {
+  flex: 1;
+  border-radius: 8px 8px 4px 4px;
+  background: var(--st-accent);
+  min-height: 6px;
+  transition: height 0.5s var(--st-ease);
+}
+.st-bar[data-faded="true"] { background: color-mix(in oklab, var(--st-accent) 30%, var(--st-surface-2)); }
+
+/* ---------- Bottom nav ---------- */
+.st-bottomnav {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
+  background: color-mix(in oklab, var(--st-surface) 86%, transparent);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid var(--st-line);
+}
+.st-tab {
+  display: inline-grid;
+  place-items: center;
+  gap: 3px;
+  width: 64px;
+  color: var(--st-ink-3);
+  font-size: 0.64rem;
+  font-weight: 600;
+  transition: color 0.16s var(--st-ease);
+}
+.st-tab[data-on="true"] { color: var(--st-accent); }
+.st-fab {
+  display: inline-grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: var(--st-radius-pill);
+  background: var(--st-accent);
+  color: #fff;
+  box-shadow: 0 12px 24px -10px color-mix(in oklab, var(--st-accent) 80%, transparent);
+  transform: translateY(-10px);
+  transition: transform 0.16s var(--st-ease);
+}
+.st-fab:active { transform: translateY(-8px) scale(0.97); }
+
+/* ---------- Inputs ---------- */
+.st-input {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  border-radius: var(--st-radius-sm);
+  background: var(--st-surface-2);
+  border: 1.5px solid transparent;
+  color: var(--st-ink);
+  font-size: 1rem;
+  transition: border-color 0.16s var(--st-ease), background 0.16s var(--st-ease);
+}
+.st-input::placeholder { color: var(--st-ink-3); }
+.st-input:focus {
+  outline: none;
+  background: var(--st-surface);
+  border-color: var(--st-accent);
+}
+
+/* Swatch */
+.st-swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--st-radius-pill);
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1.5px var(--st-line);
+  transition: transform 0.16s var(--st-ease), box-shadow 0.16s var(--st-ease);
+}
+.st-swatch[data-on="true"] { box-shadow: 0 0 0 2px var(--st-ink); transform: scale(1.06); }
+
+/* ---------- Motion ---------- */
+@keyframes st-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.st-rise { animation: st-rise 0.5s var(--st-ease) both; }
+@media (prefers-reduced-motion: reduce) {
+  .st-rise { animation: none; }
+  .st-bar { transition: none; }
+}
+
+/* ---------- Demo chrome (the bar above the device on the portfolio) ---------- */
+.st-demobar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 16px;
+  color: var(--st-ink-2);
+}

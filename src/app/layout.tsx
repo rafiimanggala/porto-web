@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import CursorGlow from "@/components/fx/CursorGlow";
-import ScrollProgress from "@/components/fx/ScrollProgress";
-import CommandPalette from "@/components/CommandPalette";
-import Mascot from "@/components/Mascot";
+import SiteChrome from "@/components/SiteChrome";
 
 const space = Space_Grotesk({
   variable: "--font-space",
@@ -45,12 +42,8 @@ export default function RootLayout({
       className={`${space.variable} ${inter.variable} ${jb.variable}`}
     >
       <body>
-        <ScrollProgress />
-        <CursorGlow />
         {children}
-        <CommandPalette />
-        <Mascot />
-        <div className="grain" aria-hidden />
+        <SiteChrome />
       </body>
     </html>
   );
