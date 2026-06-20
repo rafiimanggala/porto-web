@@ -4,6 +4,7 @@ import Scramble from "./ui/Scramble";
 import Magnetic from "./ui/Magnetic";
 import CountUp from "./ui/CountUp";
 import CommandCenter from "./CommandCenter";
+import LineMask from "./ui/LineMask";
 
 export default function Hero() {
   return (
@@ -35,13 +36,15 @@ export default function Hero() {
             </div>
           </Reveal>
 
-          <Reveal delay={0.05}>
-            <h1 className="t-hero">
-              <span className="text-grad">I build systems where </span>
-              <span className="text-accent">AI agents do the work</span>
-              <span className="text-grad">, not just write the code.</span>
-            </h1>
-          </Reveal>
+          <h1 className="t-hero">
+            <LineMask
+              lines={[
+                { text: "I build systems where", className: "text-grad" },
+                { text: "AI agents do the work,", className: "text-accent" },
+                { text: "not just write the code.", className: "text-grad" },
+              ]}
+            />
+          </h1>
 
           <Reveal delay={0.1}>
             <p className="t-lead mt-7 max-w-xl text-dim">
