@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { featured, type Project } from "@/data/portfolio";
 import Section from "./ui/Section";
 import Reveal from "./ui/Reveal";
@@ -111,6 +111,54 @@ function Tags({ p }: { p: Project }) {
   );
 }
 
+function ProjectCard({ p, className }: { p: Project; className?: string }) {
+  return (
+    <SpotlightCard dataUnit={`project:${p.id}`} className={`flex flex-col p-6 sm:p-7 ${className ?? ""}`}>
+      <ProjectVisual id={p.id} accent={p.accent} className="mb-5 h-28" />
+      <Meta p={p} />
+      <h3 className="t-h3 mt-4 text-fg">{p.title}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-dim">{p.oneLiner}</p>
+      <div className="mt-5">
+        <Highlights items={p.highlights} />
+      </div>
+      <Tags p={p} />
+    </SpotlightCard>
+  );
+}
+
+function StickyStack({ items }: { items: Project[] }) {
+  const reduce = useReducedMotion();
+  const [stack, setStack] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+    setStack(mq.matches && !reduce);
+  }, [reduce]);
+
+  if (!stack) {
+    // Touch / reduced-motion: preserve the original grid + Reveal stagger exactly.
+    return (
+      <div className="md:col-span-2 grid gap-5 md:grid-cols-3">
+        {items.map((p, i) => (
+          <Reveal key={p.id} delay={(i % 3) * 0.08} className="h-full">
+            <ProjectCard p={p} className="h-full" />
+          </Reveal>
+        ))}
+      </div>
+    );
+  }
+
+  // Desktop: sticky-stack (no Reveal -- its transform conflicts with position:sticky).
+  return (
+    <div className="md:col-span-2 space-y-5">
+      {items.map((p, i) => (
+        <div key={p.id} className="sticky" style={{ top: `calc(6rem + ${i * 1.5}rem)` }}>
+          <ProjectCard p={p} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function Featured() {
   const items = FEATURED_IDS.map(
     (id) => featured.find((p) => p.id === id)!
@@ -152,25 +200,7 @@ export default function Featured() {
           </SpotlightCard>
         </Reveal>
 
-        {rest.map((p, i) => (
-          <Reveal key={p.id} delay={(i % 2) * 0.08} className="h-full">
-            <SpotlightCard
-              dataUnit={`project:${p.id}`}
-              className="flex h-full flex-col p-6 sm:p-7"
-            >
-              <ProjectVisual id={p.id} accent={p.accent} className="mb-5 h-28" />
-              <Meta p={p} />
-              <h3 className="t-h3 mt-4 text-fg">{p.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-dim">
-                {p.oneLiner}
-              </p>
-              <div className="mt-5">
-                <Highlights items={p.highlights} />
-              </div>
-              <Tags p={p} />
-            </SpotlightCard>
-          </Reveal>
-        ))}
+        <StickyStack items={rest} />
       </div>
     </Section>
   );
