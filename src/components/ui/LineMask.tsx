@@ -10,7 +10,7 @@ export default function LineMask({ lines }: { lines: Line[] }) {
     return (
       <>
         {lines.map((l, i) => (
-          <span key={i} className={l.className}>
+          <span key={i} className={`block ${l.className ?? ""}`}>
             {l.text}
           </span>
         ))}
