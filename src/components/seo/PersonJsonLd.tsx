@@ -11,7 +11,7 @@ export default function PersonJsonLd() {
     description:
       "Freelance AI engineer in Indonesia who builds autonomous systems with Claude Code: trading bots, digital twins, and self-running infrastructure.",
     address: { "@type": "PostalAddress", addressCountry: "ID" },
-    email: `mailto:${profile.email}`,
+    email: profile.email,
     sameAs: [profile.github, profile.linkedin],
   };
   return (
