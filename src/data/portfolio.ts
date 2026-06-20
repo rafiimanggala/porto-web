@@ -19,12 +19,12 @@ export const profile = {
 export type Stat = { label: string; value: string; note?: string };
 
 export const stats: Stat[] = [
-  { label: "Projects shipped", value: "45+", note: "across 35 repos" },
-  { label: "Commits authored", value: "~3K", note: "hand + agent-driven" },
-  { label: "Autonomous AI systems", value: "6", note: "running in production" },
-  { label: "Custom tools & skills", value: "15+", note: "built around Claude Code" },
+  { label: "Always-on AI agents", value: "15", note: "launchd, 24/7" },
+  { label: "Self-learned rules", value: "59", note: "auto-locked, permanent" },
+  { label: "Daily build logs", value: "94", note: "shipped + logged" },
+  { label: "Git repositories", value: "39", note: "81 project folders" },
+  { label: "Autonomous systems", value: "6", note: "running in production" },
   { label: "Client countries", value: "2", note: "AU · US" },
-  { label: "Stacks shipped", value: "9+", note: "TS · Python · .NET · Swift" },
 ];
 
 export type Project = {
