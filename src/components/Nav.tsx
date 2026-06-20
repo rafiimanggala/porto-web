@@ -5,6 +5,7 @@ const links = [
   { href: "#uiux", label: "Design" },
   { href: "#work", label: "Work" },
   { href: "#automation", label: "AI" },
+  { href: "#agent-os", label: "Agent OS" },
   { href: "#toolkit", label: "Toolkit" },
   { href: "#native", label: "Native" },
   { href: "#index", label: "Index" },

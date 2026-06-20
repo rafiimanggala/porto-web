@@ -1,8 +1,9 @@
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
+import AutomationSection from "@/components/AutomationSection";
 import SelectedWork from "@/components/SelectedWork";
 import Featured from "@/components/Featured";
-import AIStory from "@/components/AIStory";
+import AgentOS from "@/components/AgentOS";
 import Toolkit from "@/components/Toolkit";
 import NativeMobile from "@/components/NativeMobile";
 import ProjectIndex from "@/components/ProjectIndex";
@@ -13,9 +14,10 @@ export default function Home() {
     <main className="relative">
       <Nav />
       <Hero />
+      <AutomationSection />
       <SelectedWork />
       <Featured />
-      <AIStory />
+      <AgentOS />
       <Toolkit />
       <NativeMobile />
       <ProjectIndex />
