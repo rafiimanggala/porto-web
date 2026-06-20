@@ -1,0 +1,14 @@
+# Rafii Manggala Japamel
+
+Rafii Manggala Japamel is a freelance AI engineer based in Indonesia (UTC+7) who builds autonomous systems with Claude Code: trading bots, digital twins, and self-running infrastructure that observes, decides, and acts in production. He runs Claude not as a chatbot but as an always-on personal agent OS with persistent memory, self-learning hooks, and safety rails, and ships work for clients in Australia and the United States.
+
+## Selected systems
+- Trading Command Center: 12 AI + algorithmic bots gated by Claude+Groq multi-model consensus.
+- Amadeus: an always-on digital twin that reasons from his own decision history.
+- TestEngine: self-hosted MCP server for isolated parallel browser testing.
+- Email Reactor: hourly autonomous agent that fixes client bugs on a branch while he sleeps.
+
+## Contact
+- Site: https://rafiimanggala.vercel.app
+- GitHub: https://github.com/rafiimanggala
+- Email: rafiimanggala3@gmail.com
