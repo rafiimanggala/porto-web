@@ -22,6 +22,14 @@ export default function Contact() {
 
         <Reveal>
           <p className="t-lead mt-7 max-w-3xl text-balance text-dim">
+            Rafii Manggala Japamel is a freelance AI engineer based in Indonesia
+            (UTC+7) who builds autonomous systems with Claude Code: trading bots,
+            digital twins, and self-running infrastructure that observe, decide,
+            and act in production. He runs Claude not as a chatbot but as an
+            always-on agent OS, and ships for clients in Australia and the United
+            States.
+          </p>
+          <p className="t-body mt-5 max-w-3xl text-pretty text-dim/90">
             {profile.thesis}
           </p>
           <p className="t-body mt-5 max-w-3xl text-pretty text-dim/90">
