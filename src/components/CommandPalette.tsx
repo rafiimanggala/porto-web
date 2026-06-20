@@ -44,6 +44,7 @@ export default function CommandPalette() {
       { label: "Back to top", hint: "↑", group: "Navigate", run: () => goto("#top") },
       { label: `Email ${profile.handle}`, hint: "mailto", group: "Contact", run: () => { window.location.href = `mailto:${profile.email}`; } },
       { label: "Open GitHub", hint: "↗", group: "Contact", run: () => window.open(profile.github, "_blank", "noreferrer") },
+      { label: "LinkedIn", hint: "↗", group: "Contact", run: () => window.open(profile.linkedin, "_blank", "noreferrer") },
     ],
     []
   );

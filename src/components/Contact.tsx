@@ -42,6 +42,17 @@ export default function Contact() {
         {/* Contact CTA */}
         <div className="mt-20 border-t border-line pt-16">
           <Reveal>
+            {/* availability badge */}
+            <div className="mb-8 flex w-fit items-center gap-2 rounded-full border border-[#34d399]/30 bg-[#34d399]/5 px-3 py-1.5">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#34d399] opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#34d399]" />
+              </span>
+              <span className="mono text-[11px] text-[#34d399]">
+                Available · Remote · UTC+7
+              </span>
+            </div>
+
             <h2 className="t-h2 max-w-3xl text-fg">
               Let&apos;s build something that{" "}
               <span className="text-accent">runs without you.</span>
@@ -51,28 +62,61 @@ export default function Contact() {
               autonomous systems, agent orchestration, and full-stack products.
             </p>
 
-            <div className="mt-9 flex flex-wrap items-center gap-3">
-              <Magnetic>
-                <a
-                  href={`mailto:${profile.email}`}
-                  data-unit="cta:contact"
-                  className="mono block cursor-pointer rounded-full bg-accent px-6 py-3 text-sm font-medium text-bg transition-colors"
-                >
-                  {profile.email}
-                </a>
-              </Magnetic>
-              <Magnetic>
-                <a
-                  href={profile.github}
-                  target="_blank"
-                  rel="noreferrer"
-                  data-unit="cta:github"
-                  className="mono block cursor-pointer rounded-full border border-line px-6 py-3 text-sm text-fg transition-colors hover:border-line-strong"
-                >
-                  GitHub ↗
-                </a>
-              </Magnetic>
+            {/* contact cards */}
+            <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <a
+                href={`mailto:${profile.email}`}
+                data-unit="cta:email"
+                className="group card cursor-pointer transition-all duration-200 hover:border-accent/40 hover:bg-surface-2"
+              >
+                <p className="mono text-[10px] text-mute">email</p>
+                <p className="mt-2 text-sm font-medium text-fg">Say hello</p>
+                <p className="mt-1 text-xs text-dim leading-relaxed">
+                  Direct line. Usually replies within 24h.
+                </p>
+                <p className="mono mt-4 text-[10px] text-accent group-hover:underline">
+                  {profile.email} ↗
+                </p>
+              </a>
+
+              <a
+                href={profile.github}
+                target="_blank"
+                rel="noreferrer"
+                data-unit="cta:github"
+                className="group card cursor-pointer transition-all duration-200 hover:border-accent/40 hover:bg-surface-2"
+              >
+                <p className="mono text-[10px] text-mute">github</p>
+                <p className="mt-2 text-sm font-medium text-fg">See the code</p>
+                <p className="mt-1 text-xs text-dim leading-relaxed">
+                  45+ repos, 3K commits, agents included.
+                </p>
+                <p className="mono mt-4 text-[10px] text-accent group-hover:underline">
+                  github.com/rafiimanggala ↗
+                </p>
+              </a>
+
+              <a
+                href={profile.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                data-unit="cta:linkedin"
+                className="group card cursor-pointer transition-all duration-200 hover:border-accent/40 hover:bg-surface-2"
+              >
+                <p className="mono text-[10px] text-mute">linkedin</p>
+                <p className="mt-2 text-sm font-medium text-fg">Connect</p>
+                <p className="mt-1 text-xs text-dim leading-relaxed">
+                  Work history, endorsements, full experience.
+                </p>
+                <p className="mono mt-4 text-[10px] text-accent group-hover:underline">
+                  in/rafiimanggala ↗
+                </p>
+              </a>
             </div>
+
+            <p className="mono mt-6 text-[11px] text-mute">
+              ↺ Usually replies within 24h · Indonesia · WIB
+            </p>
           </Reveal>
         </div>
 

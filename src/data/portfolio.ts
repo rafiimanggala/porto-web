@@ -13,6 +13,7 @@ export const profile = {
     "Most people use Claude Code to write functions. I deploy it as the engine: always-on agents that observe, decide, and act in production. Trading bots that reach multi-model consensus before risking capital. A digital twin that reasons from my own decision history. An inbox that fixes client bugs while I sleep. The code is the easy part. The interesting work is the orchestration.",
   email: "rafiimanggala3@gmail.com",
   github: "https://github.com/rafiimanggala",
+  linkedin: "https://linkedin.com/in/rafiimanggala",
 };
 
 export type Stat = { label: string; value: string; note?: string };
