@@ -36,10 +36,11 @@ export default function CommandPalette() {
   const actions = useMemo<Action[]>(
     () => [
       { label: "Selected work", hint: "01", group: "Navigate", run: () => goto("#work") },
-      { label: "Custom toolkit", hint: "02", group: "Navigate", run: () => goto("#toolkit") },
-      { label: "Native, AI-driven", hint: "03", group: "Navigate", run: () => goto("#native") },
-      { label: "Project index", hint: "04", group: "Navigate", run: () => goto("#index") },
-      { label: "About", hint: "05", group: "Navigate", run: () => goto("#contact") },
+      { label: "How I work with AI", hint: "02", group: "Navigate", run: () => goto("#automation") },
+      { label: "Custom toolkit", hint: "03", group: "Navigate", run: () => goto("#toolkit") },
+      { label: "Native, AI-driven", hint: "04", group: "Navigate", run: () => goto("#native") },
+      { label: "Project index", hint: "05", group: "Navigate", run: () => goto("#index") },
+      { label: "About", hint: "06", group: "Navigate", run: () => goto("#contact") },
       { label: "Back to top", hint: "↑", group: "Navigate", run: () => goto("#top") },
       { label: `Email ${profile.handle}`, hint: "mailto", group: "Contact", run: () => { window.location.href = `mailto:${profile.email}`; } },
       { label: "Open GitHub", hint: "↗", group: "Contact", run: () => window.open(profile.github, "_blank", "noreferrer") },

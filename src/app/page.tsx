@@ -2,6 +2,7 @@ import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import SelectedWork from "@/components/SelectedWork";
 import Featured from "@/components/Featured";
+import AIStory from "@/components/AIStory";
 import Toolkit from "@/components/Toolkit";
 import NativeMobile from "@/components/NativeMobile";
 import ProjectIndex from "@/components/ProjectIndex";
@@ -14,6 +15,7 @@ export default function Home() {
       <Hero />
       <SelectedWork />
       <Featured />
+      <AIStory />
       <Toolkit />
       <NativeMobile />
       <ProjectIndex />
