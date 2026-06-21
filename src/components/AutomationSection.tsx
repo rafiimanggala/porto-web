@@ -26,7 +26,7 @@ export default function AutomationSection() {
     return (
       <Section
         id="automation"
-        index="02"
+        index="01"
         label="Live automation"
         title="Watch an agent ship a fix."
         intro="A real loop my agents run unattended: read the issue, fix it on a branch, deploy, verify with Playwright, attach proof. Press run."
