@@ -3,6 +3,7 @@
 import { toolkit, capabilities } from "@/data/portfolio";
 import Section from "./ui/Section";
 import Reveal from "./ui/Reveal";
+import TiltCard from "./ui/TiltCard";
 import AgentNodeGraph from "./visuals/AgentNodeGraph";
 
 const FEATURED_TOOLS = ["Mahoraga", "Email Reactor", "Smart Context Injector"];
@@ -23,14 +24,14 @@ export default function AgentOS() {
       <div className="grid gap-5 md:grid-cols-3">
         {tools.map((t, i) => (
           <Reveal key={t.name} delay={(i % 3) * 0.06} className="h-full">
-            <div className="card flex h-full flex-col p-6">
+            <TiltCard className="card flex h-full flex-col p-6" intensity={6} glowOpacity={0.18}>
               <span className="mono text-[11px] text-mute">{t.cmd}</span>
               <h3 className="t-h3 mt-3 text-fg">{t.name}</h3>
               <p className="mt-2 text-sm leading-relaxed text-dim">{t.desc}</p>
               <p className="mono mt-4 border-t border-line pt-3 text-[12px] leading-relaxed text-accent/90">
                 {t.why}
               </p>
-            </div>
+            </TiltCard>
           </Reveal>
         ))}
       </div>

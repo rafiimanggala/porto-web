@@ -6,6 +6,7 @@ import { featured, type Project } from "@/data/portfolio";
 import Section from "./ui/Section";
 import Reveal from "./ui/Reveal";
 import SpotlightCard from "./ui/SpotlightCard";
+import TiltCard from "./ui/TiltCard";
 import ProjectVisual from "./visuals/projectVisuals";
 
 // The 4 strongest showcases; the rest live in the index strip.
@@ -113,16 +114,18 @@ function Tags({ p }: { p: Project }) {
 
 function ProjectCard({ p, className }: { p: Project; className?: string }) {
   return (
-    <SpotlightCard dataUnit={`project:${p.id}`} className={`flex flex-col p-6 sm:p-7 ${className ?? ""}`}>
-      <ProjectVisual id={p.id} accent={p.accent} className="mb-5 h-28" />
-      <Meta p={p} />
-      <h3 className="t-h3 mt-4 text-fg">{p.title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-dim">{p.oneLiner}</p>
-      <div className="mt-5">
-        <Highlights items={p.highlights} />
-      </div>
-      <Tags p={p} />
-    </SpotlightCard>
+    <TiltCard intensity={7} glowOpacity={0}>
+      <SpotlightCard dataUnit={`project:${p.id}`} className={`flex flex-col p-6 sm:p-7 ${className ?? ""}`}>
+        <ProjectVisual id={p.id} accent={p.accent} className="mb-5 h-28" />
+        <Meta p={p} />
+        <h3 className="t-h3 mt-4 text-fg">{p.title}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-dim">{p.oneLiner}</p>
+        <div className="mt-5">
+          <Highlights items={p.highlights} />
+        </div>
+        <Tags p={p} />
+      </SpotlightCard>
+    </TiltCard>
   );
 }
 
