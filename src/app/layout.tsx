@@ -3,6 +3,7 @@ import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import SiteChrome from "@/components/SiteChrome";
 import PersonJsonLd from "@/components/seo/PersonJsonLd";
+import FaqJsonLd from "@/components/seo/FaqJsonLd";
 
 const space = Space_Grotesk({
   variable: "--font-space",
@@ -49,6 +50,7 @@ export default function RootLayout({
       <body>
         {children}
         <PersonJsonLd />
+        <FaqJsonLd />
         <SiteChrome />
       </body>
     </html>
