@@ -3,6 +3,7 @@
 import { toolkit, capabilities } from "@/data/portfolio";
 import Section from "./ui/Section";
 import Reveal from "./ui/Reveal";
+import AgentNodeGraph from "./visuals/AgentNodeGraph";
 
 const FEATURED_TOOLS = ["Mahoraga", "Email Reactor", "Smart Context Injector"];
 
@@ -18,6 +19,7 @@ export default function AgentOS() {
       title="Not a chatbot. An operating system for agents."
       intro="The part most engineers do not have: a personal agent stack that runs itself, learns from its own mistakes, and never touches production without a gate."
     >
+      <AgentNodeGraph className="mb-8 opacity-70" />
       <div className="grid gap-5 md:grid-cols-3">
         {tools.map((t, i) => (
           <Reveal key={t.name} delay={(i % 3) * 0.06} className="h-full">
