@@ -43,7 +43,7 @@ export default function AutomationSection() {
       <div className="sticky top-0 flex min-h-screen items-center">
         <Section
           id="automation"
-          index="02"
+          index="01"
           label="Live automation"
           title="Watch an agent ship a fix."
           intro="A real loop my agents run unattended: read the issue, fix it on a branch, deploy, verify with Playwright, attach proof. Scroll to run it."

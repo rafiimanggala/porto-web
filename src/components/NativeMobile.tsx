@@ -45,7 +45,7 @@ export default function NativeMobile() {
   return (
     <Section
       id="native"
-      index="03"
+      index="07"
       label="Native, AI-driven"
       title="I let Claude drive the simulator."
       intro="React Native, .NET MAUI, SwiftUI. The agent boots the simulator, builds the screen, screenshots it, fixes what's off, and verifies, while I review the architecture."

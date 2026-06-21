@@ -2,11 +2,12 @@ import { profile } from "@/data/portfolio";
 import CmdkHint from "./ui/CmdkHint";
 
 const links = [
-  { href: "#uiux", label: "Design" },
-  { href: "#work", label: "Work" },
   { href: "#automation", label: "AI" },
+  { href: "#ai-day", label: "How I work" },
   { href: "#agent-os", label: "Agent OS" },
   { href: "#toolkit", label: "Toolkit" },
+  { href: "#uiux", label: "Design" },
+  { href: "#work", label: "Work" },
   { href: "#native", label: "Native" },
   { href: "#index", label: "Index" },
   { href: "#contact", label: "About" },

@@ -1,6 +1,7 @@
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import AutomationSection from "@/components/AutomationSection";
+import AgentDay from "@/components/AgentDay";
 import SelectedWork from "@/components/SelectedWork";
 import Featured from "@/components/Featured";
 import AgentOS from "@/components/AgentOS";
@@ -15,10 +16,11 @@ export default function Home() {
       <Nav />
       <Hero />
       <AutomationSection />
-      <SelectedWork />
-      <Featured />
+      <AgentDay />
       <AgentOS />
       <Toolkit />
+      <SelectedWork />
+      <Featured />
       <NativeMobile />
       <ProjectIndex />
       <Contact />

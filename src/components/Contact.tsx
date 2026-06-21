@@ -14,7 +14,7 @@ export default function Contact() {
       <div className="mx-auto w-full max-w-[1120px] px-6 py-24 sm:py-28 lg:px-8">
         {/* About */}
         <Reveal>
-          <span className="eyebrow">{"// 05 · About"}</span>
+          <span className="eyebrow">{"// 09 · About"}</span>
           <h2 className="t-h3 mt-4 max-w-3xl text-fg">
             A freelance engineer who treats agents as a team.
           </h2>

@@ -171,7 +171,7 @@ export default function Featured() {
   return (
     <Section
       id="work"
-      index="01"
+      index="06"
       label="Selected work"
       title="Systems that run themselves."
       intro="Four builds where the AI isn't a sidekick, it's the engine making decisions in production. Click a card for the deeper version. Client work is anonymized."

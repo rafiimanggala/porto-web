@@ -36,7 +36,7 @@ export default function SelectedWork() {
   return (
     <Section
       id="uiux"
-      index="00"
+      index="05"
       label="UI/UX"
       title="Selected UI/UX work"
       intro="Two case studies that show the process, not just the result: the problem, the flow, the system, and the screens."

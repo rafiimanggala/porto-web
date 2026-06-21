@@ -7,7 +7,7 @@ export default function Toolkit() {
   return (
     <Section
       id="toolkit"
-      index="02"
+      index="04"
       label="Custom toolkit"
       title="The tools I built to build faster."
       intro="15+ skills, hooks, and CLIs wrapped around Claude Code. The interesting work isn't prompting, it's the harness around it."
