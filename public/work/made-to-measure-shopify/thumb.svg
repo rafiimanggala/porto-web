@@ -1,0 +1,41 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1000" fill="#0f0f12"/>
+
+  <!-- pattern-paper grid -->
+  <g stroke="#ffffff" stroke-opacity="0.05" stroke-width="1">
+    <line x1="0" y1="125" x2="1600" y2="125"/>
+    <line x1="0" y1="250" x2="1600" y2="250"/>
+    <line x1="0" y1="375" x2="1600" y2="375"/>
+    <line x1="0" y1="500" x2="1600" y2="500"/>
+    <line x1="0" y1="625" x2="1600" y2="625"/>
+    <line x1="0" y1="750" x2="1600" y2="750"/>
+    <line x1="0" y1="875" x2="1600" y2="875"/>
+    <line x1="200" y1="0" x2="200" y2="1000"/>
+    <line x1="400" y1="0" x2="400" y2="1000"/>
+    <line x1="600" y1="0" x2="600" y2="1000"/>
+    <line x1="800" y1="0" x2="800" y2="1000"/>
+    <line x1="1000" y1="0" x2="1000" y2="1000"/>
+    <line x1="1200" y1="0" x2="1200" y2="1000"/>
+    <line x1="1400" y1="0" x2="1400" y2="1000"/>
+  </g>
+
+  <!-- construction curve: stylised collar/pattern panel outline -->
+  <path
+    d="M 480 760 C 480 560, 560 420, 760 380 C 960 340, 1060 420, 1100 560 C 1130 660, 1100 740, 1020 760"
+    stroke="#5fe9ad" stroke-width="2.5" fill="none" stroke-opacity="0.9"
+  />
+  <path
+    d="M 560 760 C 560 600, 630 480, 780 440"
+    stroke="#5fe9ad" stroke-width="1.5" stroke-dasharray="6 8" fill="none" stroke-opacity="0.55"
+  />
+
+  <!-- fit points -->
+  <circle cx="760" cy="380" r="5" fill="#5fe9ad"/>
+  <circle cx="1100" cy="560" r="5" fill="#5fe9ad"/>
+  <circle cx="1020" cy="760" r="5" fill="#5fe9ad"/>
+  <circle cx="480" cy="760" r="5" fill="#5fe9ad"/>
+
+  <!-- label -->
+  <text x="80" y="880" font-family="ui-monospace, Menlo, monospace" font-size="26" letter-spacing="2" fill="#ffffff" fill-opacity="0.55">PATTERN &amp; FIT</text>
+  <text x="80" y="920" font-family="ui-monospace, Menlo, monospace" font-size="26" letter-spacing="2" fill="#5fe9ad" fill-opacity="0.9">10 EMAIL FLOWS LIVE</text>
+</svg>

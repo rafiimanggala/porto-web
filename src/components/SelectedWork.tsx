@@ -30,6 +30,15 @@ const cases: Case[] = [
     tags: ["UX", "Web app", "Live"],
     status: "Live",
   },
+  {
+    slug: "made-to-measure-shopify",
+    title: "Made-to-Measure Shopify Platform",
+    blurb:
+      "A body-measurement pattern-fitting editor built into a Shopify theme, plus ten Klaviyo flows that replaced every default transactional email.",
+    thumb: "/work/made-to-measure-shopify/thumb.svg",
+    tags: ["Shopify", "Liquid", "Email automation"],
+    status: "Live",
+  },
 ];
 
 export default function SelectedWork() {
@@ -37,11 +46,11 @@ export default function SelectedWork() {
     <Section
       id="uiux"
       index="05"
-      label="UI/UX"
-      title="Selected UI/UX work"
-      intro="Two case studies that show the process, not just the result: the problem, the flow, the system, and the screens."
+      label="Work"
+      title="Selected work"
+      intro="Three case studies that show the process, not just the result: the problem, the build, and the outcome."
     >
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {cases.map((c, i) => (
           <Reveal key={c.slug} delay={i * 0.06}>
             <Link

@@ -277,9 +277,9 @@ export default function StreakCase() {
       </Section>
 
       <NextCase
-        href="/work/spotter-eld"
+        href="/work/made-to-measure-shopify"
         label="Next case study"
-        title="Spotter ELD"
+        title="Made-to-Measure Shopify Platform"
       />
     </CaseShell>
   );
