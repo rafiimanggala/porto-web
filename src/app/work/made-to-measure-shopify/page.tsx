@@ -4,6 +4,7 @@ import {
   CaseHero,
   Section,
   Lead,
+  Figure,
   Callout,
   NextCase,
 } from "@/components/work/casestudy";
@@ -13,6 +14,8 @@ export const metadata: Metadata = {
   description:
     "A body-measurement pattern-fitting system built into a Shopify theme, plus ten Klaviyo flows that replaced every default transactional email.",
 };
+
+const B = "/work/made-to-measure-shopify";
 
 /* ---- small in-page diagram + system bits (presentational, no client screenshots) ---- */
 
@@ -77,6 +80,12 @@ export default function MadeToMeasureShopifyCase() {
         ]}
       />
 
+      <Figure
+        src={`${B}/01-hero.jpg`}
+        alt="Storefront hero banner for the made-to-measure fashion brand, brand wordmark cropped"
+        caption="The live storefront. Brand name and logo are cropped throughout &mdash; this is an anonymized client engagement."
+      />
+
       <Section n="01" kicker="Problem" title="A generic theme can't fit a made-to-measure product.">
         <Lead>
           The brand sells made-to-measure shirts and suits. A customer&apos;s
@@ -110,6 +119,11 @@ export default function MadeToMeasureShopifyCase() {
           straight from the product page.
         </Lead>
         <PatternFlow />
+        <Figure
+          src={`${B}/02-configurator.jpg`}
+          alt="Live product configurator with color, collar and tuck dropdowns, fitted-in-store and login-to-see-patterns actions"
+          caption="The live product page: color/collar/tuck configurator, with the fitting flow gated behind account login."
+        />
         <Columns2>
           <Mini
             title="Save As New, not overwrite"
@@ -173,6 +187,11 @@ export default function MadeToMeasureShopifyCase() {
           rounds of fixes and refinements still come in and go out the same
           way.
         </Lead>
+        <Figure
+          src={`${B}/03-collection.jpg`}
+          alt="Product collection grid showing multiple made-to-measure shirt styles"
+          caption="The full collection grid, live on the storefront today."
+        />
       </Section>
 
       <NextCase href="/work/spotter-eld" label="Next case study" title="Spotter ELD" />

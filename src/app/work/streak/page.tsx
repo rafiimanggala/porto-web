@@ -277,9 +277,9 @@ export default function StreakCase() {
       </Section>
 
       <NextCase
-        href="/work/made-to-measure-shopify"
+        href="/work/health-platform"
         label="Next case study"
-        title="Made-to-Measure Shopify Platform"
+        title="Health Optimisation Platform"
       />
     </CaseShell>
   );

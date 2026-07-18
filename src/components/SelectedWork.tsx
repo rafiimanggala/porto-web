@@ -22,12 +22,30 @@ const cases: Case[] = [
     status: "Prototype",
   },
   {
-    slug: "spotter-eld",
-    title: "Spotter ELD",
+    slug: "health-platform",
+    title: "Health Optimisation Platform",
     blurb:
-      "Turning a regulated, paper-heavy task (truck route planning and Hours-of-Service logs) into one calm screen. Shipped and live.",
-    thumb: "/work/spotter-eld/06-results-top.png",
-    tags: ["UX", "Web app", "Live"],
+      "Biomarkers, DNA, DEXA scans and wearables reconciled into one longevity score, with AI reasoning that connects findings across domains.",
+    thumb: "/work/health-platform/06-progress.png",
+    tags: ["React", "AI insights", "Live"],
+    status: "Live",
+  },
+  {
+    slug: "education-saas",
+    title: "K-12 Education SaaS",
+    blurb:
+      "Curriculum-aligned learning platform for schools: quiz engine, AI performance insights, shipped against a live database of 995 schools.",
+    thumb: "/work/education-saas/01-dashboard.png",
+    tags: [".NET 9", "Angular", "Live"],
+    status: "Live",
+  },
+  {
+    slug: "content-automation-pipeline",
+    title: "Content Automation Pipeline",
+    blurb:
+      "A self-hosted n8n instance that scripts, voices and renders short-form video from RSS sources, then auto-publishes to TikTok and Instagram.",
+    thumb: "/work/content-automation-pipeline/01-video-workflow.png",
+    tags: ["n8n", "OpenAI", "Live"],
     status: "Live",
   },
   {
@@ -35,8 +53,17 @@ const cases: Case[] = [
     title: "Made-to-Measure Shopify Platform",
     blurb:
       "A body-measurement pattern-fitting editor built into a Shopify theme, plus ten Klaviyo flows that replaced every default transactional email.",
-    thumb: "/work/made-to-measure-shopify/thumb.svg",
+    thumb: "/work/made-to-measure-shopify/01-hero.jpg",
     tags: ["Shopify", "Liquid", "Email automation"],
+    status: "Live",
+  },
+  {
+    slug: "spotter-eld",
+    title: "Spotter ELD",
+    blurb:
+      "Turning a regulated, paper-heavy task (truck route planning and Hours-of-Service logs) into one calm screen. Shipped and live.",
+    thumb: "/work/spotter-eld/06-results-top.png",
+    tags: ["UX", "Web app", "Live"],
     status: "Live",
   },
 ];
@@ -48,7 +75,7 @@ export default function SelectedWork() {
       index="05"
       label="Work"
       title="Selected work"
-      intro="Three case studies that show the process, not just the result: the problem, the build, and the outcome."
+      intro="Case studies that show the process, not just the result: the problem, the build, and the outcome."
     >
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {cases.map((c, i) => (

@@ -56,7 +56,7 @@ export const featured: Project[] = [
       "12 bots across crypto / forex / stocks / prediction markets + a financial-analysis engine (DCF, peer comp, technicals).",
     ],
     status: "Live",
-    link: { label: "GitHub", href: "https://github.com/rafiimanggala" },
+    link: { label: "GitHub", href: "https://github.com/rafiimanggala/trading-command-center" },
     accent: "mint",
   },
   {
@@ -89,7 +89,7 @@ export const featured: Project[] = [
       "Built end-to-end via the superpowers workflow: spec → plans → subagent-driven dev with per-task review.",
     ],
     status: "Done",
-    link: { label: "GitHub", href: "https://github.com/rafiimanggala" },
+    link: { label: "GitHub", href: "https://github.com/rafiimanggala/testengine" },
     accent: "amber",
   },
   {
@@ -105,8 +105,25 @@ export const featured: Project[] = [
       "Composite signal scoring (whale + insider + factor + pattern) with conviction thresholds; feeds the Trading Command Center for execution.",
     ],
     status: "Live",
-    link: { label: "GitHub", href: "https://github.com/rafiimanggala" },
+    link: { label: "GitHub", href: "https://github.com/rafiimanggala/market-intelligence-agent" },
     accent: "mint",
+  },
+  {
+    id: "content-automation-pipeline",
+    title: "Content Automation Pipeline",
+    kind: "Personal",
+    year: "2026",
+    oneLiner:
+      "Self-hosted n8n instance turning RSS sources into scripted, voiced short-form video and auto-publishing it to TikTok and Instagram.",
+    stack: ["n8n", "OpenAI", "Whisper", "Creatomate", "Google Sheets"],
+    highlights: [
+      "30+ node workflow: multi-source RSS merge → LLM script rewrite → Whisper voiceover → async render → direct TikTok/Instagram publish, fully unattended.",
+      "A separate scraping workflow feeds engagement signals back in, decoupled from publishing so a scrape failure never blocks the posting schedule.",
+      "Self-hosted, not a managed SaaS tier: no per-execution billing ceiling, every credential stays under direct control.",
+    ],
+    status: "Live",
+    link: { label: "Case study", href: "/work/content-automation-pipeline" },
+    accent: "amber",
   },
   {
     id: "health-platform",
@@ -122,6 +139,7 @@ export const featured: Project[] = [
       "Shipped with a 'Test & Execute' loop: fix → deploy → self-verify via Playwright → screenshot-confirm before reporting.",
     ],
     status: "Live",
+    link: { label: "Case study", href: "/work/health-platform" },
     accent: "violet",
   },
   {
@@ -138,6 +156,7 @@ export const featured: Project[] = [
       "Isolated TestContainers integration tests + a reusable auth handler after finding silently-rejected OpenIddict tokens.",
     ],
     status: "Live",
+    link: { label: "Case study", href: "/work/education-saas" },
     accent: "amber",
   },
 ];
