@@ -4,10 +4,17 @@ import {
   CaseHero,
   Section,
   Lead,
-  Figure,
   Callout,
   NextCase,
 } from "@/components/work/casestudy";
+import { AutoCycle, BrowserWindow, PhoneWindow, ACCENT } from "@/components/mockups/frame";
+import {
+  ShopifyWeb1,
+  ShopifyWeb2,
+  ShopifyWeb3,
+  ShopifyMobile1,
+  ShopifyMobile2,
+} from "@/components/mockups/shopify";
 
 export const metadata: Metadata = {
   title: "Made-to-Measure Shopify Platform · Case study · Rafii Manggala",
@@ -15,7 +22,7 @@ export const metadata: Metadata = {
     "A body-measurement pattern-fitting system built into a Shopify theme, plus ten Klaviyo flows that replaced every default transactional email.",
 };
 
-const B = "/work/made-to-measure-shopify";
+const accent = ACCENT.mint;
 
 /* ---- small in-page diagram + system bits (presentational, no client screenshots) ---- */
 
@@ -80,11 +87,23 @@ export default function MadeToMeasureShopifyCase() {
         ]}
       />
 
-      <Figure
-        src={`${B}/01-hero.jpg`}
-        alt="Storefront hero banner for the made-to-measure fashion brand, brand wordmark cropped"
-        caption="The live storefront. Brand name and logo are cropped throughout &mdash; this is an anonymized client engagement."
-      />
+      <div className="mt-8">
+        <BrowserWindow label="shop &middot; get fitted &middot; collections" accent={accent}>
+          <AutoCycle
+            accent={accent}
+            screens={[
+              <ShopifyWeb1 key="1" accent={accent} />,
+              <ShopifyWeb2 key="2" accent={accent} />,
+              <ShopifyWeb3 key="3" accent={accent} />,
+            ]}
+          />
+        </BrowserWindow>
+        <p className="mt-3 text-sm text-mute">
+          An illustrated recreation of the storefront, not real screenshots.
+          This is an NDA client engagement &mdash; no brand name, logo, or
+          product photography is reproduced anywhere on this page.
+        </p>
+      </div>
 
       <Section n="01" kicker="Problem" title="A generic theme can't fit a made-to-measure product.">
         <Lead>
@@ -119,11 +138,6 @@ export default function MadeToMeasureShopifyCase() {
           straight from the product page.
         </Lead>
         <PatternFlow />
-        <Figure
-          src={`${B}/02-configurator.jpg`}
-          alt="Live product configurator with color, collar and tuck dropdowns, fitted-in-store and login-to-see-patterns actions"
-          caption="The live product page: color/collar/tuck configurator, with the fitting flow gated behind account login."
-        />
         <Columns2>
           <Mini
             title="Save As New, not overwrite"
@@ -178,7 +192,26 @@ export default function MadeToMeasureShopifyCase() {
         />
       </Section>
 
-      <Section n="06" kicker="Outcome" title="Shipped, live, and still evolving.">
+      <Section n="06" kicker="On the phone" title="Get fitted from a phone, not just a desk.">
+        <Lead>
+          Most customers start the fitting flow on mobile. The configurator
+          and collection grid both reflow to a single column, with the same
+          add-to-cart gating logic underneath.
+        </Lead>
+        <div className="mt-8 max-w-[280px]">
+          <PhoneWindow accent={accent}>
+            <AutoCycle
+              accent={accent}
+              screens={[
+                <ShopifyMobile1 key="1" accent={accent} />,
+                <ShopifyMobile2 key="2" accent={accent} />,
+              ]}
+            />
+          </PhoneWindow>
+        </div>
+      </Section>
+
+      <Section n="07" kicker="Outcome" title="Shipped, live, and still evolving.">
         <Lead>
           The fitting editor and all ten email flows are live in production.
           Every theme push went out behind a full backup and a git tag, so
@@ -187,11 +220,6 @@ export default function MadeToMeasureShopifyCase() {
           rounds of fixes and refinements still come in and go out the same
           way.
         </Lead>
-        <Figure
-          src={`${B}/03-collection.jpg`}
-          alt="Product collection grid showing multiple made-to-measure shirt styles"
-          caption="The full collection grid, live on the storefront today."
-        />
       </Section>
 
       <NextCase href="/work/spotter-eld" label="Next case study" title="Spotter ELD" />

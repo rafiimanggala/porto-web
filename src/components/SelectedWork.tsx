@@ -1,12 +1,19 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import Section from "./ui/Section";
 import Reveal from "./ui/Reveal";
+import { ACCENT } from "./mockups/frame";
+import { HealthWeb1 } from "./mockups/health";
+import { EduWeb1 } from "./mockups/education";
+import { ShopifyWeb1 } from "./mockups/shopify";
 
 type Case = {
   slug: string;
   title: string;
   blurb: string;
-  thumb: string;
+  thumb?: string;
+  mockup?: ReactNode;
+  mockupAccent?: string;
   tags: string[];
   status: string;
 };
@@ -26,7 +33,8 @@ const cases: Case[] = [
     title: "Health Optimisation Platform",
     blurb:
       "Biomarkers, DNA, DEXA scans and wearables reconciled into one longevity score, with AI reasoning that connects findings across domains.",
-    thumb: "/work/health-platform/06-progress.png",
+    mockup: <HealthWeb1 accent={ACCENT.violet} />,
+    mockupAccent: ACCENT.violet,
     tags: ["React", "AI insights", "Live"],
     status: "Live",
   },
@@ -35,7 +43,8 @@ const cases: Case[] = [
     title: "K-12 Education SaaS",
     blurb:
       "Curriculum-aligned learning platform for schools: quiz engine, AI performance insights, shipped against a live database of 995 schools.",
-    thumb: "/work/education-saas/01-dashboard.png",
+    mockup: <EduWeb1 accent={ACCENT.amber} />,
+    mockupAccent: ACCENT.amber,
     tags: [".NET 9", "Angular", "Live"],
     status: "Live",
   },
@@ -53,7 +62,8 @@ const cases: Case[] = [
     title: "Made-to-Measure Shopify Platform",
     blurb:
       "A body-measurement pattern-fitting editor built into a Shopify theme, plus ten Klaviyo flows that replaced every default transactional email.",
-    thumb: "/work/made-to-measure-shopify/01-hero.jpg",
+    mockup: <ShopifyWeb1 accent={ACCENT.mint} />,
+    mockupAccent: ACCENT.mint,
     tags: ["Shopify", "Liquid", "Email automation"],
     status: "Live",
   },
@@ -85,13 +95,24 @@ export default function SelectedWork() {
               className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface-1 transition-colors hover:border-line-strong"
             >
               <div className="relative overflow-hidden border-b border-line bg-surface-2">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={c.thumb}
-                  alt={`${c.title} preview`}
-                  loading="lazy"
-                  className="block aspect-[16/10] w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
-                />
+                {c.mockup ? (
+                  <div
+                    className="aspect-[16/10] w-full p-4 transition-transform duration-500 group-hover:scale-[1.03] sm:p-5"
+                    style={{
+                      background: `radial-gradient(120% 90% at 50% -10%, ${c.mockupAccent}0f, transparent 60%), var(--color-surface-1)`,
+                    }}
+                  >
+                    {c.mockup}
+                  </div>
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={c.thumb}
+                    alt={`${c.title} preview`}
+                    loading="lazy"
+                    className="block aspect-[16/10] w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+                  />
+                )}
                 <span className="mono absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-bg/70 px-2.5 py-1 text-[0.7rem] text-dim backdrop-blur">
                   <span
                     className={`h-1.5 w-1.5 rounded-full ${

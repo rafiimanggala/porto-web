@@ -4,10 +4,11 @@ import {
   CaseHero,
   Section,
   Lead,
-  Figure,
   Callout,
   NextCase,
 } from "@/components/work/casestudy";
+import { AutoCycle, BrowserWindow, PhoneWindow, ACCENT } from "@/components/mockups/frame";
+import { EduWeb1, EduWeb2, EduWeb3, EduMobile1, EduMobile2 } from "@/components/mockups/education";
 
 export const metadata: Metadata = {
   title: "K-12 Education SaaS · Engineering case study · Rafii Manggala",
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
     "A curriculum-aligned learning platform for schools: quiz engine, AI-generated performance insights, and production debugging at scale.",
 };
 
-const B = "/work/education-saas";
+const accent = ACCENT.amber;
 
 export default function EducationSaasCase() {
   return (
@@ -32,11 +33,25 @@ export default function EducationSaasCase() {
         ]}
       />
 
-      <Callout title="Note on these screenshots">
-        This is an NDA client engagement. The screens below are from a
-        demo/test account with every occurrence of the product name and logo
-        removed. No school, teacher, or student data is shown.
+      <Callout title="Note on these mockups">
+        This is an NDA client engagement. The screens on this page are an
+        illustrated recreation of the product&apos;s features, not real
+        screenshots &mdash; no product name, logo, school, teacher, or
+        student data is reproduced anywhere.
       </Callout>
+
+      <div className="mt-8">
+        <BrowserWindow label="curriculum &middot; quiz engine &middot; results" accent={accent}>
+          <AutoCycle
+            accent={accent}
+            screens={[
+              <EduWeb1 key="1" accent={accent} />,
+              <EduWeb2 key="2" accent={accent} />,
+              <EduWeb3 key="3" accent={accent} />,
+            ]}
+          />
+        </BrowserWindow>
+      </div>
 
       <Section n="01" kicker="Problem" title="One curriculum, a dozen course variants.">
         <Lead>
@@ -47,12 +62,6 @@ export default function EducationSaasCase() {
           still sharing one quiz engine and one results pipeline underneath.
         </Lead>
       </Section>
-
-      <Figure
-        src={`${B}/01-dashboard.png`}
-        alt="Subject and course selection grid: Biology, Chemistry, Physics, Forensics, Marine Science, Psychology variants"
-        caption="One entry point into a dozen curriculum variants across Biology, Chemistry, Physics and more."
-      />
 
       <Section n="02" kicker="Goal" title="18 features, shipped against a live production database.">
         <Lead>
@@ -71,11 +80,6 @@ export default function EducationSaasCase() {
           any node. The tree has to stay fast and legible even when a single
           subject has hundreds of nodes across multiple curriculum variants.
         </Lead>
-        <Figure
-          src={`${B}/02-curriculum.png`}
-          alt="Curriculum content tree for a Biology unit, showing nucleic acid topics with assign/view quiz actions"
-          caption="A curriculum tree scoped to unit and level, with quiz actions available at any node."
-        />
       </Section>
 
       <Section n="04" kicker="Quiz engine" title="A question bank that scales past hundreds of items.">
@@ -85,16 +89,6 @@ export default function EducationSaasCase() {
           question, full answer keys, and feedback text, without paging
           through a long linear list.
         </Lead>
-        <Figure
-          src={`${B}/03-quiz-engine.png`}
-          alt="Quiz question review interface with a hexagonal question navigator and multiple-choice answer key"
-          caption="Quiz review: jump to any question via the hex map, see the correct answer and feedback inline."
-        />
-        <Figure
-          src={`${B}/06-quiz-builder.png`}
-          alt="Custom quiz builder form: quiz name, class assignment, question count, due date, topic selection"
-          caption="Teachers can also build a fresh custom quiz from any combination of topics, scoped to a class."
-        />
       </Section>
 
       <Section n="05" kicker="AI feature" title="AI-generated performance insights, sent on a schedule.">
@@ -104,11 +98,6 @@ export default function EducationSaasCase() {
           sent by email, with an in-app preview so a teacher can check the
           content before it goes out.
         </Lead>
-        <Figure
-          src={`${B}/05-ai-insights.png`}
-          alt="Class performance insights preview panel with date range and class selector"
-          caption="The same content that goes out in the scheduled insights email, previewable in-app first."
-        />
         <Callout title="Production debugging, not just feature work">
           Two of the harder bugs on this engagement never touched a keyboard
           shortcut: decompiling shipped DLLs to prove a deploy was
@@ -118,7 +107,26 @@ export default function EducationSaasCase() {
         </Callout>
       </Section>
 
-      <Section n="06" kicker="Outcome" title="Live, serving real schools.">
+      <Section n="06" kicker="On the phone" title="Class results, reflowed for mobile.">
+        <Lead>
+          Teachers check class performance between periods, not just at a
+          desk. The results view collapses to single-column progress cards
+          on mobile.
+        </Lead>
+        <div className="mt-8 max-w-[280px]">
+          <PhoneWindow accent={accent}>
+            <AutoCycle
+              accent={accent}
+              screens={[
+                <EduMobile1 key="1" accent={accent} />,
+                <EduMobile2 key="2" accent={accent} />,
+              ]}
+            />
+          </PhoneWindow>
+        </div>
+      </Section>
+
+      <Section n="07" kicker="Outcome" title="Live, serving real schools.">
         <Lead>
           All 18 features are live in production. The system now runs
           integration tests against isolated containers instead of a shared
