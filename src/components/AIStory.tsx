@@ -11,7 +11,7 @@ const SYSTEMS = [
   {
     id: "agents",
     label: "Agent Teams",
-    desc: "5-12 parallel subagents per task: trading bots, inbox reactor, research, deploy — all running concurrently.",
+    desc: "5-12 parallel subagents per task: trading bots, inbox reactor, research, deploy, all running concurrently.",
   },
   {
     id: "mahoraga",
@@ -21,7 +21,7 @@ const SYSTEMS = [
   {
     id: "os",
     label: "Living OS",
-    desc: "Hooks, memory layers, keyword triggers. The system adapts — not configured once, refined every session.",
+    desc: "Hooks, memory layers, keyword triggers. The system adapts: not configured once, refined every session.",
   },
 ];
 
@@ -35,7 +35,7 @@ export default function AIStory() {
         </h2>
         <p className="mt-3 text-sm text-dim leading-relaxed">
           Not a power-user. An operator. Client emails arrive, agents detect and analyze,
-          code gets fixed, deployed, tested, and proof sent back — before I check my phone.
+          code gets fixed, deployed, tested, and proof sent back, before I check my phone.
         </p>
       </div>
 

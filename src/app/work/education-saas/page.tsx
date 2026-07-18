@@ -45,7 +45,7 @@ export default function EducationSaasCase() {
       <Callout title="Note on these mockups">
         This is an NDA client engagement. The screens on this page are an
         illustrated recreation of the product&apos;s features, not real
-        screenshots &mdash; no product name, logo, school, teacher, or
+        screenshots. No product name, logo, school, teacher, or
         student data is reproduced anywhere.
       </Callout>
 
@@ -67,8 +67,8 @@ export default function EducationSaasCase() {
         <Lead>
           Schools don&apos;t all teach the same syllabus. A single subject
           like Biology needs separate content trees for different curricula,
-          year levels and course types &mdash; IB, AP, senior, stage 1/2,
-          units 1&ndash;4 &mdash; each with its own topic hierarchy, while
+          year levels and course types (IB, AP, senior, stage 1/2,
+          units 1 to 4), each with its own topic hierarchy, while
           still sharing one quiz engine and one results pipeline underneath.
         </Lead>
       </Section>
@@ -142,7 +142,7 @@ export default function EducationSaasCase() {
           All 18 features are live in production. The system now runs
           integration tests against isolated containers instead of a shared
           dev database, after a silently-rejected auth token bug made the
-          case for it &mdash; the kind of fix that only shows up once you
+          case for it. The kind of fix that only shows up once you
           stop trusting the happy path.
         </Lead>
       </Section>

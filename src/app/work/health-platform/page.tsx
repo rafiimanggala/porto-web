@@ -65,7 +65,7 @@ export default function HealthPlatformCase() {
         </BrowserWindow>
         <p className="mt-3 text-sm text-mute">
           An illustrated recreation of the product, not real screenshots.
-          This is an NDA client engagement &mdash; layout and copy are
+          This is an NDA client engagement. Layout and copy are
           reworked into this site&apos;s own visual language.
         </p>
       </div>
@@ -83,7 +83,7 @@ export default function HealthPlatformCase() {
           DEXA reports in particular come from a dozen different scanner
           vendors, each with its own PDF layout, its own units, and its own
           way of cropping the body-composition chart. There was no clean API
-          to normalise against &mdash; just PDFs.
+          to normalise against: just PDFs.
         </Callout>
       </Section>
 

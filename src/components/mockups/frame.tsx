@@ -7,7 +7,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
    this site's own design language (never the client's actual colors/type/
    copy), not screenshots. Auto-cycles between a few "screens" per project.
    ACCENT itself lives in ./accent (plain data, no "use client") so Server
-   Components can import it directly — a value export resolves to an opaque
+   Components can import it directly: a value export resolves to an opaque
    client reference when pulled from a "use client" module like this one. */
 
 function Dots({

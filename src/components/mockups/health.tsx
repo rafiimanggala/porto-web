@@ -55,7 +55,7 @@ export function HealthWeb2({ accent }: { accent: string }) {
         <div className="rounded-lg border border-line bg-surface-2 px-3 py-2.5">
           <div className="mono text-[9px] text-mute">variant &times; biomarker cross-check</div>
           <div className="mono mt-1 text-[9px] leading-relaxed text-dim">
-            Class A pairs with the elevated lipid panel above &mdash; shared
+            Class A pairs with the elevated lipid panel above, shared
             metabolic pathway, flagged together.
           </div>
         </div>
@@ -123,7 +123,7 @@ export function HealthWeb4({ accent }: { accent: string }) {
           </div>
           <p className="mono mt-1 text-[9px] leading-relaxed text-dim">
             Two markers read together explain shared risk that neither
-            explains alone &mdash; all 6 domains have data.
+            explains alone. All 6 domains have data.
           </p>
         </div>
       </div>

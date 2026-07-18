@@ -104,7 +104,7 @@ export default function MadeToMeasureShopifyCase() {
         </BrowserWindow>
         <p className="mt-3 text-sm text-mute">
           An illustrated recreation of the storefront, not real screenshots.
-          This is an NDA client engagement &mdash; no brand name, logo, or
+          This is an NDA client engagement. No brand name, logo, or
           product photography is reproduced anywhere on this page.
         </p>
       </div>

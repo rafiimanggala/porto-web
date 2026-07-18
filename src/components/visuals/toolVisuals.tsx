@@ -11,7 +11,7 @@ function Mini({ children }: { children: ReactNode }) {
   );
 }
 
-// 1 · Mahoraga — self-improvement loop + lock
+// 1 · Mahoraga:self-improvement loop + lock
 function Mahoraga() {
   return (
     <Mini>
@@ -26,7 +26,7 @@ function Mahoraga() {
   );
 }
 
-// 2 · Graphify — node-edge graph
+// 2 · Graphify:node-edge graph
 function Graphify() {
   const nodes = [
     [20, 14], [54, 8], [40, 32], [78, 26], [98, 12],
@@ -48,7 +48,7 @@ function Graphify() {
   );
 }
 
-// 3 · Seismic Sense — seismograph bars
+// 3 · Seismic Sense:seismograph bars
 function Seismic() {
   const h = [10, 22, 14, 30, 18, 38, 24, 12, 28, 16, 34, 20];
   return (
@@ -63,7 +63,7 @@ function Seismic() {
   );
 }
 
-// 4 · Writing DNA — double helix
+// 4 · Writing DNA:double helix
 function WritingDNA() {
   return (
     <Mini>
@@ -78,7 +78,7 @@ function WritingDNA() {
   );
 }
 
-// 5 · CUA Driver — isolated cursor over window
+// 5 · CUA Driver:isolated cursor over window
 function CUADriver() {
   return (
     <Mini>
@@ -95,7 +95,7 @@ function CUADriver() {
   );
 }
 
-// 6 · wa — stealth tier ladder
+// 6 · wa:stealth tier ladder
 function WA() {
   const tiers = [10, 18, 26, 34];
   return (
@@ -110,7 +110,7 @@ function WA() {
   );
 }
 
-// 7 · Smart Context Injector — keyword → file
+// 7 · Smart Context Injector:keyword → file
 function Injector() {
   return (
     <Mini>
@@ -127,7 +127,7 @@ function Injector() {
   );
 }
 
-// 8 · Email Reactor — inbox → branch → reply
+// 8 · Email Reactor:inbox → branch → reply
 function EmailReactor() {
   return (
     <Mini>
