@@ -163,6 +163,11 @@ const ICON_PATHS: Record<string, string> = {
   ruler: "M3 8h18v8H3z M7 8v3 M11 8v3 M15 8v3",
   tag: "M3 12.5L12.5 3H19a2 2 0 0 1 2 2v6.5L11.5 21 3 12.5z M15 8h.01",
   check: "M4 12.5l5 5L20 6",
+  mail: "M3 6.5h18v11H3z M3 6.5l9 7 9-7",
+  scan: "M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8 M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8 M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16 M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16 M4 12h16",
+  edit: "M4 20l4-.8L19.2 8 16 4.8 4.8 16 4 20z M14.5 6.3l3.2 3.2",
+  copy: "M8 8h11v11H8z M5 15.5V5a1 1 0 0 1 1-1h9.5",
+  clock: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M12 7v5l3.5 2",
 };
 
 export function Icon({

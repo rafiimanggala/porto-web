@@ -9,7 +9,15 @@ import {
 } from "@/components/work/casestudy";
 import { AutoCycle, BrowserWindow, PhoneWindow } from "@/components/mockups/frame";
 import { ACCENT } from "@/components/mockups/accent";
-import { EduWeb1, EduWeb2, EduWeb3, EduMobile1, EduMobile2 } from "@/components/mockups/education";
+import {
+  EduWeb1,
+  EduWeb2,
+  EduWeb3,
+  EduWeb4,
+  EduMobile1,
+  EduMobile2,
+  EduMobile3,
+} from "@/components/mockups/education";
 
 export const metadata: Metadata = {
   title: "K-12 Education SaaS · Engineering case study · Rafii Manggala",
@@ -42,13 +50,14 @@ export default function EducationSaasCase() {
       </Callout>
 
       <div className="mt-8">
-        <BrowserWindow label="curriculum &middot; quiz engine &middot; results" accent={accent}>
+        <BrowserWindow label="curriculum &middot; quiz engine &middot; ai insights" accent={accent}>
           <AutoCycle
             accent={accent}
             screens={[
               <EduWeb1 key="1" accent={accent} />,
               <EduWeb2 key="2" accent={accent} />,
               <EduWeb3 key="3" accent={accent} />,
+              <EduWeb4 key="4" accent={accent} />,
             ]}
           />
         </BrowserWindow>
@@ -120,6 +129,7 @@ export default function EducationSaasCase() {
               accent={accent}
               screens={[
                 <EduMobile1 key="1" accent={accent} />,
+                <EduMobile3 key="3" accent={accent} />,
                 <EduMobile2 key="2" accent={accent} />,
               ]}
             />

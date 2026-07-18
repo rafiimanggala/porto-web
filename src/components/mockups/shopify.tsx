@@ -2,7 +2,11 @@ import { Icon, NavTabs, Pill, Tile } from "./frame";
 
 /* Illustrative recreation of the made-to-measure storefront, not a
    screenshot: generic labels/placeholder swatches in this site's own
-   visual language, no client photography or copy reproduced. */
+   visual language, no client photography or copy reproduced. Screen 4
+   maps to the actual headline feature: the inline saved-pattern editor
+   (view/edit/clone, never overwrite) built on top of an external fit API. */
+
+const NAV = ["Shop", "Get fitted", "Collections", "Account"];
 
 function Swatch({ tone }: { tone: string }) {
   return (
@@ -28,7 +32,7 @@ function Swatch({ tone }: { tone: string }) {
 export function ShopifyWeb1({ accent }: { accent: string }) {
   return (
     <div className="flex h-full flex-col gap-4">
-      <NavTabs items={["Shop", "Get fitted", "Collections", "Account"]} active={0} accent={accent} />
+      <NavTabs items={NAV} active={0} accent={accent} />
       <div className="flex flex-1 items-center gap-4">
         <div className="w-28 shrink-0">
           <Swatch tone={accent} />
@@ -58,7 +62,7 @@ export function ShopifyWeb2({ accent }: { accent: string }) {
   ];
   return (
     <div className="flex h-full flex-col gap-4">
-      <NavTabs items={["Shop", "Get fitted", "Collections", "Account"]} active={1} accent={accent} />
+      <NavTabs items={NAV} active={1} accent={accent} />
       <div className="flex flex-1 gap-4">
         <div className="w-28 shrink-0">
           <Swatch tone={accent} />
@@ -92,7 +96,7 @@ export function ShopifyWeb3({ accent }: { accent: string }) {
   ];
   return (
     <div className="flex h-full flex-col gap-4">
-      <NavTabs items={["Shop", "Get fitted", "Collections", "Account"]} active={2} accent={accent} />
+      <NavTabs items={NAV} active={2} accent={accent} />
       <div className="grid flex-1 grid-cols-3 gap-2.5">
         {swatches.map((s, i) => (
           <div key={i} className="space-y-1.5">
@@ -104,6 +108,54 @@ export function ShopifyWeb3({ accent }: { accent: string }) {
             </div>
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function PatternCard({
+  accent,
+  name,
+  params,
+  active,
+}: {
+  accent: string;
+  name: string;
+  params: string;
+  active?: boolean;
+}) {
+  return (
+    <div
+      className="rounded-lg border px-3 py-2"
+      style={{
+        borderColor: active ? `${accent}55` : "var(--color-line)",
+        background: active ? `${accent}0d` : "var(--color-surface-2)",
+      }}
+    >
+      <div className="flex items-center justify-between">
+        <span className="mono text-[10px] text-fg">{name}</span>
+        <div className="flex items-center gap-1.5">
+          <Icon name="edit" size={11} color="var(--color-mute)" />
+          <Icon name="copy" size={11} color={accent} />
+        </div>
+      </div>
+      <div className="mono mt-1 text-[8px] text-mute">{params}</div>
+    </div>
+  );
+}
+
+export function ShopifyWeb4({ accent }: { accent: string }) {
+  return (
+    <div className="flex h-full flex-col gap-4">
+      <NavTabs items={NAV} active={1} accent={accent} />
+      <div className="mono text-[10px] text-dim">Your saved patterns</div>
+      <div className="flex-1 space-y-2">
+        <PatternCard accent={accent} name="Fitted 12 Jun" params="36/C &middot; 172cm &middot; slv 61 &middot; col 39" active />
+        <PatternCard accent={accent} name="Fitted 3 Mar (2)" params="36/C &middot; 172cm &middot; slv 60 &middot; col 39" />
+      </div>
+      <div className="flex items-center gap-1.5">
+        <Icon name="copy" size={11} color={accent} />
+        <Pill text="save as new, never overwrite" accent={accent} />
       </div>
     </div>
   );
@@ -134,6 +186,17 @@ export function ShopifyMobile2({ accent }: { accent: string }) {
         <Icon name="check" size={11} color={accent} />
         <Pill text="add to cart" accent={accent} solid />
       </div>
+    </div>
+  );
+}
+
+export function ShopifyMobile3({ accent }: { accent: string }) {
+  return (
+    <div className="flex h-full flex-col gap-2 pt-2">
+      <div className="mono text-[9px] text-mute">your patterns</div>
+      <PatternCard accent={accent} name="Fitted 12 Jun" params="36/C &middot; 172cm &middot; slv 61" active />
+      <PatternCard accent={accent} name="Fitted 3 Mar (2)" params="36/C &middot; 172cm &middot; slv 60" />
+      <Pill text="save as new" accent={accent} />
     </div>
   );
 }

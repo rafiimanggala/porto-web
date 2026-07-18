@@ -9,7 +9,15 @@ import {
 } from "@/components/work/casestudy";
 import { AutoCycle, BrowserWindow, PhoneWindow } from "@/components/mockups/frame";
 import { ACCENT } from "@/components/mockups/accent";
-import { HealthWeb1, HealthWeb2, HealthWeb3, HealthMobile1, HealthMobile2 } from "@/components/mockups/health";
+import {
+  HealthWeb1,
+  HealthWeb2,
+  HealthWeb3,
+  HealthWeb4,
+  HealthMobile1,
+  HealthMobile2,
+  HealthMobile3,
+} from "@/components/mockups/health";
 
 export const metadata: Metadata = {
   title: "Health Optimisation Platform · Engineering case study · Rafii Manggala",
@@ -44,13 +52,14 @@ export default function HealthPlatformCase() {
       />
 
       <div className="mt-8">
-        <BrowserWindow label="biomarkers &middot; genetics &middot; ai insights" accent={accent}>
+        <BrowserWindow label="biomarkers &middot; genetics &middot; dexa &middot; insights" accent={accent}>
           <AutoCycle
             accent={accent}
             screens={[
               <HealthWeb1 key="1" accent={accent} />,
               <HealthWeb2 key="2" accent={accent} />,
               <HealthWeb3 key="3" accent={accent} />,
+              <HealthWeb4 key="4" accent={accent} />,
             ]}
           />
         </BrowserWindow>
@@ -141,6 +150,7 @@ export default function HealthPlatformCase() {
               accent={accent}
               screens={[
                 <HealthMobile1 key="1" accent={accent} />,
+                <HealthMobile3 key="3" accent={accent} />,
                 <HealthMobile2 key="2" accent={accent} />,
               ]}
             />

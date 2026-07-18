@@ -13,8 +13,10 @@ import {
   ShopifyWeb1,
   ShopifyWeb2,
   ShopifyWeb3,
+  ShopifyWeb4,
   ShopifyMobile1,
   ShopifyMobile2,
+  ShopifyMobile3,
 } from "@/components/mockups/shopify";
 
 export const metadata: Metadata = {
@@ -89,12 +91,13 @@ export default function MadeToMeasureShopifyCase() {
       />
 
       <div className="mt-8">
-        <BrowserWindow label="shop &middot; get fitted &middot; collections" accent={accent}>
+        <BrowserWindow label="shop &middot; get fitted &middot; pattern editor" accent={accent}>
           <AutoCycle
             accent={accent}
             screens={[
               <ShopifyWeb1 key="1" accent={accent} />,
               <ShopifyWeb2 key="2" accent={accent} />,
+              <ShopifyWeb4 key="4" accent={accent} />,
               <ShopifyWeb3 key="3" accent={accent} />,
             ]}
           />
@@ -205,6 +208,7 @@ export default function MadeToMeasureShopifyCase() {
               accent={accent}
               screens={[
                 <ShopifyMobile1 key="1" accent={accent} />,
+                <ShopifyMobile3 key="3" accent={accent} />,
                 <ShopifyMobile2 key="2" accent={accent} />,
               ]}
             />
