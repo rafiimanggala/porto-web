@@ -7,7 +7,8 @@ import {
   Callout,
   NextCase,
 } from "@/components/work/casestudy";
-import { AutoCycle, BrowserWindow, PhoneWindow, ACCENT } from "@/components/mockups/frame";
+import { AutoCycle, BrowserWindow, PhoneWindow } from "@/components/mockups/frame";
+import { ACCENT } from "@/components/mockups/accent";
 import {
   ShopifyWeb1,
   ShopifyWeb2,

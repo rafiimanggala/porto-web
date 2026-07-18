@@ -7,7 +7,8 @@ import {
   Callout,
   NextCase,
 } from "@/components/work/casestudy";
-import { AutoCycle, BrowserWindow, PhoneWindow, ACCENT } from "@/components/mockups/frame";
+import { AutoCycle, BrowserWindow, PhoneWindow } from "@/components/mockups/frame";
+import { ACCENT } from "@/components/mockups/accent";
 import { HealthWeb1, HealthWeb2, HealthWeb3, HealthMobile1, HealthMobile2 } from "@/components/mockups/health";
 
 export const metadata: Metadata = {

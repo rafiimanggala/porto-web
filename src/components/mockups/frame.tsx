@@ -5,15 +5,10 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 /* Illustrative device frames for NDA-safe product mockups: hand-built UI in
    this site's own design language (never the client's actual colors/type/
-   copy), not screenshots. Auto-cycles between a few "screens" per project. */
-
-export const ACCENT = {
-  mint: "#5fe9ad",
-  violet: "#a78bfa",
-  amber: "#f6b667",
-} as const;
-
-export type AccentKey = keyof typeof ACCENT;
+   copy), not screenshots. Auto-cycles between a few "screens" per project.
+   ACCENT itself lives in ./accent (plain data, no "use client") so Server
+   Components can import it directly — a value export resolves to an opaque
+   client reference when pulled from a "use client" module like this one. */
 
 function Dots({
   count,
@@ -79,6 +74,21 @@ export function AutoCycle({
   );
 }
 
+function GridTexture() {
+  return (
+    <div
+      className="pointer-events-none absolute inset-0 opacity-[0.4]"
+      style={{
+        backgroundImage:
+          "linear-gradient(var(--color-line) 1px, transparent 1px), linear-gradient(90deg, var(--color-line) 1px, transparent 1px)",
+        backgroundSize: "22px 22px",
+        maskImage: "radial-gradient(120% 120% at 100% 0%, #000 10%, transparent 70%)",
+        WebkitMaskImage: "radial-gradient(120% 120% at 100% 0%, #000 10%, transparent 70%)",
+      }}
+    />
+  );
+}
+
 export function BrowserWindow({
   label,
   accent,
@@ -106,7 +116,10 @@ export function BrowserWindow({
           {label}
         </div>
       </div>
-      <div className="aspect-[16/10] p-5 sm:p-6">{children}</div>
+      <div className="relative aspect-[16/10] p-5 sm:p-6">
+        <GridTexture />
+        <div className="relative h-full">{children}</div>
+      </div>
     </div>
   );
 }
@@ -127,8 +140,9 @@ export function PhoneWindow({
         }}
       >
         <div className="relative aspect-[9/19.5] px-3 pb-4 pt-6">
+          <GridTexture />
           <div className="absolute left-1/2 top-2 h-4 w-20 -translate-x-1/2 rounded-full bg-surface-3" />
-          {children}
+          <div className="relative h-full">{children}</div>
         </div>
       </div>
     </div>
@@ -136,6 +150,86 @@ export function PhoneWindow({
 }
 
 /* ---- shared presentational primitives, reused across all project mockups ---- */
+
+const ICON_PATHS: Record<string, string> = {
+  flask: "M10 3h4 M10 3v5.5l-5.2 8.8A2 2 0 0 0 6.5 20h11a2 2 0 0 0 1.7-2.7L14 8.5V3 M8 15h8",
+  dna: "M6 3c4 3.2 8 3.2 12 0 M6 21c4-3.2 8-3.2 12 0 M7.5 7h9 M6.7 11h10.6 M6.7 13h10.6 M7.5 17h9",
+  activity: "M2 12h4l2.2-6 3.6 12 2.4-9 1.6 3H22",
+  sparkle: "M12 2.5l1.7 5.8 5.8 1.7-5.8 1.7L12 17.5l-1.7-5.8-5.8-1.7 5.8-1.7L12 2.5z",
+  book: "M4 5.5c2.2-1 5.3-1 8 .3v13.7c-2.7-1.3-5.8-1.3-8-.3V5.5z M20 5.5c-2.2-1-5.3-1-8 .3v13.7c2.7-1.3 5.8-1.3 8-.3V5.5z",
+  atom: "M12 12l7-4 M12 12L5 8 M12 12v8 M12 4v8",
+  leaf: "M5 19c9 0 14-5 14-14-9 0-14 5-14 14z M5 19c0-4.5 2.3-8 6-10",
+  shirt: "M9 4L5 6.5l1.8 3L9 8.3V20h6V8.3l2.2 1.2 1.8-3L15 4l-1.6 1.6a2 2 0 0 1-2.8 0L9 4z",
+  ruler: "M3 8h18v8H3z M7 8v3 M11 8v3 M15 8v3",
+  tag: "M3 12.5L12.5 3H19a2 2 0 0 1 2 2v6.5L11.5 21 3 12.5z M15 8h.01",
+  check: "M4 12.5l5 5L20 6",
+};
+
+export function Icon({
+  name,
+  size = 14,
+  color,
+}: {
+  name: keyof typeof ICON_PATHS;
+  size?: number;
+  color?: string;
+}) {
+  const paths = ICON_PATHS[name].split(" M").map((seg, i) => (i === 0 ? seg : `M${seg}`));
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke={color ?? "currentColor"}
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="shrink-0"
+    >
+      {paths.map((d, i) => (
+        <path key={i} d={d} />
+      ))}
+    </svg>
+  );
+}
+
+export function IconBadge({ name, accent, active }: { name: keyof typeof ICON_PATHS; accent: string; active?: boolean }) {
+  return (
+    <span
+      className="grid h-6 w-6 shrink-0 place-items-center rounded-md"
+      style={{
+        background: active ? `${accent}1f` : "var(--color-surface-3)",
+        color: active ? accent : "var(--color-mute)",
+      }}
+    >
+      <Icon name={name} size={13} />
+    </span>
+  );
+}
+
+export function Sparkline({ points, accent, width = 90, height = 26 }: { points: number[]; accent: string; width?: number; height?: number }) {
+  const max = Math.max(...points);
+  const min = Math.min(...points);
+  const range = max - min || 1;
+  const step = width / (points.length - 1);
+  const coords = points.map((p, i) => [i * step, height - ((p - min) / range) * height]);
+  const line = coords.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+  const area = `${line} L${width},${height} L0,${height} Z`;
+  const gid = `spark-${accent.replace("#", "")}`;
+  return (
+    <svg viewBox={`0 0 ${width} ${height}`} width={width} height={height} className="shrink-0">
+      <defs>
+        <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={accent} stopOpacity="0.35" />
+          <stop offset="100%" stopColor={accent} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={area} fill={`url(#${gid})`} stroke="none" />
+      <path d={line} fill="none" stroke={accent} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 export function Pill({
   text,
@@ -200,15 +294,22 @@ export function Tile({
   value,
   sub,
   accent,
+  trend,
 }: {
   label: string;
   value: string;
   sub?: string;
   accent?: string;
+  trend?: "up" | "down";
 }) {
   return (
     <div className="rounded-lg border border-line bg-surface-2 px-3 py-2">
-      <div className="mono text-[9px] uppercase tracking-wide text-mute">{label}</div>
+      <div className="mono flex items-center gap-1 text-[9px] uppercase tracking-wide text-mute">
+        {label}
+        {trend ? (
+          <span style={{ color: trend === "up" ? accent : "#e06a6a" }}>{trend === "up" ? "↗" : "↘"}</span>
+        ) : null}
+      </div>
       <div className="mono mt-1 text-base font-semibold" style={{ color: accent ?? "var(--color-fg)" }}>
         {value}
       </div>
@@ -222,22 +323,27 @@ export function CardRow({
   sub,
   accent,
   active,
+  icon,
 }: {
   title: string;
   sub: string;
   accent: string;
   active?: boolean;
+  icon?: keyof typeof ICON_PATHS;
 }) {
   return (
     <div
-      className="rounded-lg border px-3 py-2"
+      className="flex items-center gap-2.5 rounded-lg border px-3 py-2"
       style={{
         borderColor: active ? `${accent}55` : "var(--color-line)",
         background: active ? `${accent}0d` : "var(--color-surface-2)",
       }}
     >
-      <div className="mono text-[10px] text-fg">{title}</div>
-      <div className="mono text-[9px] text-mute">{sub}</div>
+      {icon ? <IconBadge name={icon} accent={accent} active={active} /> : null}
+      <div>
+        <div className="mono text-[10px] text-fg">{title}</div>
+        <div className="mono text-[9px] text-mute">{sub}</div>
+      </div>
     </div>
   );
 }

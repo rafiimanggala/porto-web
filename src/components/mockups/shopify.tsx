@@ -1,4 +1,4 @@
-import { NavTabs, Pill, Tile } from "./frame";
+import { Icon, NavTabs, Pill, Tile } from "./frame";
 
 /* Illustrative recreation of the made-to-measure storefront, not a
    screenshot: generic labels/placeholder swatches in this site's own
@@ -7,9 +7,21 @@ import { NavTabs, Pill, Tile } from "./frame";
 function Swatch({ tone }: { tone: string }) {
   return (
     <div
-      className="aspect-[3/4] w-full rounded-lg border border-line"
+      className="relative aspect-[3/4] w-full overflow-hidden rounded-lg border border-line"
       style={{ background: `linear-gradient(160deg, ${tone}33, var(--color-surface-2))` }}
-    />
+    >
+      <svg className="absolute inset-0 h-full w-full opacity-[0.25]" preserveAspectRatio="none">
+        <defs>
+          <pattern id={`stitch-${tone.replace("#", "")}`} width="10" height="10" patternUnits="userSpaceOnUse">
+            <path d="M0 10 L10 0" stroke={tone} strokeWidth="0.5" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill={`url(#stitch-${tone.replace("#", "")})`} />
+      </svg>
+      <span className="absolute bottom-2 right-2 grid h-6 w-6 place-items-center rounded-md" style={{ background: "rgba(10,10,11,0.55)", color: tone }}>
+        <Icon name="shirt" size={13} />
+      </span>
+    </div>
   );
 }
 
@@ -24,8 +36,14 @@ export function ShopifyWeb1({ accent }: { accent: string }) {
         <div className="flex-1 space-y-2">
           <div className="mono text-[13px] font-medium text-fg">One shirt.</div>
           <div className="mono text-[13px] font-medium" style={{ color: accent }}>One story.</div>
-          <div className="mono mt-2 text-[9px] text-mute">fitted in 10 minutes</div>
-          <div className="mono text-[9px] text-mute">delivered in 2 weeks</div>
+          <div className="mono mt-2 flex items-center gap-1.5 text-[9px] text-mute">
+            <Icon name="ruler" size={11} color="var(--color-mute)" />
+            fitted in 10 minutes
+          </div>
+          <div className="mono flex items-center gap-1.5 text-[9px] text-mute">
+            <Icon name="tag" size={11} color="var(--color-mute)" />
+            delivered in 2 weeks
+          </div>
         </div>
       </div>
     </div>
@@ -33,6 +51,11 @@ export function ShopifyWeb1({ accent }: { accent: string }) {
 }
 
 export function ShopifyWeb2({ accent }: { accent: string }) {
+  const opts = [
+    { l: "Color", v: accent },
+    { l: "Collar", v: "#a78bfa" },
+    { l: "Tuck", v: "#f6b667" },
+  ];
   return (
     <div className="flex h-full flex-col gap-4">
       <NavTabs items={["Shop", "Get fitted", "Collections", "Account"]} active={1} accent={accent} />
@@ -43,13 +66,17 @@ export function ShopifyWeb2({ accent }: { accent: string }) {
         <div className="flex-1 space-y-2">
           <div className="mono text-[10px] text-fg">Fine cotton &middot; Men</div>
           <div className="grid grid-cols-3 gap-1.5">
-            {["Color", "Collar", "Tuck"].map((l) => (
-              <div key={l} className="rounded-md border border-line bg-surface-2 px-2 py-1.5 text-center">
-                <span className="mono text-[8px] text-mute">{l}</span>
+            {opts.map((o) => (
+              <div key={o.l} className="flex flex-col items-center gap-1 rounded-md border border-line bg-surface-2 px-2 py-1.5 text-center">
+                <span className="h-2.5 w-2.5 rounded-full" style={{ background: o.v }} />
+                <span className="mono text-[8px] text-mute">{o.l}</span>
               </div>
             ))}
           </div>
-          <Pill text="get fitted in store" accent={accent} />
+          <div className="flex items-center gap-1.5">
+            <Icon name="ruler" size={11} color={accent} />
+            <Pill text="get fitted in store" accent={accent} />
+          </div>
           <div className="mono mt-2 text-[9px] text-mute">order before 12pm &middot; ship in 2 weeks</div>
         </div>
       </div>
@@ -58,14 +85,23 @@ export function ShopifyWeb2({ accent }: { accent: string }) {
 }
 
 export function ShopifyWeb3({ accent }: { accent: string }) {
+  const swatches = [
+    { c: accent, name: "Core twill" },
+    { c: "#a78bfa", name: "Oxford weave" },
+    { c: "#f6b667", name: "Brushed flannel" },
+  ];
   return (
     <div className="flex h-full flex-col gap-4">
       <NavTabs items={["Shop", "Get fitted", "Collections", "Account"]} active={2} accent={accent} />
       <div className="grid flex-1 grid-cols-3 gap-2.5">
-        {[accent, "#a78bfa", "#f6b667"].map((c, i) => (
+        {swatches.map((s, i) => (
           <div key={i} className="space-y-1.5">
-            <Swatch tone={c} />
-            <div className="mono text-[8px] text-mute">Core twill</div>
+            <Swatch tone={s.c} />
+            <div className="mono text-[8px] text-mute">{s.name}</div>
+            <div className="mono flex items-center gap-1 text-[8px]" style={{ color: s.c }}>
+              <span className="h-1.5 w-1.5 rounded-full" style={{ background: s.c }} />
+              in stock
+            </div>
           </div>
         ))}
       </div>
@@ -78,7 +114,10 @@ export function ShopifyMobile1({ accent }: { accent: string }) {
     <div className="flex h-full flex-col gap-2 pt-2">
       <Swatch tone={accent} />
       <div className="mono text-[10px] text-fg">One shirt. One story.</div>
-      <Pill text="view collection" accent={accent} />
+      <div className="flex items-center gap-1.5">
+        <Icon name="ruler" size={11} color={accent} />
+        <Pill text="view collection" accent={accent} />
+      </div>
     </div>
   );
 }
@@ -91,7 +130,10 @@ export function ShopifyMobile2({ accent }: { accent: string }) {
         <Tile label="price" value="$189" accent={accent} />
         <Tile label="ready" value="2wk" />
       </div>
-      <Pill text="add to cart" accent={accent} solid />
+      <div className="flex items-center gap-1.5">
+        <Icon name="check" size={11} color={accent} />
+        <Pill text="add to cart" accent={accent} solid />
+      </div>
     </div>
   );
 }

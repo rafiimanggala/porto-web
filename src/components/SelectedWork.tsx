@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import Section from "./ui/Section";
 import Reveal from "./ui/Reveal";
-import { ACCENT } from "./mockups/frame";
+import { ACCENT } from "./mockups/accent";
 import { HealthWeb1 } from "./mockups/health";
 import { EduWeb1 } from "./mockups/education";
 import { ShopifyWeb1 } from "./mockups/shopify";
