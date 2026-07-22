@@ -145,6 +145,34 @@ export function PhoneRow({
   );
 }
 
+export function ReelGrid({
+  reels,
+}: {
+  reels: { src: string; poster: string; label: string }[];
+}) {
+  return (
+    <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
+      {reels.map((r) => (
+        <figure key={r.src}>
+          <div className="overflow-hidden rounded-[20px] border border-line bg-surface-1 shadow-[0_24px_50px_-30px_rgba(0,0,0,0.6)]">
+            <video
+              src={r.src}
+              poster={r.poster}
+              controls
+              playsInline
+              preload="none"
+              className="block aspect-[9/16] w-full bg-black object-cover"
+            />
+          </div>
+          <figcaption className="mt-2.5 text-center text-xs text-mute">
+            {r.label}
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  );
+}
+
 export function Columns({ children }: { children: React.ReactNode }) {
   return <div className="mt-6 grid gap-8 sm:grid-cols-2">{children}</div>;
 }

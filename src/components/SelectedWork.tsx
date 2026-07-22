@@ -58,6 +58,15 @@ const cases: Case[] = [
     status: "Live",
   },
   {
+    slug: "ai-video-production",
+    title: "AI Video Production at Scale",
+    blurb:
+      "A second, anonymized freelance line: 600+ AI-generated and AI-edited video assets across 14 client accounts, from UGC-style ad avatars to full character animation.",
+    thumb: "/work/ai-video-production/04-3d-animation.jpg",
+    tags: ["Kling", "Veo", "Freelance"],
+    status: "Live",
+  },
+  {
     slug: "made-to-measure-shopify",
     title: "Made-to-Measure Shopify Platform",
     blurb:
