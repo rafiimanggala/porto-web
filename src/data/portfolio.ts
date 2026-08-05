@@ -277,7 +277,6 @@ export const projectIndex: IndexGroup[] = [
       { name: "K-12 Education SaaS", note: "Curriculum learning platform + AI tutoring, 995 schools (AU client)", stack: ".NET 9 · Angular · PostgreSQL" },
       { name: "Employee Wellbeing App", note: "Psychosocial-risk mapping + ISO 45003 reports (AU client)", stack: "React Native · Express · MongoDB" },
       { name: "AI Surf Forecasting", note: "200+ spots, 16-day forecast, 'Surf DNA' matching (AU client)", stack: "React · Express · MongoDB" },
-      { name: "open-wearables", note: "Wearables data full-stack + MCP, full CI/CD", stack: "React/Vite · FastAPI · MCP" },
       { name: "Shopify Fashion Store", note: "Theme fixes + full Klaviyo email program, 10 live flows (AU client)", stack: "Liquid · Klaviyo · Shopify CLI" },
     ],
   },
