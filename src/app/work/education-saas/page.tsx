@@ -7,7 +7,7 @@ import {
   Callout,
   NextCase,
 } from "@/components/work/casestudy";
-import { AutoCycle, BrowserWindow, PhoneWindow } from "@/components/mockups/frame";
+import { PhoneRow, ScreenBoard } from "@/components/mockups/frame";
 import { ACCENT } from "@/components/mockups/accent";
 import {
   EduWeb1,
@@ -26,6 +26,9 @@ export const metadata: Metadata = {
 };
 
 const accent = ACCENT.amber;
+/* The mockups carry the product's own blue, so their frames and captions use
+   it rather than the amber this case study is tagged with elsewhere. */
+const BLUE = "#0d9ddb";
 
 export default function EducationSaasCase() {
   return (
@@ -50,17 +53,35 @@ export default function EducationSaasCase() {
       </Callout>
 
       <div className="mt-8">
-        <BrowserWindow label="curriculum &middot; quiz engine &middot; ai insights" accent={accent}>
-          <AutoCycle
-            accent={accent}
-            screens={[
-              <EduWeb1 key="1" accent={accent} />,
-              <EduWeb2 key="2" accent={accent} />,
-              <EduWeb3 key="3" accent={accent} />,
-              <EduWeb4 key="4" accent={accent} />,
-            ]}
-          />
-        </BrowserWindow>
+        <ScreenBoard
+          accent={BLUE}
+          items={[
+            {
+              key: "course",
+              label: "course view",
+              screen: <EduWeb2 />,
+              note: "The topic tree on the left, the levelled lesson list on the right. Same subject, different curriculum, different tree underneath.",
+            },
+            {
+              key: "subjects",
+              label: "subject picker",
+              screen: <EduWeb1 />,
+              note: "Every course variant a school has licensed, downloaded for offline use so a lesson survives a bad school connection.",
+            },
+            {
+              key: "quiz",
+              label: "quiz engine",
+              screen: <EduWeb3 />,
+              note: "One question at a time, scoped to a level, with the question type driving which answer control is shown.",
+            },
+            {
+              key: "insights",
+              label: "class insights",
+              screen: <EduWeb4 />,
+              note: "The fortnightly AI summary a teacher actually reads: completion, topic accuracy, and which class needs a nudge. Classes with no submissions say so rather than reporting a misleading zero.",
+            },
+          ]}
+        />
       </div>
 
       <Section n="01" kicker="Problem" title="One curriculum, a dozen course variants.">
@@ -117,23 +138,21 @@ export default function EducationSaasCase() {
         </Callout>
       </Section>
 
-      <Section n="06" kicker="On the phone" title="Class results, reflowed for mobile.">
+      <Section n="06" kicker="On the phone" title="The same content, reflowed for mobile.">
         <Lead>
-          Teachers check class performance between periods, not just at a
-          desk. The results view collapses to single-column progress cards
-          on mobile.
+          Students open this on a school-issued tablet as often as a laptop.
+          The subject grid, the lesson list and the quiz all reflow to a
+          single column rather than being shrunk down.
         </Lead>
-        <div className="mt-8 max-w-[280px]">
-          <PhoneWindow accent={accent}>
-            <AutoCycle
-              accent={accent}
-              screens={[
-                <EduMobile1 key="1" accent={accent} />,
-                <EduMobile3 key="3" accent={accent} />,
-                <EduMobile2 key="2" accent={accent} />,
-              ]}
-            />
-          </PhoneWindow>
+        <div className="mt-8">
+          <PhoneRow
+            accent={BLUE}
+            items={[
+              { key: "m1", label: "subjects", screen: <EduMobile1 />, note: "Subject tiles, two to a row." },
+              { key: "m2", label: "quiz", screen: <EduMobile3 />, note: "Answer controls stack instead of sitting side by side." },
+              { key: "m3", label: "topics", screen: <EduMobile2 />, note: "The lesson list, full width." },
+            ]}
+          />
         </div>
       </Section>
 

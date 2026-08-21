@@ -4,10 +4,11 @@ import {
   CaseHero,
   Section,
   Lead,
+  Figure,
   Callout,
   NextCase,
 } from "@/components/work/casestudy";
-import { AutoCycle, BrowserWindow, PhoneWindow } from "@/components/mockups/frame";
+import { PhoneRow, ScreenBoard } from "@/components/mockups/frame";
 import { ACCENT } from "@/components/mockups/accent";
 import {
   ShopifyWeb1,
@@ -26,6 +27,7 @@ export const metadata: Metadata = {
 };
 
 const accent = ACCENT.mint;
+const B = "/work/made-to-measure-shopify";
 
 /* ---- small in-page diagram + system bits (presentational, no client screenshots) ---- */
 
@@ -90,24 +92,11 @@ export default function MadeToMeasureShopifyCase() {
         ]}
       />
 
-      <div className="mt-8">
-        <BrowserWindow label="shop &middot; get fitted &middot; pattern editor" accent={accent}>
-          <AutoCycle
-            accent={accent}
-            screens={[
-              <ShopifyWeb1 key="1" accent={accent} />,
-              <ShopifyWeb2 key="2" accent={accent} />,
-              <ShopifyWeb4 key="4" accent={accent} />,
-              <ShopifyWeb3 key="3" accent={accent} />,
-            ]}
-          />
-        </BrowserWindow>
-        <p className="mt-3 text-sm text-mute">
-          An illustrated recreation of the storefront, not real screenshots.
-          This is an NDA client engagement. No brand name, logo, or
-          product photography is reproduced anywhere on this page.
-        </p>
-      </div>
+      <Figure
+        src={`${B}/storefront-home.webp`}
+        alt="Live storefront home page: full-bleed hero and stacked collection tiles, brand marks removed"
+        caption="The live storefront, captured from production. The client is shown anonymously: the wordmark is hidden and the collection codes are blurred out."
+      />
 
       <Section n="01" kicker="Problem" title="A generic theme can't fit a made-to-measure product.">
         <Lead>
@@ -133,6 +122,11 @@ export default function MadeToMeasureShopifyCase() {
           out mid-edit, and switching between a saved pattern and a fresh
           fitting without ever showing a broken state.
         </Lead>
+        <Figure
+          src={`${B}/storefront-collection.webp`}
+          alt="Live collection grid: product cards with variant swatches and prices, collection codes removed"
+          caption="The production collection grid the fitting flow starts from. Collection codes blurred, the rest is the live theme."
+        />
       </Section>
 
       <Section n="03" kicker="Editor" title="An inline pattern editor, wired to an external API.">
@@ -142,6 +136,43 @@ export default function MadeToMeasureShopifyCase() {
           straight from the product page.
         </Lead>
         <PatternFlow />
+        <div className="mt-8">
+          <ScreenBoard
+            bleed={false}
+            accent={accent}
+            items={[
+              {
+                key: "shop",
+                label: "storefront",
+                screen: <ShopifyWeb1 accent={accent} />,
+                note: "The collection grid a customer lands on, with the fitting entry point sitting on the product itself rather than in a separate flow.",
+              },
+              {
+                key: "fit",
+                label: "get fitted",
+                screen: <ShopifyWeb2 accent={accent} />,
+                note: "The measurement step: values validated as they are entered, so a bad pattern never reaches the cart.",
+              },
+              {
+                key: "library",
+                label: "saved patterns",
+                screen: <ShopifyWeb4 accent={accent} />,
+                note: "A returning customer reopens, renames or clones a saved pattern instead of measuring again.",
+              },
+              {
+                key: "editor",
+                label: "pattern editor",
+                screen: <ShopifyWeb3 accent={accent} />,
+                note: "Cloning date-stamps a new pattern rather than silently overwriting the original submission.",
+              },
+            ]}
+          />
+          <p className="mt-3 text-sm text-mute">
+            An illustrated recreation of the editor, not a screenshot. It sits
+            behind a customer login and holds real fit data, so the flow is
+            redrawn rather than captured.
+          </p>
+        </div>
         <Columns2>
           <Mini
             title="Save As New, not overwrite"
@@ -202,17 +233,16 @@ export default function MadeToMeasureShopifyCase() {
           and collection grid both reflow to a single column, with the same
           add-to-cart gating logic underneath.
         </Lead>
-        <div className="mt-8 max-w-[280px]">
-          <PhoneWindow accent={accent}>
-            <AutoCycle
-              accent={accent}
-              screens={[
-                <ShopifyMobile1 key="1" accent={accent} />,
-                <ShopifyMobile3 key="3" accent={accent} />,
-                <ShopifyMobile2 key="2" accent={accent} />,
-              ]}
-            />
-          </PhoneWindow>
+        <div className="mt-8">
+          <PhoneRow
+            bleed={false}
+            accent={accent}
+            items={[
+              { key: "m1", label: "storefront", screen: <ShopifyMobile1 accent={accent} />, note: "The collection grid, single column." },
+              { key: "m2", label: "get fitted", screen: <ShopifyMobile3 accent={accent} />, note: "The configurator, with the same add-to-cart gating." },
+              { key: "m3", label: "product", screen: <ShopifyMobile2 accent={accent} />, note: "Product detail with the fitting entry point." },
+            ]}
+          />
         </div>
       </Section>
 

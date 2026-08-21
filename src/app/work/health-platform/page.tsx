@@ -7,13 +7,14 @@ import {
   Callout,
   NextCase,
 } from "@/components/work/casestudy";
-import { AutoCycle, BrowserWindow, PhoneWindow } from "@/components/mockups/frame";
+import { PhoneRow, ScreenBoard } from "@/components/mockups/frame";
 import { ACCENT } from "@/components/mockups/accent";
 import {
   HealthWeb1,
   HealthWeb2,
   HealthWeb3,
   HealthWeb4,
+  HealthWeb5,
   HealthMobile1,
   HealthMobile2,
   HealthMobile3,
@@ -52,21 +53,46 @@ export default function HealthPlatformCase() {
       />
 
       <div className="mt-8">
-        <BrowserWindow label="biomarkers &middot; genetics &middot; dexa &middot; insights" accent={accent}>
-          <AutoCycle
-            accent={accent}
-            screens={[
-              <HealthWeb1 key="1" accent={accent} />,
-              <HealthWeb2 key="2" accent={accent} />,
-              <HealthWeb3 key="3" accent={accent} />,
-              <HealthWeb4 key="4" accent={accent} />,
-            ]}
-          />
-        </BrowserWindow>
-        <p className="mt-3 text-sm text-mute">
-          An illustrated recreation of the product, not real screenshots.
-          This is an NDA client engagement. Layout and copy are
-          reworked into this site&apos;s own visual language.
+        <ScreenBoard
+          accent={accent}
+          items={[
+            {
+              key: "dashboard",
+              label: "dashboard",
+              screen: <HealthWeb1 />,
+              note: "The landing view: connected wearables along the top, then the newest blood panel with the flagged markers pulled forward instead of buried in a PDF.",
+            },
+            {
+              key: "score",
+              label: "longevity score",
+              screen: <HealthWeb2 />,
+              note: "Six domains scored separately, then rolled into one number, sitting next to the biological-age model and today's plan.",
+            },
+            {
+              key: "insights",
+              label: "insight feed",
+              screen: <HealthWeb3 />,
+              note: "AI-written actions, each tagged by priority and domain, and traceable back to the markers that triggered them.",
+            },
+            {
+              key: "bodyscan",
+              label: "body scan",
+              screen: <HealthWeb4 />,
+              note: "An uploaded DEXA report parsed into regions, auto-cropped, and scored against an age-matched cohort.",
+            },
+            {
+              key: "genetics",
+              label: "genetics",
+              screen: <HealthWeb5 />,
+              note: "Reported variants grouped by pathway and cross-checked against the blood panel, so related findings surface together rather than as two unrelated flags.",
+            },
+          ]}
+        />
+        <p className="mt-6 text-sm text-mute">
+          An illustrated recreation of the product, not real screenshots. This
+          is an NDA client engagement: the screens follow the real layout so
+          the work is legible, while every name, number and record shown here
+          is invented.
         </p>
       </div>
 
@@ -144,17 +170,15 @@ export default function HealthPlatformCase() {
           The score, the domain breakdown, and the AI insight feed are all
           available on mobile, reflowed rather than shrunk down.
         </Lead>
-        <div className="mt-8 max-w-[280px]">
-          <PhoneWindow accent={accent}>
-            <AutoCycle
-              accent={accent}
-              screens={[
-                <HealthMobile1 key="1" accent={accent} />,
-                <HealthMobile3 key="3" accent={accent} />,
-                <HealthMobile2 key="2" accent={accent} />,
-              ]}
-            />
-          </PhoneWindow>
+        <div className="mt-8">
+          <PhoneRow
+            accent={accent}
+            items={[
+              { key: "m1", label: "dashboard", screen: <HealthMobile1 />, note: "Score and domains, stacked." },
+              { key: "m2", label: "insights", screen: <HealthMobile3 />, note: "The same insight feed, filtered by status." },
+              { key: "m3", label: "biomarkers", screen: <HealthMobile2 />, note: "Blood results as a two-column card grid." },
+            ]}
+          />
         </div>
       </Section>
 

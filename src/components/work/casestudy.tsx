@@ -10,10 +10,10 @@ export function CaseShell({ children }: { children: React.ReactNode }) {
       <nav className="sticky top-0 z-40 border-b border-line bg-bg/70 backdrop-blur-xl">
         <div className="mx-auto flex h-14 w-full max-w-[860px] items-center justify-between px-6">
           <Link
-            href="/#work"
+            href="/#directory"
             className="mono inline-flex items-center gap-2 text-sm text-dim transition-colors hover:text-fg"
           >
-            <span aria-hidden>&larr;</span> Work
+            <span aria-hidden>&larr;</span> Directory
           </Link>
           <Link
             href="/"

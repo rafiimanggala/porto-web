@@ -4,7 +4,7 @@ import Section from "./ui/Section";
 import Reveal from "./ui/Reveal";
 import { ACCENT } from "./mockups/accent";
 import { HealthWeb1 } from "./mockups/health";
-import { EduWeb1 } from "./mockups/education";
+import { EduWeb2 } from "./mockups/education";
 import { ShopifyWeb1 } from "./mockups/shopify";
 
 type Case = {
@@ -14,11 +14,14 @@ type Case = {
   thumb?: string;
   mockup?: ReactNode;
   mockupAccent?: string;
+  /* Product mockups paint their own chrome, so they fill the thumb edge to
+     edge instead of floating inside the site's padding. */
+  bleed?: boolean;
   tags: string[];
   status: string;
 };
 
-const cases: Case[] = [
+export const cases: Case[] = [
   {
     slug: "streak",
     title: "Streak",
@@ -33,8 +36,9 @@ const cases: Case[] = [
     title: "Health Optimisation Platform",
     blurb:
       "Biomarkers, DNA, DEXA scans and wearables reconciled into one longevity score, with AI reasoning that connects findings across domains.",
-    mockup: <HealthWeb1 accent={ACCENT.violet} />,
+    mockup: <HealthWeb1 />,
     mockupAccent: ACCENT.violet,
+    bleed: true,
     tags: ["React", "AI insights", "Live"],
     status: "Live",
   },
@@ -43,8 +47,9 @@ const cases: Case[] = [
     title: "K-12 Education SaaS",
     blurb:
       "Curriculum-aligned learning platform for schools: quiz engine, AI performance insights, shipped against a live database of 995 schools.",
-    mockup: <EduWeb1 accent={ACCENT.amber} />,
-    mockupAccent: ACCENT.amber,
+    mockup: <EduWeb2 />,
+    mockupAccent: "#0d9ddb",
+    bleed: true,
     tags: [".NET 9", "Angular", "Live"],
     status: "Live",
   },
@@ -87,17 +92,31 @@ const cases: Case[] = [
   },
 ];
 
-export default function SelectedWork() {
+export default function SelectedWork({
+  slugs,
+  id = "uiux",
+  index = "05",
+  title = "Selected work",
+  intro = "Case studies that show the process, not just the result: the problem, the build, and the outcome.",
+}: {
+  slugs?: string[];
+  id?: string;
+  index?: string;
+  title?: string;
+  intro?: string;
+}) {
+  const shown = slugs ? cases.filter((c) => slugs.includes(c.slug)) : cases;
+
   return (
     <Section
-      id="uiux"
-      index="05"
+      id={id}
+      index={index}
       label="Work"
-      title="Selected work"
-      intro="Case studies that show the process, not just the result: the problem, the build, and the outcome."
+      title={title}
+      intro={intro}
     >
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {cases.map((c, i) => (
+        {shown.map((c, i) => (
           <Reveal key={c.slug} delay={i * 0.06}>
             <Link
               href={`/work/${c.slug}`}
@@ -106,7 +125,9 @@ export default function SelectedWork() {
               <div className="relative overflow-hidden border-b border-line bg-surface-2">
                 {c.mockup ? (
                   <div
-                    className="aspect-[16/10] w-full p-4 transition-transform duration-500 group-hover:scale-[1.03] sm:p-5"
+                    className={`aspect-[16/10] w-full transition-transform duration-500 group-hover:scale-[1.03] ${
+                      c.bleed ? "" : "p-4 sm:p-5"
+                    }`}
                     style={{
                       background: `radial-gradient(120% 90% at 50% -10%, ${c.mockupAccent}0f, transparent 60%), var(--color-surface-1)`,
                     }}

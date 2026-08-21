@@ -1,78 +1,14 @@
-"use client";
+import { type ReactNode } from "react";
 
-import { useEffect, useState, type ReactNode } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+/* Illustrative device frames for NDA-safe product mockups: hand-built UI,
+   never screenshots. Each project's screens recreate the shape of the real
+   interface (layout, hierarchy, colour family) so the work is recognisable,
+   with every product name, logo, person and record replaced by invented
+   stand-ins.
 
-/* Illustrative device frames for NDA-safe product mockups: hand-built UI in
-   this site's own design language (never the client's actual colors/type/
-   copy), not screenshots. Auto-cycles between a few "screens" per project.
-   ACCENT itself lives in ./accent (plain data, no "use client") so Server
-   Components can import it directly: a value export resolves to an opaque
-   client reference when pulled from a "use client" module like this one. */
-
-function Dots({
-  count,
-  active,
-  accent,
-}: {
-  count: number;
-  active: number;
-  accent: string;
-}) {
-  return (
-    <div className="mt-3 flex items-center justify-center gap-1.5">
-      {Array.from({ length: count }).map((_, i) => (
-        <span
-          key={i}
-          className="h-1.5 rounded-full transition-all duration-500"
-          style={{
-            width: i === active ? "16px" : "6px",
-            background: i === active ? accent : "var(--color-line-strong)",
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-export function AutoCycle({
-  screens,
-  interval = 3800,
-  accent,
-}: {
-  screens: ReactNode[];
-  interval?: number;
-  accent: string;
-}) {
-  const [i, setI] = useState(0);
-  const reduce = useReducedMotion();
-
-  useEffect(() => {
-    if (reduce || screens.length < 2) return;
-    const id = setInterval(() => setI((v) => (v + 1) % screens.length), interval);
-    return () => clearInterval(id);
-  }, [screens.length, interval, reduce]);
-
-  return (
-    <div className="flex h-full flex-col">
-      <div className="relative flex-1 overflow-hidden">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1] }}
-            className="absolute inset-0"
-          >
-            {screens[i]}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-      {screens.length > 1 && <Dots count={screens.length} active={i} accent={accent} />}
-    </div>
-  );
-}
+   Every screen is laid out on the page at once. A client should be able to
+   see the whole product in one scroll instead of waiting for a carousel to
+   come back round to the screen they wanted. */
 
 function GridTexture() {
   return (
@@ -93,10 +29,14 @@ export function BrowserWindow({
   label,
   accent,
   children,
+  bleed,
 }: {
   label: string;
   accent: string;
   children: ReactNode;
+  /* Screens that paint their own product chrome fill the viewport edge to
+     edge: no site padding, no site grid texture behind them. */
+  bleed?: boolean;
 }) {
   return (
     <div
@@ -116,8 +56,8 @@ export function BrowserWindow({
           {label}
         </div>
       </div>
-      <div className="relative aspect-[16/10] p-5 sm:p-6">
-        <GridTexture />
+      <div className={`relative aspect-[16/10] ${bleed ? "" : "p-5 sm:p-6"}`}>
+        {bleed ? null : <GridTexture />}
         <div className="relative h-full">{children}</div>
       </div>
     </div>
@@ -127,9 +67,11 @@ export function BrowserWindow({
 export function PhoneWindow({
   accent,
   children,
+  bleed,
 }: {
   accent: string;
   children: ReactNode;
+  bleed?: boolean;
 }) {
   return (
     <div className="mx-auto w-full max-w-[240px]">
@@ -139,12 +81,81 @@ export function PhoneWindow({
           background: `radial-gradient(120% 90% at 50% -10%, ${accent}0f, transparent 60%), var(--color-surface-1)`,
         }}
       >
-        <div className="relative aspect-[9/19.5] px-3 pb-4 pt-6">
-          <GridTexture />
-          <div className="absolute left-1/2 top-2 h-4 w-20 -translate-x-1/2 rounded-full bg-surface-3" />
+        <div className={`relative aspect-[9/19.5] ${bleed ? "" : "px-3 pb-4 pt-6"}`}>
+          {bleed ? null : <GridTexture />}
+          <div
+            className="absolute left-1/2 top-2 z-10 h-4 w-20 -translate-x-1/2 rounded-full"
+            style={{ background: bleed ? "rgba(0,0,0,0.72)" : "var(--color-surface-3)" }}
+          />
           <div className="relative h-full">{children}</div>
         </div>
       </div>
+    </div>
+  );
+}
+
+export type Screen = {
+  key: string;
+  /* Shown in the window chrome, so keep it to a couple of words. */
+  label: string;
+  /* One sentence under the frame telling a non-technical reader what they
+     are looking at. */
+  note: string;
+  screen: ReactNode;
+};
+
+/* Lays every screen of a product out on one page, one per row. The screens
+   are drawn at absolute type sizes, so a half-width tile would crowd rather
+   than shrink: full width is what keeps them readable at a glance. */
+export function ScreenBoard({
+  items,
+  accent,
+  bleed = true,
+}: {
+  items: Screen[];
+  accent: string;
+  /* Older mockups are drawn in this site's own language and expect the frame
+     padding; product recreations paint their own chrome and bleed. */
+  bleed?: boolean;
+}) {
+  return (
+    <div className="space-y-8">
+      {items.map((it) => (
+        <figure key={it.key} className="min-w-0">
+          <BrowserWindow bleed={bleed} label={it.label} accent={accent}>
+            {it.screen}
+          </BrowserWindow>
+          <figcaption className="mt-3 max-w-[62ch] text-sm leading-relaxed text-dim">
+            {it.note}
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  );
+}
+
+/* The phone equivalent: all three screens side by side rather than cycling. */
+export function PhoneRow({
+  items,
+  accent,
+  bleed = true,
+}: {
+  items: Screen[];
+  accent: string;
+  bleed?: boolean;
+}) {
+  return (
+    <div className="grid gap-6 sm:grid-cols-3">
+      {items.map((it) => (
+        <figure key={it.key} className="min-w-0">
+          <PhoneWindow bleed={bleed} accent={accent}>
+            {it.screen}
+          </PhoneWindow>
+          <figcaption className="mt-3 text-center text-sm leading-relaxed text-dim">
+            {it.note}
+          </figcaption>
+        </figure>
+      ))}
     </div>
   );
 }

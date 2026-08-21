@@ -38,8 +38,8 @@ export function ShopifyWeb1({ accent }: { accent: string }) {
           <Swatch tone={accent} />
         </div>
         <div className="flex-1 space-y-2">
-          <div className="mono text-[13px] font-medium text-fg">One shirt.</div>
-          <div className="mono text-[13px] font-medium" style={{ color: accent }}>One story.</div>
+          <div className="mono text-[13px] font-medium text-fg">Made to measure.</div>
+          <div className="mono text-[13px] font-medium" style={{ color: accent }}>Fitted, not sized.</div>
           <div className="mono mt-2 flex items-center gap-1.5 text-[9px] text-mute">
             <Icon name="ruler" size={11} color="var(--color-mute)" />
             fitted in 10 minutes
@@ -165,7 +165,7 @@ export function ShopifyMobile1({ accent }: { accent: string }) {
   return (
     <div className="flex h-full flex-col gap-2 pt-2">
       <Swatch tone={accent} />
-      <div className="mono text-[10px] text-fg">One shirt. One story.</div>
+      <div className="mono text-[10px] text-fg">Made to measure.</div>
       <div className="flex items-center gap-1.5">
         <Icon name="ruler" size={11} color={accent} />
         <Pill text="view collection" accent={accent} />
