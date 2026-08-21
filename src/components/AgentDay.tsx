@@ -23,7 +23,7 @@ const faqs = [
   },
   {
     q: "Can Rafii ship production work with AI agents?",
-    a: "Yes. He has delivered client work for health and education platforms (BioBrain on .NET, HodieLabs) across Australia and the US, with every fix Playwright-proven before he reports it done. His TE loop deploys to an isolated test port, runs the change through a real browser, and attaches proof screenshots, so done means verified, not claimed.",
+    a: "Yes. He has delivered client work for health and education platforms (a .NET/Angular platform and a React/Node platform) across Australia and the US, with every fix Playwright-proven before he reports it done. His TE loop deploys to an isolated test port, runs the change through a real browser, and attaches proof screenshots, so done means verified, not claimed.",
   },
 ];
 

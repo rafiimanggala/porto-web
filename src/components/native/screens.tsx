@@ -329,5 +329,5 @@ export const SIM_APPS: SimApp[] = [
   { id: "fonova", label: "Fonova", tag: "personal", screen: "WalletScreen", accent: "#7c8cff", Comp: FinanceScreen },
   { id: "surf", label: "Surf app", tag: "AU client", screen: "ForecastScreen", accent: "#22d3ee", Comp: SurfScreen },
   { id: "wellbeing", label: "Wellbeing app", tag: "AU client", screen: "CheckInScreen", accent: "#fb7faf", Comp: WellbeingScreen },
-  { id: "biobrain", label: "Education app", tag: "AU client", screen: "LessonScreen", accent: "#f5a524", Comp: EducationScreen },
+  { id: "education", label: "Education app", tag: "AU client", screen: "LessonScreen", accent: "#f5a524", Comp: EducationScreen },
 ];

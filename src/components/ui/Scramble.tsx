@@ -65,7 +65,10 @@ export default function Scramble({
   }, [text, reduce, speed]);
 
   return (
-    <Tag ref={ref as never} className={className} aria-label={text}>
+    <Tag ref={ref as never} className={className}>
+      {/* aria-label does not apply to a plain span (role=generic), so the real
+          text ships visually hidden and only the scrambling copy is aria-hidden. */}
+      <span className="sr-only">{text}</span>
       <span aria-hidden="true">{out || " "}</span>
     </Tag>
   );
