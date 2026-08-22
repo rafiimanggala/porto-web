@@ -155,7 +155,7 @@ export function ReelGrid({
     <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
       {reels.map((r) => (
         <figure key={r.src}>
-          <div className="overflow-hidden rounded-[20px] border border-line bg-surface-1 shadow-[0_24px_50px_-30px_rgba(0,0,0,0.6)]">
+          <div className="overflow-hidden rounded-[20px] border border-line bg-surface-1">
             <video
               src={r.src}
               poster={r.poster}
@@ -167,6 +167,65 @@ export function ReelGrid({
           </div>
           <figcaption className="mt-2.5 text-center text-xs text-mute">
             {r.label}
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  );
+}
+
+export function WideReel({
+  src,
+  poster,
+  caption,
+}: {
+  src: string;
+  poster: string;
+  caption?: string;
+}) {
+  /* One clip in the library is framed at cinema scope. Cropping it into the
+     9:16 grid would throw away the framing, which is the thing worth showing. */
+  return (
+    <figure className="mt-8">
+      <div className="overflow-hidden rounded-2xl border border-line bg-black">
+        <video
+          src={src}
+          poster={poster}
+          controls
+          playsInline
+          preload="none"
+          className="block w-full bg-black"
+        />
+      </div>
+      {caption ? (
+        <figcaption className="mt-3 text-sm text-mute">{caption}</figcaption>
+      ) : null}
+    </figure>
+  );
+}
+
+export function StillStrip({
+  stills,
+}: {
+  stills: { src: string; label: string }[];
+}) {
+  /* Range, not depth: these are frames, not players. A still costs kilobytes
+     where a clip costs megabytes, and none of these need motion to read. */
+  return (
+    <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-5">
+      {stills.map((s) => (
+        <figure key={s.src} className="min-w-0">
+          <div className="overflow-hidden rounded-2xl border border-line bg-surface-1">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={s.src}
+              alt={s.label}
+              loading="lazy"
+              className="block aspect-[9/16] w-full object-cover"
+            />
+          </div>
+          <figcaption className="mono mt-2 text-[11px] leading-snug text-mute">
+            {s.label}
           </figcaption>
         </figure>
       ))}
