@@ -2,11 +2,16 @@ import Link from "next/link";
 import Reveal from "./ui/Reveal";
 import Scramble from "./ui/Scramble";
 import SwitchboardPanel from "./SwitchboardPanel";
+import SwitchboardPreview from "./SwitchboardPreview";
 import { skills } from "@/data/skills";
 
 // The directory. Six equal bays in one panel, one press each. Deliberately not
-// a bento: no hero cell, no col-span, no thumbnails. Order is the only ranking
-// lever, and equal weight is what makes it scannable in a few seconds.
+// a bento: no hero cell, no col-span. Order is the only ranking lever, and
+// equal weight is what makes it scannable in a few seconds.
+//
+// Each bay carries one miniature (SwitchboardPreview) so the shape of the work
+// reads before the copy does. Same box height in all six, so the media area
+// stays a rhythm rather than a size contest between cards.
 export default function Switchboard() {
   return (
     <section
@@ -54,9 +59,11 @@ export default function Switchboard() {
                   </span>
                 </div>
 
+                <SwitchboardPreview slug={s.slug} />
+
                 <h3
                   id={`${s.slug}-t`}
-                  className="mt-6 font-[family-name:var(--font-display)] text-xl font-semibold leading-[1.15] tracking-[-0.02em] text-fg"
+                  className="mt-5 font-[family-name:var(--font-display)] text-xl font-semibold leading-[1.15] tracking-[-0.02em] text-fg"
                 >
                   {s.title}
                 </h3>
@@ -68,11 +75,19 @@ export default function Switchboard() {
                   {s.value}
                 </p>
 
-                <p className="mono mt-4 text-[11px] text-dim">
-                  <span aria-hidden className="text-accent">
-                    &#9656;
-                  </span>{" "}
-                  {s.evidence}
+                <p className="mono mt-4 flex items-start gap-1.5 text-[11px] text-dim">
+                  {/* a real glyph, not a text triangle: U+25B8 renders as an
+                      emoji slot on some platforms and reads as icon-by-emoji. */}
+                  <svg
+                    aria-hidden
+                    viewBox="0 0 8 8"
+                    width="8"
+                    height="8"
+                    className="mt-[5px] shrink-0"
+                  >
+                    <path d="M2 1 L6 4 L2 7 Z" fill="var(--color-accent)" />
+                  </svg>
+                  <span>{s.evidence}</span>
                 </p>
 
                 <p className="mono mt-2 mb-6 truncate text-[11px] text-mute">
@@ -84,12 +99,21 @@ export default function Switchboard() {
                   <span className="mono text-[11px] text-mute transition-colors duration-200 group-hover:text-accent group-focus-visible:text-accent">
                     Open
                   </span>
-                  <span
+                  {/* drawn, not typed: a U+2192 in a 1-glyph span is indexed as
+                      an icon-by-character and its width shifts per platform. */}
+                  <svg
                     aria-hidden
-                    className="text-accent transition-transform duration-200 group-hover:translate-x-1 group-focus-visible:translate-x-1"
+                    viewBox="0 0 20 8"
+                    width="20"
+                    height="8"
+                    fill="none"
+                    stroke="var(--color-accent)"
+                    strokeWidth="1.25"
+                    className="transition-transform duration-200 group-hover:translate-x-1 group-focus-visible:translate-x-1"
                   >
-                    &rarr;
-                  </span>
+                    <path d="M0 4 H18" strokeLinecap="round" />
+                    <path d="M14.5 1 L18 4 L14.5 7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </div>
               </Link>
             </li>

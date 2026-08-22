@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Arrow from "@/components/ui/Arrow";
 
 /* Shared case-study primitives. Rendered in the portfolio's dark theme so the
    site stays cohesive; product screenshots carry each project's own identity. */
@@ -13,7 +14,7 @@ export function CaseShell({ children }: { children: React.ReactNode }) {
             href="/#directory"
             className="mono inline-flex items-center gap-2 text-sm text-dim transition-colors hover:text-fg"
           >
-            <span aria-hidden>&larr;</span> Directory
+            <Arrow dir="left" /> Directory
           </Link>
           <Link
             href="/"
@@ -201,7 +202,7 @@ export function ProtoButton({ href }: { href: string }) {
       className="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-accent px-6 text-sm font-semibold text-bg transition-transform hover:scale-[1.02]"
     >
       Open live prototype
-      <span aria-hidden>&rarr;</span>
+      <Arrow />
     </Link>
   );
 }
@@ -224,9 +225,7 @@ export function NextCase({
         <div className="eyebrow">{label}</div>
         <div className="t-h3 mt-1.5">{title}</div>
       </div>
-      <span className="text-2xl text-accent" aria-hidden>
-        &rarr;
-      </span>
+      <Arrow className="text-accent" />
     </Link>
   );
 }

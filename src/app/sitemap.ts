@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { skills } from "@/data/skills";
 import { cases } from "@/components/SelectedWork";
+import { fieldNotes } from "@/data/fieldNotes";
 
 const base = "https://rafiimanggala.vercel.app";
 
@@ -17,6 +18,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${base}/skills/${s.slug}`,
       changeFrequency: "monthly" as const,
       priority: 0.8,
+    })),
+    ...fieldNotes.map((f) => ({
+      url: `${base}/build/${f.slug}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     })),
     ...workSlugs.map((slug) => ({
       url: `${base}/work/${slug}`,

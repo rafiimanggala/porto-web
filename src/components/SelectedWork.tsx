@@ -12,6 +12,9 @@ type Case = {
   title: string;
   blurb: string;
   thumb?: string;
+  /* UI screenshots read from the top; a photographic still reads from the
+     middle. Only consumed where the thumb is cropped tighter than the card. */
+  thumbFocus?: "top" | "center";
   mockup?: ReactNode;
   mockupAccent?: string;
   /* Product mockups paint their own chrome, so they fill the thumb edge to
@@ -68,6 +71,7 @@ export const cases: Case[] = [
     blurb:
       "A second, anonymized freelance line: 600+ AI-generated and AI-edited video assets across 14 client accounts, from UGC-style ad avatars to full character animation.",
     thumb: "/work/ai-video-production/04-3d-animation.jpg",
+    thumbFocus: "center",
     tags: ["Kling", "Veo", "Freelance"],
     status: "Live",
   },

@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CaseShell, CaseHero, Section, Lead } from "@/components/work/casestudy";
+import ProofPreview, { hasProofPreview } from "@/components/work/ProofPreview";
+import { fieldNoteBySlug, notesForSkill } from "@/data/fieldNotes";
 import { skills, skillBySlug } from "@/data/skills";
 import { profile } from "@/data/portfolio";
+import Arrow from "@/components/ui/Arrow";
 
 const EMAIL = profile.email;
 
@@ -37,33 +40,43 @@ function ProofRow({
   external?: boolean;
   why: string;
 }) {
+  // Rows whose destination has no case card stay text-only rather than borrow
+  // an image, so the gap is readable as "no screenshot", not as a broken row.
+  const withPreview = hasProofPreview(href);
+
   const body = (
-    <>
-      <div className="flex items-baseline justify-between gap-4">
-        <h3 className="t-h3">
-          {label}
-          {external ? (
-            <span aria-hidden className="ml-1.5 text-mute">
-              &#8599;
-            </span>
-          ) : null}
-        </h3>
-        <span
-          aria-hidden
-          className="mono shrink-0 text-[11px] text-mute transition-colors duration-200 group-hover:text-accent"
-        >
-          Open &rarr;
-        </span>
+    <div className={withPreview ? "flex flex-col gap-5 sm:flex-row sm:items-center" : ""}>
+      {withPreview ? <ProofPreview href={href} /> : null}
+      <div className="min-w-0 flex-1">
+        <div className="flex items-baseline justify-between gap-4">
+          <h3 className="t-h3">
+            {label}
+            {external ? (
+              <span aria-hidden className="ml-1.5 text-mute">
+                &#8599;
+              </span>
+            ) : null}
+          </h3>
+          <span
+            aria-hidden
+            className="mono shrink-0 text-[11px] text-mute transition-colors duration-200 group-hover:text-accent"
+          >
+            Open <Arrow className="ml-1" />
+          </span>
+        </div>
+        <p className="mt-2 text-sm leading-relaxed text-dim">{why}</p>
       </div>
-      <p className="mt-2 text-sm leading-relaxed text-dim">{why}</p>
-    </>
+    </div>
   );
 
   const cls =
     "group block bg-surface-1 p-6 transition-colors duration-200 hover:bg-surface-2 focus-visible:bg-surface-2 focus-visible:[outline-offset:-3px]";
 
+  // min-w-0: the preview renders a real product mockup whose min-content width
+  // is wider than a narrow phone, and a grid item defaults to min-width:auto.
+  // Without this the whole row refuses to shrink and the list clips it.
   return (
-    <li className="flex flex-col">
+    <li className="flex min-w-0 flex-col">
       {external ? (
         <a href={href} target="_blank" rel="noreferrer" className={cls}>
           {body}
@@ -85,6 +98,10 @@ export default async function SkillPage({
   const { slug } = await params;
   const skill = skillBySlug(slug);
   if (!skill) notFound();
+
+  const notes = (notesForSkill[slug] ?? [])
+    .map(fieldNoteBySlug)
+    .filter((f) => f !== undefined);
 
   return (
     <CaseShell>
@@ -112,7 +129,41 @@ export default async function SkillPage({
         </p>
       </Section>
 
-      <Section n="02" kicker="Start" title="Think this is your problem?">
+      {notes.length > 0 ? (
+        <Section
+          n="02"
+          kicker="Field notes"
+          title="What I already knew about your domain."
+        >
+          <Lead>
+            The traps specific to this kind of product, each one from work that
+            shipped rather than from a reading list.
+          </Lead>
+          <ul className="mt-8 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2">
+            {notes.map((f) => (
+              <li key={f.slug} className="flex min-w-0">
+                <Link
+                  href={`/build/${f.slug}`}
+                  className="group block w-full bg-surface-1 p-6 transition-colors hover:bg-surface-2 focus-visible:bg-surface-2 focus-visible:[outline-offset:-3px]"
+                >
+                  <span className="eyebrow">{f.domain}</span>
+                  <h3 className="t-h3 mt-2 text-fg">{f.title}</h3>
+                  <span className="mono mt-3 inline-flex items-center gap-2 text-[11px] text-mute transition-colors group-hover:text-accent">
+                    {f.notes.length} notes
+                    <Arrow className="transition-transform group-hover:translate-x-1" />
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Section>
+      ) : null}
+
+      <Section
+        n={notes.length > 0 ? "03" : "02"}
+        kicker="Start"
+        title="Think this is your problem?"
+      >
         <Lead>
           Tell me what is happening in your own words. No brief needed, no spec.
           I will tell you within a day whether it is mine to solve, and roughly
@@ -137,7 +188,7 @@ export default async function SkillPage({
           href="/#directory"
           className="mono inline-flex items-center gap-2 text-sm text-dim transition-colors hover:text-fg"
         >
-          <span aria-hidden>&larr;</span> All six
+          <Arrow dir="left" /> All six
         </Link>
       </div>
     </CaseShell>
