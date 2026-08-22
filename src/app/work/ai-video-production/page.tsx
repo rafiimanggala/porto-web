@@ -7,7 +7,7 @@ import {
   Figure,
   ReelGrid,
   WideReel,
-  StillStrip,
+  RangeStrip,
   NextCase,
 } from "@/components/work/casestudy";
 
@@ -86,31 +86,30 @@ export default function AiVideoProductionCase() {
         />
       </Section>
 
-      <Section n="04" kicker="Range" title="Ten more, as frames.">
+      <Section n="04" kicker="Range" title="Ten more, across verticals.">
         <Lead>
-          Every one of these reads without playing, so it ships as a still
-          instead of a video file. Different verticals, different lighting
-          problems: automotive, hospitality, fashion, food, technical
-          explainer, and a locked-off time-lapse that has to hold framing and
-          light steady while the subject changes.
+          Breadth rather than depth: automotive, hospitality, fashion, food, a
+          technical explainer, and a locked-off time-lapse that has to hold
+          framing and light steady while the subject changes. Smaller tiles
+          because they are the supporting evidence, not the argument.
         </Lead>
-        <StillStrip
-          stills={[
-            { src: `${B}/strip-01-food-hero.jpg`, label: "Studio food hero, localised ad copy" },
-            { src: `${B}/strip-02-night-aerial.jpg`, label: "Night aerial, high-rise push" },
-            { src: `${B}/strip-03-automotive.jpg`, label: "Automotive beauty pass" },
-            { src: `${B}/strip-04-timelapse.jpg`, label: "Locked-off decay time-lapse" },
-            { src: `${B}/strip-05-two-hander.jpg`, label: "Scripted two-hander, office" },
-            { src: `${B}/strip-06-fire-portrait.jpg`, label: "Fire-lit editorial portrait" },
-            { src: `${B}/strip-07-anatomical.jpg`, label: "3D anatomical explainer" },
-            { src: `${B}/strip-08-presenter-ext.jpg`, label: "In-character presenter, exterior" },
-            { src: `${B}/strip-09-lookbook.jpg`, label: "Garment lookbook, three angles" },
-            { src: `${B}/strip-10-hospitality.jpg`, label: "Hospitality venue, 4K" },
+        <RangeStrip
+          reels={[
+            { src: `${B}/strip-01-food-hero.mp4`, poster: `${B}/strip-01-food-hero.jpg`, label: "Studio food hero, localised ad copy" },
+            { src: `${B}/strip-02-night-aerial.mp4`, poster: `${B}/strip-02-night-aerial.jpg`, label: "Night aerial, high-rise push" },
+            { src: `${B}/strip-03-automotive.mp4`, poster: `${B}/strip-03-automotive.jpg`, label: "Automotive beauty pass" },
+            { src: `${B}/strip-04-timelapse.mp4`, poster: `${B}/strip-04-timelapse.jpg`, label: "Locked-off decay time-lapse" },
+            { src: `${B}/strip-05-two-hander.mp4`, poster: `${B}/strip-05-two-hander.jpg`, label: "Scripted two-hander, office" },
+            { src: `${B}/strip-06-fire-portrait.mp4`, poster: `${B}/strip-06-fire-portrait.jpg`, label: "Fire-lit editorial portrait" },
+            { src: `${B}/strip-07-anatomical.mp4`, poster: `${B}/strip-07-anatomical.jpg`, label: "3D anatomical explainer" },
+            { src: `${B}/strip-08-presenter-ext.mp4`, poster: `${B}/strip-08-presenter-ext.jpg`, label: "In-character presenter, exterior" },
+            { src: `${B}/strip-09-lookbook.mp4`, poster: `${B}/strip-09-lookbook.jpg`, label: "Garment lookbook, three angles" },
+            { src: `${B}/strip-10-hospitality.mp4`, poster: `${B}/strip-10-hospitality.jpg`, label: "Hospitality venue, 4K source" },
           ]}
         />
         <p className="mono mt-8 text-[11px] text-mute">
-          Twenty of 600+. Selected for craft and for range, and filtered so
-          nothing here carries a client mark.
+          Twenty of 600+, all playable. Selected for craft and for range, and
+          filtered so nothing here carries a client mark.
         </p>
       </Section>
 

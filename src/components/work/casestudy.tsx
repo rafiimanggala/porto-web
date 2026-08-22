@@ -204,28 +204,30 @@ export function WideReel({
   );
 }
 
-export function StillStrip({
-  stills,
+export function RangeStrip({
+  reels,
 }: {
-  stills: { src: string; label: string }[];
+  reels: { src: string; poster: string; label: string }[];
 }) {
-  /* Range, not depth: these are frames, not players. A still costs kilobytes
-     where a clip costs megabytes, and none of these need motion to read. */
+  /* Same medium as the reel grid, deliberately smaller. Prominence carries the
+     hierarchy here: these show breadth, the grid above shows the work that has
+     to move to make its point. Nothing downloads until a tile is played. */
   return (
-    <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-5">
-      {stills.map((s) => (
-        <figure key={s.src} className="min-w-0">
+    <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      {reels.map((r) => (
+        <figure key={r.src} className="min-w-0">
           <div className="overflow-hidden rounded-2xl border border-line bg-surface-1">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={s.src}
-              alt={s.label}
-              loading="lazy"
-              className="block aspect-[9/16] w-full object-cover"
+            <video
+              src={r.src}
+              poster={r.poster}
+              controls
+              playsInline
+              preload="none"
+              className="block aspect-[9/16] w-full bg-black object-cover"
             />
           </div>
           <figcaption className="mono mt-2 text-[11px] leading-snug text-mute">
-            {s.label}
+            {r.label}
           </figcaption>
         </figure>
       ))}
