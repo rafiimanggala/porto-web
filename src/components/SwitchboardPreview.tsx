@@ -1,18 +1,18 @@
 // The media anchor for each directory card (Card Grid pattern, editorial
 // variation). Mostly purpose-built miniatures, not scaled screenshots: real
 // mockups for every card would ship thousands of nodes for something the
-// reader only glances at. One card breaks that rule on purpose, where a real
-// screenshot exists for openly-showable, non-NDA work (the Shopify
-// storefront) and reads more convincingly than an abstract mockup would.
+// reader only glances at. Two cards break that rule on purpose: the Shopify
+// storefront (a real screenshot, openly-showable, non-NDA) and card 1, which
+// crops two panels straight out of the illustrated device frames already
+// built for its two NDA case studies. Those frames are hand-built recreations
+// with every name, number and record invented (see the "Note on these
+// mockups" callout on each case study page) — cropping them is not a real
+// client screenshot, just the same anonymised illustration at thumbnail size.
 // Every preview is decorative, so the card's accessible name still comes
 // from the title and value text alone.
 //
 // Rules kept per preview: one accent focal point, no motion of its own, and
-// nothing implied that the linked cases do not actually show. The two NDA
-// engagements behind card 1 (school platform, health platform) never get a
-// real screenshot: same "invented name, number and record" rule their case
-// study pages already state, applied here as an abstract split panel instead
-// of a photo.
+// nothing implied that the linked cases do not actually show.
 //
 // BOX sits one surface step above the card (surface-2 on a surface-1 card):
 // a box that is nearly the same colour as the card it sits in reads as no
@@ -23,39 +23,29 @@ import Image from "next/image";
 const BOX =
   "relative h-[92px] w-full overflow-hidden rounded-lg border border-line-strong bg-surface-2";
 
-// 1 · Full-Stack Web Apps: two NDA engagements, side by side. No real name,
-// logo, or record for either half — same rule their case study pages state.
+// 1 · Full-Stack Web Apps: two NDA engagements, side by side. Both crops are
+// taken from the illustrated device frames on their own case study pages —
+// invented data, same as the full-size screens they're cut from.
 function ShellPreview() {
   return (
     <div className={`${BOX} flex`}>
-      <div className="flex flex-1 flex-col justify-center gap-[8px] border-r border-line-strong px-3">
-        <span className="mono text-[9px] uppercase tracking-wide text-mute">
-          school platform
-        </span>
-        <div className="space-y-[5px]">
-          <span className="block h-[4px] w-full rounded-full bg-white/30" />
-          <div className="flex items-center gap-[6px]">
-            <span className="h-[8px] w-[8px] shrink-0 rounded-[2px] border border-accent bg-accent/70" />
-            <span className="block h-[3px] w-[75%] rounded-full bg-white/22" />
-          </div>
-          <div className="flex items-center gap-[6px]">
-            <span className="h-[8px] w-[8px] shrink-0 rounded-[2px] border border-line-strong bg-white/10" />
-            <span className="block h-[3px] w-[58%] rounded-full bg-white/16" />
-          </div>
-        </div>
+      <div className="relative flex-1 border-r border-line-strong">
+        <Image
+          src="/work/education-saas/quiz-engine-thumb.webp"
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 17vw, (min-width: 640px) 25vw, 50vw"
+          className="object-cover object-center"
+        />
       </div>
-      <div className="flex flex-1 flex-col justify-center gap-[8px] px-3">
-        <span className="mono text-[9px] uppercase tracking-wide text-mute">
-          health platform
-        </span>
-        <div className="space-y-[6px]">
-          <p className="mono text-[11px] leading-none text-dim">
-            resting hr <span className="text-accent">61</span>
-          </p>
-          <p className="mono text-[11px] leading-none text-mute">
-            sleep <span className="text-fg">7.4h</span>
-          </p>
-        </div>
+      <div className="relative flex-1">
+        <Image
+          src="/work/health-platform/score-panel-thumb.webp"
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 17vw, (min-width: 640px) 25vw, 50vw"
+          className="object-cover object-left"
+        />
       </div>
     </div>
   );
