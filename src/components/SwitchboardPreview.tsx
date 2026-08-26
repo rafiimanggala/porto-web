@@ -24,29 +24,38 @@ function Bar({ w, h = 4, tone = "line" }: { w: number; h?: number; tone?: "line"
 
 // 1 · Full-Stack Web Apps: the product shell a client logs into.
 function ShellPreview() {
+  const rows = [
+    { w: "58%", v: "94%" },
+    { w: "42%", v: "71%" },
+    { w: "50%", v: "63%" },
+  ];
   return (
     <div className={BOX}>
-      <div className="absolute inset-y-0 left-0 w-[22px] border-r border-line bg-white/[0.02] p-2">
-        <div className="space-y-2">
-          <Bar w={10} tone="accent" />
-          <Bar w={10} />
-          <Bar w={10} />
-          <Bar w={10} />
+      <div className="absolute inset-y-0 left-0 w-[24px] border-r border-line bg-white/[0.03] py-2.5">
+        <div className="flex flex-col items-center gap-[10px]">
+          <Bar w={12} tone="accent" />
+          <Bar w={12} tone="dim" />
+          <Bar w={12} tone="dim" />
+          <Bar w={12} tone="dim" />
         </div>
       </div>
-      <div className="ml-[22px] h-full">
+      <div className="ml-[24px] h-full">
         <div className="flex items-center justify-between border-b border-line px-3 py-2">
-          <span className="block h-[4px] w-[32%] rounded-full bg-white/20" />
-          <span className="h-[10px] w-[10px] rounded-full border border-line" />
+          <span className="block h-[4px] w-[34%] rounded-full bg-white/25" />
+          <span className="rounded bg-accent/15 px-1.5 py-[1px] text-[9px] font-medium text-accent">
+            live
+          </span>
         </div>
-        <div className="space-y-[7px] px-3 py-[10px]">
-          {["58%", "42%", "50%"].map((w, i) => (
-            <div key={w} className="flex items-center justify-between gap-3">
-              <span className="block h-[4px] rounded-full bg-white/10" style={{ width: w }} />
+        <div className="space-y-[8px] px-3 py-[10px]">
+          {rows.map((row) => (
+            <div key={row.w} className="flex items-center justify-between gap-3">
               <span
-                className={`h-[8px] rounded-full ${i === 0 ? "bg-accent/70" : "bg-white/10"}`}
-                style={{ width: 18 }}
+                className="block h-[4px] rounded-full bg-white/15"
+                style={{ width: row.w }}
               />
+              <span className="mono nums text-[10px] leading-none text-dim">
+                {row.v}
+              </span>
             </div>
           ))}
         </div>
