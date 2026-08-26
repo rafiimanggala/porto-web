@@ -1,8 +1,11 @@
 // The media anchor for each directory card (Card Grid pattern, editorial
-// variation). Purpose-built miniatures, not scaled screenshots: six real
-// mockups on the homepage would ship thousands of nodes for something the
-// reader only glances at. Every preview is decorative, so the card's
-// accessible name still comes from the title and value text alone.
+// variation). Mostly purpose-built miniatures, not scaled screenshots: real
+// mockups for every card would ship thousands of nodes for something the
+// reader only glances at. Two cards break that rule on purpose, where a real
+// screenshot exists for openly-showable, non-NDA work (Spotter ELD, the
+// Shopify storefront) and reads more convincingly than an abstract mockup
+// would. Every preview is decorative, so the card's accessible name still
+// comes from the title and value text alone.
 //
 // Rules kept per preview: one accent focal point, no motion of its own, and
 // nothing implied that the linked cases do not actually show.
@@ -16,56 +19,21 @@ import Image from "next/image";
 const BOX =
   "relative h-[92px] w-full overflow-hidden rounded-lg border border-line-strong bg-surface-2";
 
-// A single skeleton bar. Widths are passed in px so the miniature stays crisp
-// instead of reflowing into mush at the 1-column breakpoint.
-function Bar({ w, h = 4, tone = "line" }: { w: number; h?: number; tone?: "line" | "dim" | "accent" }) {
-  const bg =
-    tone === "accent"
-      ? "bg-accent/70"
-      : tone === "dim"
-        ? "bg-white/28"
-        : "bg-white/16";
-  return <span className={`block rounded-full ${bg}`} style={{ width: w, height: h }} />;
-}
-
-// 1 · Full-Stack Web Apps: the product shell a client logs into.
+// 1 · Full-Stack Web Apps: the live product, not a mockup of one.
 function ShellPreview() {
-  const rows = [
-    { w: "58%", v: "94%" },
-    { w: "42%", v: "71%" },
-    { w: "50%", v: "63%" },
-  ];
   return (
     <div className={BOX}>
-      <div className="absolute inset-y-0 left-0 w-[24px] border-r border-line bg-surface-3 py-2.5">
-        <div className="flex flex-col items-center gap-[10px]">
-          <Bar w={12} tone="accent" />
-          <Bar w={12} tone="dim" />
-          <Bar w={12} tone="dim" />
-          <Bar w={12} tone="dim" />
-        </div>
-      </div>
-      <div className="ml-[24px] h-full">
-        <div className="flex items-center justify-between border-b border-line px-3 py-2">
-          <span className="block h-[4px] w-[34%] rounded-full bg-white/32" />
-          <span className="rounded bg-accent/15 px-1.5 py-[1px] text-[9px] font-medium text-accent">
-            live
-          </span>
-        </div>
-        <div className="space-y-[8px] px-3 py-[10px]">
-          {rows.map((row) => (
-            <div key={row.w} className="flex items-center justify-between gap-3">
-              <span
-                className="block h-[4px] rounded-full bg-white/20"
-                style={{ width: row.w }}
-              />
-              <span className="mono nums text-[10px] leading-none text-dim">
-                {row.v}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
+      <Image
+        src="/work/spotter-eld/06-results-top.png"
+        alt=""
+        fill
+        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+        className="object-cover object-top"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0b]/70 via-transparent to-transparent" />
+      <span className="absolute bottom-2 left-3 rounded bg-accent/15 px-1.5 py-[1px] text-[9px] font-medium text-accent">
+        live product
+      </span>
     </div>
   );
 }
