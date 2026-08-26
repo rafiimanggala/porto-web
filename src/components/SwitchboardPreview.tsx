@@ -1,14 +1,18 @@
 // The media anchor for each directory card (Card Grid pattern, editorial
 // variation). Mostly purpose-built miniatures, not scaled screenshots: real
 // mockups for every card would ship thousands of nodes for something the
-// reader only glances at. Two cards break that rule on purpose, where a real
-// screenshot exists for openly-showable, non-NDA work (Spotter ELD, the
-// Shopify storefront) and reads more convincingly than an abstract mockup
-// would. Every preview is decorative, so the card's accessible name still
-// comes from the title and value text alone.
+// reader only glances at. One card breaks that rule on purpose, where a real
+// screenshot exists for openly-showable, non-NDA work (the Shopify
+// storefront) and reads more convincingly than an abstract mockup would.
+// Every preview is decorative, so the card's accessible name still comes
+// from the title and value text alone.
 //
 // Rules kept per preview: one accent focal point, no motion of its own, and
-// nothing implied that the linked cases do not actually show.
+// nothing implied that the linked cases do not actually show. The two NDA
+// engagements behind card 1 (school platform, health platform) never get a
+// real screenshot: same "invented name, number and record" rule their case
+// study pages already state, applied here as an abstract split panel instead
+// of a photo.
 //
 // BOX sits one surface step above the card (surface-2 on a surface-1 card):
 // a box that is nearly the same colour as the card it sits in reads as no
@@ -19,21 +23,40 @@ import Image from "next/image";
 const BOX =
   "relative h-[92px] w-full overflow-hidden rounded-lg border border-line-strong bg-surface-2";
 
-// 1 · Full-Stack Web Apps: the live product, not a mockup of one.
+// 1 · Full-Stack Web Apps: two NDA engagements, side by side. No real name,
+// logo, or record for either half — same rule their case study pages state.
 function ShellPreview() {
   return (
-    <div className={BOX}>
-      <Image
-        src="/work/spotter-eld/06-results-top.png"
-        alt=""
-        fill
-        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-        className="object-cover object-top"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0b]/70 via-transparent to-transparent" />
-      <span className="absolute bottom-2 left-3 rounded bg-accent/15 px-1.5 py-[1px] text-[9px] font-medium text-accent">
-        live product
-      </span>
+    <div className={`${BOX} flex`}>
+      <div className="flex flex-1 flex-col justify-center gap-[8px] border-r border-line-strong px-3">
+        <span className="mono text-[9px] uppercase tracking-wide text-mute">
+          school platform
+        </span>
+        <div className="space-y-[5px]">
+          <span className="block h-[4px] w-full rounded-full bg-white/30" />
+          <div className="flex items-center gap-[6px]">
+            <span className="h-[8px] w-[8px] shrink-0 rounded-[2px] border border-accent bg-accent/70" />
+            <span className="block h-[3px] w-[75%] rounded-full bg-white/22" />
+          </div>
+          <div className="flex items-center gap-[6px]">
+            <span className="h-[8px] w-[8px] shrink-0 rounded-[2px] border border-line-strong bg-white/10" />
+            <span className="block h-[3px] w-[58%] rounded-full bg-white/16" />
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-1 flex-col justify-center gap-[8px] px-3">
+        <span className="mono text-[9px] uppercase tracking-wide text-mute">
+          health platform
+        </span>
+        <div className="space-y-[6px]">
+          <p className="mono text-[11px] leading-none text-dim">
+            resting hr <span className="text-accent">61</span>
+          </p>
+          <p className="mono text-[11px] leading-none text-mute">
+            sleep <span className="text-fg">7.4h</span>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
