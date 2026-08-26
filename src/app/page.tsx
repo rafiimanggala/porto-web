@@ -9,7 +9,7 @@ import Scramble from "@/components/ui/Scramble";
 export const metadata: Metadata = {
   title: "Rafii Manggala · Web apps, AI features, automation",
   description:
-    "Six things I get hired for: full-stack web apps, AI features inside products, automation, AI video at scale, design and prototypes, and fixing live systems.",
+    "Seven things I get hired for: full-stack web apps, AI features inside products, automation, AI video at scale, design and prototypes, fixing live systems, and custom Shopify builds.",
   alternates: { canonical: "/" },
 };
 
@@ -42,7 +42,7 @@ export default function Home() {
 
         <Reveal delay={0.1}>
           <p className="t-body mt-4 max-w-[54ch] text-dim">
-            Six things I get hired for. Open the one that matches your problem.
+            Seven things I get hired for. Open the one that matches your problem.
           </p>
         </Reveal>
       </section>

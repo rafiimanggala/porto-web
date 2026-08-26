@@ -5,13 +5,17 @@ import SwitchboardPanel from "./SwitchboardPanel";
 import SwitchboardPreview from "./SwitchboardPreview";
 import { skills } from "@/data/skills";
 
-// The directory. Six equal bays in one panel, one press each. Deliberately not
-// a bento: no hero cell, no col-span. Order is the only ranking lever, and
+// The directory. Seven equal bays in one panel, one press each. Deliberately
+// not a bento: no hero cell, no col-span. Order is the only ranking lever, and
 // equal weight is what makes it scannable in a few seconds.
 //
 // Each bay carries one miniature (SwitchboardPreview) so the shape of the work
-// reads before the copy does. Same box height in all six, so the media area
+// reads before the copy does. Same box height in every bay, so the media area
 // stays a rhythm rather than a size contest between cards.
+//
+// Seven doesn't divide evenly into the 3-column desktop row (3/3/1): the last
+// card is re-centred under the middle column with col-start rather than given
+// a col-span, so the lone-card row still reads as one grid, not a leftover.
 export default function Switchboard() {
   return (
     <section
@@ -26,17 +30,20 @@ export default function Switchboard() {
         <Scramble text="// 01 · Directory" className="eyebrow" />
         <span className="hairline flex-1" />
         <span className="mono hidden text-[11px] text-mute lg:inline">
-          press 1 to 6
+          press 1 to 7
         </span>
       </div>
 
       {/* One Reveal for the whole panel, not the house delay={(i % 3) * 0.06}
-          stagger. Six independent transforms inside a gap-px grid shear the 1px
+          stagger. Seven independent transforms inside a gap-px grid shear the 1px
           seams during the rise and break the single-object read. */}
       <Reveal delay={0.15}>
         <SwitchboardPanel className="mt-6 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
-          {skills.map((s) => (
-            <li key={s.slug} className="flex">
+          {skills.map((s, i) => (
+            <li
+              key={s.slug}
+              className={`flex${i === skills.length - 1 && skills.length % 3 === 1 ? " lg:col-start-2" : ""}`}
+            >
               {/* outline-offset is negative on purpose: the panel wrapper is
                   overflow-hidden and clips the global +3px ring on interior
                   cell edges. */}
@@ -55,7 +62,7 @@ export default function Switchboard() {
                     {s.n}
                   </span>
                   <span className="mono text-[11px] text-mute">
-                    {s.proof.length} cases
+                    {s.proof.length} {s.proof.length === 1 ? "case" : "cases"}
                   </span>
                 </div>
 

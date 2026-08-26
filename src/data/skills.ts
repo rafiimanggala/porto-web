@@ -1,5 +1,5 @@
 // The switchboard. One array feeds the homepage panel, the number-key router,
-// the six /skills/[slug] pages and generateStaticParams, so a card and the page
+// the seven /skills/[slug] pages and generateStaticParams, so a card and the page
 // it opens can never drift apart.
 //
 // Traceability contract: every `evidence` string must be findable as a readable
@@ -224,6 +224,22 @@ export const skills: Skill[] = [
         label: "Health Optimisation Platform",
         href: "/work/health-platform",
         why: "Shipped under a fix, deploy, self-verify loop: every change tested end to end through a real browser before it counted as done.",
+      },
+    ],
+  },
+  {
+    slug: "shopify-storefronts",
+    n: 7,
+    title: "Custom Shopify Builds",
+    value:
+      "A stock theme learns a feature Shopify apps can't sell you, built into the theme itself.",
+    evidence: "An inline pattern editor, wired to an external API",
+    tools: ["Liquid", "JavaScript", "Shopify CLI", "REST APIs", "Klaviyo"],
+    proof: [
+      {
+        label: "Made-to-Measure Shopify Platform",
+        href: "/work/made-to-measure-shopify",
+        why: "Every read and write goes through an external REST API the theme doesn't control, inside a pure Liquid and vanilla-JS theme with no build pipeline: no React, no bundler, no shortcuts.",
       },
     ],
   },

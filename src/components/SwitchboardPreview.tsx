@@ -6,9 +6,15 @@
 //
 // Rules kept per preview: one accent focal point, no motion of its own, and
 // nothing implied that the linked cases do not actually show.
+//
+// BOX sits one surface step above the card (surface-2 on a surface-1 card):
+// a box that is nearly the same colour as the card it sits in reads as no
+// preview at all, not as restraint.
+
+import Image from "next/image";
 
 const BOX =
-  "relative h-[92px] w-full overflow-hidden rounded-lg border border-line bg-[#0b0b0e]";
+  "relative h-[92px] w-full overflow-hidden rounded-lg border border-line-strong bg-surface-2";
 
 // A single skeleton bar. Widths are passed in px so the miniature stays crisp
 // instead of reflowing into mush at the 1-column breakpoint.
@@ -17,8 +23,8 @@ function Bar({ w, h = 4, tone = "line" }: { w: number; h?: number; tone?: "line"
     tone === "accent"
       ? "bg-accent/70"
       : tone === "dim"
-        ? "bg-white/20"
-        : "bg-white/10";
+        ? "bg-white/28"
+        : "bg-white/16";
   return <span className={`block rounded-full ${bg}`} style={{ width: w, height: h }} />;
 }
 
@@ -31,7 +37,7 @@ function ShellPreview() {
   ];
   return (
     <div className={BOX}>
-      <div className="absolute inset-y-0 left-0 w-[24px] border-r border-line bg-white/[0.03] py-2.5">
+      <div className="absolute inset-y-0 left-0 w-[24px] border-r border-line bg-surface-3 py-2.5">
         <div className="flex flex-col items-center gap-[10px]">
           <Bar w={12} tone="accent" />
           <Bar w={12} tone="dim" />
@@ -41,7 +47,7 @@ function ShellPreview() {
       </div>
       <div className="ml-[24px] h-full">
         <div className="flex items-center justify-between border-b border-line px-3 py-2">
-          <span className="block h-[4px] w-[34%] rounded-full bg-white/25" />
+          <span className="block h-[4px] w-[34%] rounded-full bg-white/32" />
           <span className="rounded bg-accent/15 px-1.5 py-[1px] text-[9px] font-medium text-accent">
             live
           </span>
@@ -50,7 +56,7 @@ function ShellPreview() {
           {rows.map((row) => (
             <div key={row.w} className="flex items-center justify-between gap-3">
               <span
-                className="block h-[4px] rounded-full bg-white/15"
+                className="block h-[4px] rounded-full bg-white/20"
                 style={{ width: row.w }}
               />
               <span className="mono nums text-[10px] leading-none text-dim">
@@ -81,13 +87,13 @@ function ScorePreview() {
             key={y}
             d={`M0 ${y} C 13 ${y}, 13 26, 24 26`}
             fill="none"
-            stroke="rgba(255,255,255,0.14)"
+            stroke="rgba(255,255,255,0.22)"
             strokeWidth="1"
           />
         ))}
       </svg>
       <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden>
-        <circle cx="26" cy="26" r="20" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="4" />
+        <circle cx="26" cy="26" r="20" fill="none" stroke="rgba(255,255,255,0.16)" strokeWidth="4" />
         <circle
           cx="26"
           cy="26"
@@ -128,12 +134,12 @@ function PipelinePreview() {
                   ? "border-accent bg-accent/70"
                   : s === "fail"
                     ? "border-[#f87171] bg-[#f87171]/70"
-                    : "border-line bg-white/5"
+                    : "border-line-strong bg-white/12"
               }`}
             />
             {i < steps.length - 1 ? (
               <span
-                className={`h-[1px] flex-1 ${s === "ok" ? "bg-accent/40" : "bg-white/10"}`}
+                className={`h-[1px] flex-1 ${s === "ok" ? "bg-accent/40" : "bg-white/16"}`}
               />
             ) : null}
           </div>
@@ -153,7 +159,7 @@ function VideoPreview() {
       {[0, 1, 2].map((i) => (
         <div
           key={i}
-          className="relative h-[62px] w-[35px] rounded border border-line bg-white/[0.03]"
+          className="relative h-[62px] w-[35px] rounded border border-line-strong bg-white/[0.07]"
         >
           {i === 1 ? (
             <svg
@@ -166,13 +172,13 @@ function VideoPreview() {
               <path d="M4 2.5 L9 6 L4 9.5 Z" fill="var(--color-accent)" />
             </svg>
           ) : null}
-          <span className="absolute inset-x-[5px] bottom-[5px] block h-[2px] rounded-full bg-white/15" />
+          <span className="absolute inset-x-[5px] bottom-[5px] block h-[2px] rounded-full bg-white/22" />
         </div>
       ))}
       <div className="ml-1 flex-1 space-y-[7px]">
         <span className="block h-[4px] w-full rounded-full bg-accent/70" />
-        <span className="block h-[4px] w-[62%] rounded-full bg-white/10" />
-        <span className="block h-[4px] w-[80%] rounded-full bg-white/10" />
+        <span className="block h-[4px] w-[62%] rounded-full bg-white/16" />
+        <span className="block h-[4px] w-[80%] rounded-full bg-white/16" />
         <p className="mono text-[11px] leading-none text-mute">3 of 14 queued</p>
       </div>
     </div>
@@ -186,17 +192,17 @@ function DesignPreview() {
       {[0, 1, 2].map((i) => (
         <div
           key={i}
-          className="h-[64px] min-w-0 flex-1 rounded border border-line bg-white/[0.03] p-[6px]"
+          className="h-[64px] min-w-0 flex-1 rounded border border-line-strong bg-white/[0.06] p-[6px]"
         >
           <div className="space-y-[5px]">
             <span
-              className={`block h-[4px] w-full rounded-full ${i === 2 ? "bg-white/20" : "bg-white/10"}`}
+              className={`block h-[4px] w-full rounded-full ${i === 2 ? "bg-white/30" : "bg-white/16"}`}
             />
-            <span className="block h-[4px] w-[62%] rounded-full bg-white/10" />
+            <span className="block h-[4px] w-[62%] rounded-full bg-white/16" />
             {i > 0 ? (
-              <span className="block h-[14px] w-full rounded bg-white/[0.06]" />
+              <span className="block h-[14px] w-full rounded bg-white/[0.1]" />
             ) : (
-              <span className="block h-[4px] w-[45%] rounded-full bg-white/10" />
+              <span className="block h-[4px] w-[45%] rounded-full bg-white/16" />
             )}
             {i === 2 ? (
               <span className="block h-[7px] w-[70%] rounded-full bg-accent/70" />
@@ -232,9 +238,28 @@ function RescuePreview() {
         POST /api/send
       </p>
       <p className="mono flex items-center gap-2 text-[11px] text-mute">
-        <span className="rounded border border-line px-1 py-[1px]">tag</span>
+        <span className="rounded border border-line-strong px-1 py-[1px]">tag</span>
         rollback point kept
       </p>
+    </div>
+  );
+}
+
+// 7 · Custom Shopify Builds: the live storefront, not a mockup of one.
+function ShopifyPreview() {
+  return (
+    <div className={BOX}>
+      <Image
+        src="/work/made-to-measure-shopify/storefront-collection.webp"
+        alt=""
+        fill
+        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+        className="object-cover object-top"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0b]/70 via-transparent to-transparent" />
+      <span className="absolute bottom-2 left-3 rounded bg-accent/15 px-1.5 py-[1px] text-[9px] font-medium text-accent">
+        live storefront
+      </span>
     </div>
   );
 }
@@ -246,6 +271,7 @@ const PREVIEWS: Record<string, () => React.ReactElement> = {
   "ai-video-at-scale": VideoPreview,
   "design-and-prototypes": DesignPreview,
   "live-system-rescue": RescuePreview,
+  "shopify-storefronts": ShopifyPreview,
 };
 
 export default function SwitchboardPreview({ slug }: { slug: string }) {

@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import type { KeyboardEvent, ReactNode } from "react";
 import { skills } from "@/data/skills";
 
-// Number keys 1 to 6 jump to a bay, but ONLY while focus is inside the panel.
+// Number keys 1 to 7 jump to a bay, but ONLY while focus is inside the panel.
 // A window-level single-character shortcut with no off switch fails WCAG 2.1.4,
 // and it would also steal digits from anything else on the page later.
 export default function SwitchboardPanel({

@@ -9,6 +9,7 @@ import { profile } from "@/data/portfolio";
 import Arrow from "@/components/ui/Arrow";
 
 const EMAIL = profile.email;
+const NUMBER_WORDS: Record<number, string> = { 2: "two", 3: "three", 4: "four" };
 
 export function generateStaticParams() {
   return skills.map((s) => ({ slug: s.slug }));
@@ -110,7 +111,10 @@ export default async function SkillPage({
         title={skill.title}
         subtitle={skill.value}
         meta={[
-          { label: "Proof", value: `${skill.proof.length} pieces of work` },
+          {
+            label: "Proof",
+            value: `${skill.proof.length} piece${skill.proof.length === 1 ? "" : "s"} of work`,
+          },
           { label: "Tools", value: skill.tools.slice(0, 3).join(", ") },
           { label: "Availability", value: "Remote · UTC+7" },
           { label: "Reply", value: "Within a day" },
@@ -118,7 +122,12 @@ export default async function SkillPage({
       />
 
       <Section n="01" kicker="Proof" title="Where this has already shipped.">
-        <Lead>{skill.evidence}. Open any of the three to read how it was built.</Lead>
+        <Lead>
+          {skill.evidence}.{" "}
+          {skill.proof.length === 1
+            ? "Open it to read how it was built."
+            : `Open any of the ${NUMBER_WORDS[skill.proof.length] ?? skill.proof.length} to read how it was built.`}
+        </Lead>
         <ul className="mt-8 grid gap-px overflow-hidden rounded-2xl border border-line bg-line">
           {skill.proof.map((p) => (
             <ProofRow key={p.label} {...p} />
@@ -188,7 +197,7 @@ export default async function SkillPage({
           href="/#directory"
           className="mono inline-flex items-center gap-2 text-sm text-dim transition-colors hover:text-fg"
         >
-          <Arrow dir="left" /> All six
+          <Arrow dir="left" /> All seven
         </Link>
       </div>
     </CaseShell>
