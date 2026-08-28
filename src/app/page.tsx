@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Nav from "@/components/Nav";
 import Switchboard from "@/components/Switchboard";
 import Contact from "@/components/Contact";
-import CommandCenter from "@/components/CommandCenter";
+import AgentThreads from "@/components/visuals/AgentThreads";
 import Reveal from "@/components/ui/Reveal";
 import LineMask from "@/components/ui/LineMask";
 import Scramble from "@/components/ui/Scramble";
@@ -73,8 +73,8 @@ export default function Home() {
         </Reveal>
 
         <Reveal delay={0.2}>
-          <div className="mx-auto mt-16 max-w-[720px] text-left">
-            <CommandCenter />
+          <div className="mx-auto mt-16 max-w-[940px] text-left">
+            <AgentThreads />
           </div>
         </Reveal>
       </section>
