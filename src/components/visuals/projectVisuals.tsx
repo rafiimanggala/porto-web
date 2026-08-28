@@ -1,9 +1,12 @@
 import type { CSSProperties, ReactNode } from "react";
 
+// Collapsed to one accent site-wide, same as mockups/accent.ts — see
+// --color-accent in globals.css. Keys kept so portfolio.ts's per-project
+// `accent: "violet"` etc. data doesn't need touching.
 const ACCENT: Record<string, string> = {
-  mint: "#5fe9ad",
-  violet: "#a78bfa",
-  amber: "#f6b667",
+  mint: "#ff6a12",
+  violet: "#ff6a12",
+  amber: "#ff6a12",
 };
 
 function Frame({
