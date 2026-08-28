@@ -31,18 +31,17 @@ export default function Hero() {
           <h1 className="t-hero">
             <LineMask
               lines={[
-                { text: "I build systems where", className: "text-grad" },
-                { text: "AI agents do the work,", className: "text-accent", icon: true },
-                { text: "not just write the code.", className: "text-grad" },
+                { text: "AI agents that", className: "text-grad" },
+                { text: "do the work.", className: "text-accent", icon: true },
               ]}
             />
           </h1>
 
           <Reveal delay={0.1}>
             <p className="t-lead mt-7 max-w-xl text-dim">
-              {profile.role}. I deploy Claude Code as the engine: always-on
-              agents that observe, decide, and act in production: trading bots,
-              digital twins, and autonomous infra.
+              {profile.role}. Not just writing code, I deploy Claude Code as
+              the engine: always-on agents that observe, decide, and act in
+              production: trading bots, digital twins, and autonomous infra.
             </p>
           </Reveal>
 
