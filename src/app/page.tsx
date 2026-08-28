@@ -18,9 +18,9 @@ export default function Home() {
     <main className="relative">
       <Nav variant="home" />
 
-      <section className="mx-auto w-full max-w-[1120px] px-6 pt-16 pb-12 lg:px-8 lg:pt-20 lg:pb-16">
+      <section className="mx-auto w-full max-w-[1120px] px-6 pt-20 pb-20 lg:px-8 lg:pt-28 lg:pb-28">
         <Reveal>
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-surface-2/60 px-3 py-1">
+          <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-line bg-surface-2/60 px-3 py-1">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
@@ -30,7 +30,7 @@ export default function Home() {
         </Reveal>
 
         <Reveal>
-          <h1 className="t-h2">
+          <h1 className="t-hero">
             <LineMask
               lines={[
                 { text: "What do you", className: "text-grad" },
@@ -41,7 +41,7 @@ export default function Home() {
         </Reveal>
 
         <Reveal delay={0.1}>
-          <p className="t-body mt-4 max-w-[54ch] text-dim">
+          <p className="t-lead mt-7 max-w-[54ch] text-dim">
             Seven things I get hired for. Open the one that matches your problem.
           </p>
         </Reveal>

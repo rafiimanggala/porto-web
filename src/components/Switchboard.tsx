@@ -77,29 +77,9 @@ export default function Switchboard() {
 
                 <p
                   id={`${s.slug}-v`}
-                  className="mt-4 text-sm leading-relaxed text-dim"
+                  className="mt-4 mb-6 text-sm leading-relaxed text-dim"
                 >
                   {s.value}
-                </p>
-
-                <p className="mono mt-4 flex items-start gap-1.5 text-[11px] text-dim">
-                  {/* a real glyph, not a text triangle: U+25B8 renders as an
-                      emoji slot on some platforms and reads as icon-by-emoji. */}
-                  <svg
-                    aria-hidden
-                    viewBox="0 0 8 8"
-                    width="8"
-                    height="8"
-                    className="mt-[5px] shrink-0"
-                  >
-                    <path d="M2 1 L6 4 L2 7 Z" fill="var(--color-mute)" />
-                  </svg>
-                  <span>{s.evidence}</span>
-                </p>
-
-                <p className="mono mt-2 mb-6 truncate text-[11px] text-mute">
-                  {s.tools.slice(0, 3).join(" · ")}
-                  {s.tools.length > 3 ? ` +${s.tools.length - 3}` : ""}
                 </p>
 
                 <div className="mt-auto flex items-center justify-between border-t border-line pt-4">
