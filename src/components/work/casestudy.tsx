@@ -7,7 +7,13 @@ import Arrow from "@/components/ui/Arrow";
 export function CaseShell({ children }: { children: React.ReactNode }) {
   return (
     <main className="relative">
-      <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(80%_50%_at_50%_-10%,rgba(95,233,173,0.05),transparent)]" />
+      <div
+        className="pointer-events-none fixed inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(80% 50% at 50% -10%, color-mix(in oklab, var(--color-accent) 5%, transparent), transparent)",
+        }}
+      />
       <nav className="sticky top-0 z-40 border-b border-line bg-bg/70 backdrop-blur-xl">
         <div className="mx-auto flex h-14 w-full max-w-[860px] items-center justify-between px-6">
           <Link

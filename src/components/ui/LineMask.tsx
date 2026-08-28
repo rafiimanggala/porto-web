@@ -27,7 +27,7 @@ export default function LineMask({ lines }: { lines: Line[] }) {
             className={`block ${l.className ?? ""}`}
             initial={{ y: "110%" }}
             animate={{ y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.7, delay: 0.1 + i * 0.08, ease: [0.19, 1, 0.22, 1] }}
           >
             {l.icon ? <OrbGlyph /> : null}
             {l.text}

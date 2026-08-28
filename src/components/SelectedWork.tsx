@@ -51,7 +51,7 @@ export const cases: Case[] = [
     blurb:
       "Curriculum-aligned learning platform for schools: quiz engine, AI performance insights, shipped against a live database of 995 schools.",
     mockup: <EduWeb2 />,
-    mockupAccent: "#0d9ddb",
+    mockupAccent: ACCENT.amber,
     bleed: true,
     tags: [".NET 9", "Angular", "Live"],
     status: "Live",

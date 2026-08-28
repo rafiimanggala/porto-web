@@ -14,8 +14,12 @@
   --color-dim: #9a9aa4;
   --color-mute: #74747f;
 
-  /* One accent: signal mint (live / agents running) */
-  --color-accent: #5fe9ad;
+  /* One accent, applied surgically (not baked into any base surface/text
+     token) — used sparingly on CTAs, focus rings and single highlight
+     moments, same restraint as the x.ai/bot reference DNA in
+     ./seismic-dna.json (their shadcn root tokens stay fully chromaless;
+     the accent never becomes the theme's default). */
+  --color-accent: #ff6a12;
 
   /* Fonts (wired to next/font in layout.tsx) */
   --font-display: var(--font-space), ui-sans-serif, system-ui, sans-serif;
