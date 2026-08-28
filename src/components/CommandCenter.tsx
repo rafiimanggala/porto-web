@@ -143,7 +143,7 @@ export default function CommandCenter() {
             <div key={a.label} className="rounded-lg border border-line bg-surface-1 px-3 py-2.5">
               <div className="flex items-center gap-1.5">
                 <motion.span
-                  className="h-1.5 w-1.5 rounded-full bg-accent"
+                  className="h-1.5 w-1.5 rounded-full bg-dim"
                   animate={reduce ? undefined : { opacity: [1, 0.3, 1] }}
                   transition={{ duration: 1.8, repeat: Infinity, delay: i * 0.5 }}
                 />
@@ -166,7 +166,7 @@ export default function CommandCenter() {
                 transition={{ duration: 0.3 }}
                 className="text-dim"
               >
-                <span className="text-accent">›</span> {l.text}
+                <span className="text-mute">›</span> {l.text}
               </motion.div>
             ))}
           </AnimatePresence>
