@@ -7,6 +7,7 @@ import Reveal from "@/components/ui/Reveal";
 import LineMask from "@/components/ui/LineMask";
 import Scramble from "@/components/ui/Scramble";
 import Magnetic from "@/components/ui/Magnetic";
+import { profile } from "@/data/portfolio";
 
 export const metadata: Metadata = {
   title: "Rafii Manggala · Web apps, AI features, automation",
@@ -75,6 +76,17 @@ export default function Home() {
           <div className="mx-auto mt-16 max-w-[720px] text-left">
             <CommandCenter />
           </div>
+        </Reveal>
+      </section>
+
+      <section className="mx-auto w-full max-w-[1120px] px-6 pb-16 text-center lg:px-8 lg:pb-20">
+        <Reveal>
+          <p className="t-body mx-auto max-w-[62ch] text-dim">
+            <span className="text-fg">{profile.name}</span> &middot; {profile.role},
+            based in {profile.location.split(" · ")[0]} ({profile.location.split(" · ")[1]}).
+            Most people use Claude Code to write functions; I deploy it as the engine:
+            always-on agents that observe, decide, and act in production.
+          </p>
         </Reveal>
       </section>
 
