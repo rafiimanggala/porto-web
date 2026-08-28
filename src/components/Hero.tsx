@@ -9,16 +9,8 @@ import LineMask from "./ui/LineMask";
 export default function Hero() {
   return (
     <div id="top" className="relative overflow-hidden">
-      {/* depth layers */}
+      {/* depth layer: flat grid texture only, no ambient color orbs */}
       <div className="grid-backdrop absolute inset-0 -z-10" />
-      <div
-        className="glow-blob -left-24 -top-24 h-[28rem] w-[28rem]"
-        style={{ background: "radial-gradient(circle, var(--color-accent), transparent 70%)" }}
-      />
-      <div
-        className="glow-blob right-0 top-10 h-[22rem] w-[22rem] opacity-[0.12]"
-        style={{ background: "radial-gradient(circle, var(--color-accent), transparent 70%)" }}
-      />
 
       <div className="mx-auto grid w-full max-w-[1120px] gap-14 px-6 pb-16 pt-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:px-8 lg:pt-28">
         {/* copy */}

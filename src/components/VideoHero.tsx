@@ -15,10 +15,6 @@ export default function VideoHero() {
   return (
     <div id="top" className="relative overflow-hidden">
       <div className="grid-backdrop absolute inset-0 -z-10" />
-      <div
-        className="glow-blob -left-24 -top-24 h-[28rem] w-[28rem]"
-        style={{ background: "radial-gradient(circle, var(--color-accent), transparent 70%)" }}
-      />
 
       <div className="mx-auto w-full max-w-[1120px] px-6 pb-16 pt-20 lg:px-8 lg:pt-28">
         <Reveal>

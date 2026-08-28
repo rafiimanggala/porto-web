@@ -156,14 +156,6 @@
     mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 20%, transparent 75%);
   }
 
-  .glow-blob {
-    position: absolute;
-    border-radius: 9999px;
-    filter: blur(90px);
-    pointer-events: none;
-    opacity: 0.25;
-  }
-
   /* ---------- Cards ---------- */
   .card {
     position: relative;

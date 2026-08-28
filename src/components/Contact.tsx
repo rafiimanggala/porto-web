@@ -15,10 +15,6 @@ export default function Contact({
   return (
     <footer id="contact" className="relative overflow-hidden border-t border-line">
       <div className="grid-backdrop absolute inset-0 -z-10 opacity-70" />
-      <div
-        className="glow-blob bottom-0 left-1/2 h-[24rem] w-[36rem] -translate-x-1/2 opacity-20"
-        style={{ background: "radial-gradient(circle, var(--color-accent), transparent 70%)" }}
-      />
       <div className="mx-auto w-full max-w-[1120px] px-6 py-24 sm:py-28 lg:px-8">
         {!lean ? (
           <>
