@@ -43,7 +43,7 @@ function Meta({ p }: { p: Project }) {
 function Item({ text }: { text: string }) {
   return (
     <li className="flex gap-2.5 text-sm leading-relaxed text-dim">
-      <span className="mt-1.5 select-none text-accent">▸</span>
+      <span className="mt-1.5 select-none text-mute">▸</span>
       <span>{text}</span>
     </li>
   );

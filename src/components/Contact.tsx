@@ -94,7 +94,7 @@ export default function Contact({
                 <p className="mt-1 text-xs leading-relaxed text-dim">
                   Direct line, straight to my inbox.
                 </p>
-                <p className="mono mt-4 text-[10px] text-accent group-hover:underline">
+                <p className="mono mt-4 text-[10px] text-mute group-hover:text-accent group-hover:underline">
                   {profile.email} ↗
                 </p>
               </a>
@@ -111,7 +111,7 @@ export default function Contact({
                 <p className="mt-1 text-xs leading-relaxed text-dim">
                   40+ repos, agents included.
                 </p>
-                <p className="mono mt-4 text-[10px] text-accent group-hover:underline">
+                <p className="mono mt-4 text-[10px] text-mute group-hover:text-accent group-hover:underline">
                   github.com/rafiimanggala ↗
                 </p>
               </a>
@@ -128,7 +128,7 @@ export default function Contact({
                 <p className="mt-1 text-xs leading-relaxed text-dim">
                   Work history, endorsements, full experience.
                 </p>
-                <p className="mono mt-4 text-[10px] text-accent group-hover:underline">
+                <p className="mono mt-4 text-[10px] text-mute group-hover:text-accent group-hover:underline">
                   in/rafiimanggala ↗
                 </p>
               </a>

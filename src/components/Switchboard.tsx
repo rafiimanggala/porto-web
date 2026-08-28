@@ -92,7 +92,7 @@ export default function Switchboard() {
                     height="8"
                     className="mt-[5px] shrink-0"
                   >
-                    <path d="M2 1 L6 4 L2 7 Z" fill="var(--color-accent)" />
+                    <path d="M2 1 L6 4 L2 7 Z" fill="var(--color-mute)" />
                   </svg>
                   <span>{s.evidence}</span>
                 </p>
@@ -114,7 +114,7 @@ export default function Switchboard() {
                     width="20"
                     height="8"
                     fill="none"
-                    stroke="var(--color-accent)"
+                    stroke="var(--color-mute)"
                     strokeWidth="1.25"
                     className="transition-transform duration-200 group-hover:translate-x-1 group-focus-visible:translate-x-1"
                   >

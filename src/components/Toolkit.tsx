@@ -21,7 +21,7 @@ export default function Toolkit() {
             >
               <ToolVisual name={t.name} />
               <div className="flex items-center justify-between">
-                <code className="mono text-xs text-accent">
+                <code className="mono text-xs text-fg">
                   <span className="text-mute">$</span> {t.cmd}
                 </code>
                 <span className="mono rounded-full border border-line px-2 py-0.5 text-[10px] uppercase tracking-wider text-mute">
@@ -47,7 +47,7 @@ export default function Toolkit() {
           <div className="grid gap-x-10 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
             {capabilities.map((c) => (
               <div key={c.title} className="flex gap-2.5">
-                <span className="mt-1 select-none text-accent">▸</span>
+                <span className="mt-1 select-none text-mute">▸</span>
                 <div>
                   <div className="text-sm font-medium text-fg">{c.title}</div>
                   <div className="mt-0.5 text-xs leading-relaxed text-mute">

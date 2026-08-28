@@ -28,7 +28,7 @@ export default function AgentOS() {
               <span className="mono text-[11px] text-mute">{t.cmd}</span>
               <h3 className="t-h3 mt-3 text-fg">{t.name}</h3>
               <p className="mt-2 text-sm leading-relaxed text-dim">{t.desc}</p>
-              <p className="mono mt-4 border-t border-line pt-3 text-[12px] leading-relaxed text-accent/90">
+              <p className="mono mt-4 border-t border-line pt-3 text-[12px] leading-relaxed text-mute">
                 {t.why}
               </p>
             </TiltCard>
