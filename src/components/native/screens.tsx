@@ -324,10 +324,14 @@ export type SimApp = {
   Comp: (p: { accent: string }) => ReactNode;
 };
 
+// One accent for every app -- the site runs a single amber token (#ff6a12),
+// so the demo carousel differentiates apps by label/screen, not by hue.
+const ACCENT = "#ff6a12";
+
 export const SIM_APPS: SimApp[] = [
-  { id: "health", label: "Health app", tag: "AU client", screen: "DashboardScreen", accent: "#34d399", Comp: HealthScreen },
-  { id: "fonova", label: "Fonova", tag: "personal", screen: "WalletScreen", accent: "#7c8cff", Comp: FinanceScreen },
-  { id: "surf", label: "Surf app", tag: "AU client", screen: "ForecastScreen", accent: "#22d3ee", Comp: SurfScreen },
-  { id: "wellbeing", label: "Wellbeing app", tag: "AU client", screen: "CheckInScreen", accent: "#fb7faf", Comp: WellbeingScreen },
-  { id: "education", label: "Education app", tag: "AU client", screen: "LessonScreen", accent: "#f5a524", Comp: EducationScreen },
+  { id: "health", label: "Health app", tag: "AU client", screen: "DashboardScreen", accent: ACCENT, Comp: HealthScreen },
+  { id: "fonova", label: "Fonova", tag: "personal", screen: "WalletScreen", accent: ACCENT, Comp: FinanceScreen },
+  { id: "surf", label: "Surf app", tag: "AU client", screen: "ForecastScreen", accent: ACCENT, Comp: SurfScreen },
+  { id: "wellbeing", label: "Wellbeing app", tag: "AU client", screen: "CheckInScreen", accent: ACCENT, Comp: WellbeingScreen },
+  { id: "education", label: "Education app", tag: "AU client", screen: "LessonScreen", accent: ACCENT, Comp: EducationScreen },
 ];
