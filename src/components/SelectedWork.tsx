@@ -148,11 +148,7 @@ export default function SelectedWork({
                   />
                 )}
                 <span className="mono absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-bg/70 px-2.5 py-1 text-[0.7rem] text-dim backdrop-blur">
-                  <span
-                    className={`h-1.5 w-1.5 rounded-full ${
-                      c.status === "Live" ? "bg-accent" : "bg-[#f6b667]"
-                    }`}
-                  />
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                   {c.status}
                 </span>
               </div>

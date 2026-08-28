@@ -26,9 +26,6 @@ export const metadata: Metadata = {
 };
 
 const accent = ACCENT.amber;
-/* The mockups carry the product's own blue, so their frames and captions use
-   it rather than the amber this case study is tagged with elsewhere. */
-const BLUE = "#0d9ddb";
 
 export default function EducationSaasCase() {
   return (
@@ -54,7 +51,7 @@ export default function EducationSaasCase() {
 
       <div className="mt-8">
         <ScreenBoard
-          accent={BLUE}
+          accent={accent}
           items={[
             {
               key: "course",
@@ -146,7 +143,7 @@ export default function EducationSaasCase() {
         </Lead>
         <div className="mt-8">
           <PhoneRow
-            accent={BLUE}
+            accent={accent}
             items={[
               { key: "m1", label: "subjects", screen: <EduMobile1 />, note: "Subject tiles, two to a row." },
               { key: "m2", label: "quiz", screen: <EduMobile3 />, note: "Answer controls stack instead of sitting side by side." },

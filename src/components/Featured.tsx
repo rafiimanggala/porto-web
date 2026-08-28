@@ -20,7 +20,7 @@ const FEATURED_IDS = [
 const statusDot: Record<string, string> = {
   Live: "bg-accent",
   Done: "bg-dim",
-  Building: "bg-[#f6b667]",
+  Building: "bg-accent",
   Planned: "bg-mute",
 };
 
