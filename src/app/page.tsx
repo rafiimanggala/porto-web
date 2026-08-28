@@ -37,7 +37,7 @@ export default function Home() {
             <LineMask
               lines={[
                 { text: "What do you", className: "text-grad" },
-                { text: "need built?", className: "text-accent" },
+                { text: "need built?", className: "text-accent", icon: true },
               ]}
             />
           </h1>

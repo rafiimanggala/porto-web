@@ -329,20 +329,22 @@ export default function Mascot() {
             }
             style={{ boxShadow: "inset 0 1px 0 0 rgba(255,255,255,0.08)" }}
           >
-            <span
-              className="grid h-7 w-7 place-items-center rounded-full transition-transform"
-              style={{
-                background:
-                  "radial-gradient(circle at 50% 40%, color-mix(in oklab, var(--color-accent) 80%, white), color-mix(in oklab, var(--color-accent) 55%, transparent))",
-              }}
+            <motion.span
+              className="mono flex h-7 w-7 items-center justify-center gap-[2px] rounded-[0.4rem] border border-line bg-bg"
+              style={{ x: spx, y: spy }}
+              animate={{ scale: react ? 1.14 : 1 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
             >
+              <span className="text-accent" style={{ fontSize: 11, lineHeight: 1 }}>
+                &gt;
+              </span>
               <motion.span
-                className="block rounded-full bg-bg"
-                style={{ x: spx, y: spy, width: 10, height: 10 }}
-                animate={{ scaleY: blink ? 0.15 : 1, scale: react ? 1.25 : 1 }}
+                className="bg-accent"
+                style={{ width: 2, height: 11 }}
+                animate={{ opacity: blink ? 0.15 : 1 }}
                 transition={{ duration: 0.12 }}
               />
-            </span>
+            </motion.span>
           </motion.span>
         </button>
       </div>
