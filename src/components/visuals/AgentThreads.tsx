@@ -244,7 +244,7 @@ export default function AgentThreads() {
         </span>
       </div>
 
-      <div className="flex flex-col sm:flex-row sm:h-[420px]">
+      <div className="flex flex-col sm:flex-row sm:h-[340px]">
         <div
           role="tablist"
           aria-orientation="vertical"
