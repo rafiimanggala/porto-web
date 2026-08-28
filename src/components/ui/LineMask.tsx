@@ -1,8 +1,9 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import OrbGlyph from "./OrbGlyph";
 
-type Line = { text: string; className?: string };
+type Line = { text: string; className?: string; icon?: boolean };
 
 export default function LineMask({ lines }: { lines: Line[] }) {
   const reduce = useReducedMotion();
@@ -11,6 +12,7 @@ export default function LineMask({ lines }: { lines: Line[] }) {
       <>
         {lines.map((l, i) => (
           <span key={i} className={`block ${l.className ?? ""}`}>
+            {l.icon ? <OrbGlyph /> : null}
             {l.text}
           </span>
         ))}
@@ -27,6 +29,7 @@ export default function LineMask({ lines }: { lines: Line[] }) {
             animate={{ y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
           >
+            {l.icon ? <OrbGlyph /> : null}
             {l.text}
           </motion.span>
         </span>

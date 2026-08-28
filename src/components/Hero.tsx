@@ -40,7 +40,7 @@ export default function Hero() {
             <LineMask
               lines={[
                 { text: "I build systems where", className: "text-grad" },
-                { text: "AI agents do the work,", className: "text-accent" },
+                { text: "AI agents do the work,", className: "text-accent", icon: true },
                 { text: "not just write the code.", className: "text-grad" },
               ]}
             />

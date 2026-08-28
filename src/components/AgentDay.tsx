@@ -2,6 +2,7 @@
 
 import Section from "./ui/Section";
 import Reveal from "./ui/Reveal";
+import ChatDemo from "./visuals/ChatDemo";
 
 const beats = [
   "Before coffee, an hourly Email Reactor has already caught a client bug report, spun up a headless Claude, warmed up the right project, and fixed it on a branch waiting for review.",
@@ -36,17 +37,23 @@ export default function AgentDay() {
       title="I run AI agents in production, not in a chat window"
       intro="I operate a fleet of AI agents as a working system: 15 always-on processes, 6 autonomous pipelines, and a self-learning rule set that ships client work while I sleep. I build the orchestration, the safety rails, and the tooling myself, then drive all of it from my phone."
     >
-      <div className="card p-6 sm:p-8">
-        <div className="space-y-4">
-          {beats.map((beat, i) => (
-            <Reveal key={i} delay={i * 0.06}>
-              <div className="flex gap-3">
-                <span className="mono mt-1 select-none text-accent">▸</span>
-                <p className="text-sm leading-relaxed text-dim">{beat}</p>
-              </div>
-            </Reveal>
-          ))}
+      <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr] lg:items-start">
+        <div className="card p-6 sm:p-8">
+          <div className="space-y-4">
+            {beats.map((beat, i) => (
+              <Reveal key={i} delay={i * 0.06}>
+                <div className="flex gap-3">
+                  <span className="mono mt-1 select-none text-accent">▸</span>
+                  <p className="text-sm leading-relaxed text-dim">{beat}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
+
+        <Reveal delay={0.15} className="lg:sticky lg:top-24">
+          <ChatDemo />
+        </Reveal>
       </div>
 
       <h3 className="eyebrow mt-12 mb-4">Questions</h3>
