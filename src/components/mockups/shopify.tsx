@@ -57,8 +57,8 @@ export function ShopifyWeb1({ accent }: { accent: string }) {
 export function ShopifyWeb2({ accent }: { accent: string }) {
   const opts = [
     { l: "Color", v: accent },
-    { l: "Collar", v: "#a78bfa" },
-    { l: "Tuck", v: "#f6b667" },
+    { l: "Collar", v: accent },
+    { l: "Tuck", v: accent },
   ];
   return (
     <div className="flex h-full flex-col gap-4">
@@ -91,8 +91,8 @@ export function ShopifyWeb2({ accent }: { accent: string }) {
 export function ShopifyWeb3({ accent }: { accent: string }) {
   const swatches = [
     { c: accent, name: "Core twill" },
-    { c: "#a78bfa", name: "Oxford weave" },
-    { c: "#f6b667", name: "Brushed flannel" },
+    { c: accent, name: "Oxford weave" },
+    { c: accent, name: "Brushed flannel" },
   ];
   return (
     <div className="flex h-full flex-col gap-4">
