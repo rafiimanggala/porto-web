@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Nav from "@/components/Nav";
 import Switchboard from "@/components/Switchboard";
 import Contact from "@/components/Contact";
+import CommandCenter from "@/components/CommandCenter";
 import Reveal from "@/components/ui/Reveal";
 import LineMask from "@/components/ui/LineMask";
 import Scramble from "@/components/ui/Scramble";
+import Magnetic from "@/components/ui/Magnetic";
 
 export const metadata: Metadata = {
   title: "Rafii Manggala · Web apps, AI features, automation",
@@ -18,9 +20,9 @@ export default function Home() {
     <main className="relative">
       <Nav variant="home" />
 
-      <section className="mx-auto w-full max-w-[1120px] px-6 pt-20 pb-20 lg:px-8 lg:pt-28 lg:pb-28">
+      <section className="mx-auto w-full max-w-[1120px] px-6 pt-20 pb-16 text-center lg:px-8 lg:pt-28 lg:pb-20">
         <Reveal>
-          <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-line bg-surface-2/60 px-3 py-1">
+          <div className="mx-auto mb-7 inline-flex items-center gap-2 rounded-full border border-line bg-surface-2/60 px-3 py-1">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
@@ -41,9 +43,38 @@ export default function Home() {
         </Reveal>
 
         <Reveal delay={0.1}>
-          <p className="t-lead mt-7 max-w-[54ch] text-dim">
+          <p className="t-lead mx-auto mt-7 max-w-[54ch] text-dim">
             Seven things I get hired for. Open the one that matches your problem.
           </p>
+        </Reveal>
+
+        <Reveal delay={0.15}>
+          <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+            <Magnetic>
+              <a
+                href="#directory"
+                data-unit="cta:work"
+                className="block cursor-pointer rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-bg transition-colors"
+              >
+                View the work
+              </a>
+            </Magnetic>
+            <Magnetic>
+              <a
+                href="#contact"
+                data-unit="cta:contact"
+                className="mono block cursor-pointer rounded-full border border-line px-5 py-2.5 text-sm text-fg transition-colors hover:border-line-strong"
+              >
+                Get in touch
+              </a>
+            </Magnetic>
+          </div>
+        </Reveal>
+
+        <Reveal delay={0.2}>
+          <div className="mx-auto mt-16 max-w-[720px] text-left">
+            <CommandCenter />
+          </div>
         </Reveal>
       </section>
 
