@@ -43,7 +43,7 @@ export default function AgentDay() {
             {beats.map((beat, i) => (
               <Reveal key={i} delay={i * 0.06}>
                 <div className="flex gap-3">
-                  <span className="mono mt-1 select-none text-accent">▸</span>
+                  <span className="mono mt-1 select-none text-mute">▸</span>
                   <p className="text-sm leading-relaxed text-dim">{beat}</p>
                 </div>
               </Reveal>
