@@ -88,7 +88,7 @@ export default function Nav({
           {variant === "home" ? (
             <a
               href="#directory"
-              className="mono cursor-pointer rounded-full bg-accent px-4 py-1.5 text-xs font-medium text-bg transition-colors duration-200"
+              className="mono cursor-pointer rounded-full bg-fg px-4 py-1.5 text-xs font-medium text-bg transition-colors duration-200"
             >
               View the work
             </a>

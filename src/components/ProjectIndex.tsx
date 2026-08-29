@@ -83,7 +83,7 @@ export default function ProjectIndex({
                 {featured ? (
                   <a
                     href="#directory"
-                    className="mono mt-6 block cursor-pointer rounded-full bg-accent px-4 py-2 text-center text-[11px] font-medium text-bg transition-colors"
+                    className="mono mt-6 block cursor-pointer rounded-full bg-fg px-4 py-2 text-center text-[11px] font-medium text-bg transition-colors"
                   >
                     See the work &#8599;
                   </a>

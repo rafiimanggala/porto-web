@@ -24,18 +24,20 @@ export default function Capabilities({ limit }: { limit?: number } = {}) {
         {items.map((c, i) => (
           <Reveal key={c.title} delay={(i % 4) * 0.05} className="h-full">
             <div className="flex h-full flex-col bg-surface-1 p-6 transition-colors duration-200 hover:bg-surface-2">
-              <svg
-                aria-hidden
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="var(--color-accent)"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-              >
-                {ICON_PATHS[i % ICON_PATHS.length]}
-              </svg>
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-2">
+                <svg
+                  aria-hidden
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="var(--color-accent)"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                >
+                  {ICON_PATHS[i % ICON_PATHS.length]}
+                </svg>
+              </div>
               <h3 className="mt-3 font-[family-name:var(--font-display)] text-base font-semibold tracking-tight text-fg">
                 {c.title}
               </h3>

@@ -25,7 +25,7 @@ export default function FaqAccordion({ index }: { index: string }) {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <Section id="faq" index={index} label="FAQ" title="Before you reach out.">
+    <Section id="faq" index={index} label="FAQ" title="Before you reach out">
       <div className="divide-y divide-line border-y border-line">
         {FAQS.map((item, i) => {
           const isOpen = open === i;

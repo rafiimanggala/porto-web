@@ -104,8 +104,7 @@ function TypingDots() {
 function BeatRow({ beat }: { beat: Beat }) {
   if (beat.kind === "status") {
     return (
-      <div className="mono flex w-fit items-center gap-2 rounded-xl border border-line bg-[rgba(255,255,255,0.03)] px-3.5 py-2.5 text-[11px] text-mute">
-        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+      <div className="mono border-b border-line pb-2.5 text-[11px] leading-snug text-dim">
         {beat.text}
       </div>
     );
@@ -251,12 +250,16 @@ export default function RoleSelector({ index }: { index: string }) {
                   aria-controls={`role-panel-${r.slug}`}
                   tabIndex={selected ? 0 : -1}
                   onClick={() => setActiveSlug(r.slug)}
-                  className={`mono cursor-pointer rounded-full border px-4 py-2 text-[12.5px] transition-colors ${
+                  className={`mono cursor-pointer inline-flex items-center gap-2 rounded-full border py-2 pl-2.5 pr-4 text-[12.5px] transition-colors ${
                     selected
                       ? "border-accent bg-surface-2 text-fg"
                       : "border-line text-dim hover:border-line-strong hover:text-fg"
                   }`}
                 >
+                  <span
+                    aria-hidden
+                    className={`h-4 w-4 shrink-0 rounded-full ${selected ? "bg-accent" : "bg-dim"}`}
+                  />
                   {r.shortLabel}
                 </button>
               );
@@ -275,15 +278,18 @@ export default function RoleSelector({ index }: { index: string }) {
           </div>
         </div>
 
-        <div className="card mx-auto w-full max-w-[320px] overflow-hidden rounded-[28px] p-0">
-          <div className="flex items-center gap-2 border-b border-line px-4 py-3">
-            <span className="mono nums rounded-sm border border-line px-1.5 py-0.5 text-[10px] text-mute">
-              {String(active.n).padStart(2, "0")}
+        <div className="card relative mx-auto w-full max-w-[280px] overflow-hidden rounded-[36px] p-0">
+          <span
+            aria-hidden
+            className="absolute left-1/2 top-3 z-10 h-4 w-20 -translate-x-1/2 rounded-full bg-bg"
+          />
+          <div className="flex items-center gap-2 px-4 pb-3 pt-8">
+            <span className="mono flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-surface-3 text-[13px] text-dim">
+              &lsaquo;
             </span>
-            <span className="mono text-[11px] text-fg">{active.shortLabel}</span>
-            <span className="relative ml-auto flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-70" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
+            <span className="mono flex flex-1 items-center gap-2 rounded-full bg-surface-3 px-3 py-1.5 text-[12px] text-fg">
+              <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-accent" />
+              {active.shortLabel}
             </span>
           </div>
           <div className="h-[280px]">

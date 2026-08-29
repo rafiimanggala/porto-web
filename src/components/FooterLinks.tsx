@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { profile, toolkit, techStack } from "@/data/portfolio";
 
-// The site-map footer x.ai/bot closes on: a quiet globe mark, then four
-// equal-weight link columns. Contact.tsx (lean) already renders the closing
-// headline, contact cards and final copyright line right above this, so this
-// block stays to columns only rather than repeating that copy.
+// The site-map footer x.ai/bot closes on: a quiet globe mark, a brand +
+// tagline column beside four equal-weight link columns, then a bottom bar
+// (copyright, "built with" badge, theme toggle). Contact.tsx (lean) still
+// owns the closing headline and contact cards right above this.
 export default function FooterLinks() {
   return (
     <div className="border-t border-line">
@@ -25,7 +25,21 @@ export default function FooterLinks() {
           <path d="M10 60H110" />
         </svg>
 
-        <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-8 sm:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
+          <div className="col-span-2 sm:col-span-1">
+            <Link href="/" className="mono flex items-center gap-2 text-sm font-medium text-fg">
+              <span
+                aria-hidden
+                className="flex h-5 w-5 items-center justify-center rounded-full border border-line-strong bg-surface-2 text-[10px] font-bold text-accent"
+              >
+                &gt;
+              </span>
+              {profile.handle}
+              <span className="text-accent">.</span>
+            </Link>
+            <p className="mt-3 max-w-[220px] text-sm text-dim">{profile.tagline}</p>
+          </div>
+
           <div>
             <h4 className="mono mb-4 text-[11px] uppercase tracking-wide text-mute">
               Explore
@@ -108,6 +122,34 @@ export default function FooterLinks() {
                 </li>
               ))}
             </ul>
+          </div>
+        </div>
+
+        <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-6 text-sm text-dim">
+          <span>&copy; 2026 {profile.name}.</span>
+          <div className="flex items-center gap-4">
+            <span className="mono inline-flex items-center gap-1.5 rounded-full border border-line-strong px-3 py-1.5 text-xs text-fg">
+              Built with Next.js &middot; the agents helped.
+            </span>
+            {/* Decorative only: no theme system to wire up yet, matches the reference's icon-only toggle */}
+            <button
+              type="button"
+              aria-label="Toggle theme"
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-line-strong text-dim transition-colors hover:text-fg"
+            >
+              <svg
+                aria-hidden
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>

@@ -24,17 +24,21 @@ type Thread = {
   label: string;
   preview: string;
   time: string;
+  color: string;
   script: Beat[];
 };
 
 // One thread per skill, matching the reference clone's exact seven, each
-// script grounded in that skill's real evidence from data/skills.ts.
+// script grounded in that skill's real evidence from data/skills.ts. Sidebar
+// avatar colors are the clone's own c1-c6 gradients, reused thread-for-thread
+// (Design + Prototype shares c2 with AI Features there too).
 const THREADS: Thread[] = [
   {
     id: "full-stack",
     label: "Full-Stack Apps",
     preview: "All 18 shipped, production stayed green.",
     time: "11:04",
+    color: "linear-gradient(135deg,#6ea8fe,#3b5bdb)",
     script: [
       { kind: "message", text: "New spec is in: an existing production app needs 18 features added without breaking the system underneath." },
       { kind: "reply", text: "Go through it end to end, and don't take the live system down while you're at it." },
@@ -55,6 +59,7 @@ const THREADS: Thread[] = [
     label: "AI Features",
     preview: "Live, reasoning across all four sources.",
     time: "9:41",
+    color: "linear-gradient(135deg,#ffb37a,var(--color-accent))",
     script: [
       { kind: "message", text: "Client wants an AI layer that actually reasons across their data, not a chatbot bolted onto the corner." },
       { kind: "reply", text: "Pull blood work, DNA, DEXA scans and wearables into one score. Make the reasoning visible, not a black box." },
@@ -73,6 +78,7 @@ const THREADS: Thread[] = [
     label: "Automation",
     preview: "One failure never blocks the schedule.",
     time: "Yesterday",
+    color: "linear-gradient(135deg,#c6a6ff,#7c5cff)",
     script: [
       { kind: "message", text: "Can we get the content pipeline off manual scheduling entirely?" },
       { kind: "status", text: "Mapping the 30+ node workflow" },
@@ -86,6 +92,7 @@ const THREADS: Thread[] = [
     label: "AI Video",
     preview: "600+ assets produced, nothing stuck.",
     time: "Yesterday",
+    color: "linear-gradient(135deg,#6fe0c9,#1f9c86)",
     script: [
       { kind: "message", text: "Batch is ready: 14 client accounts, all queued for this week." },
       { kind: "reply", text: "Looks good so far, just confirm scheduling holds across all 14." },
@@ -97,6 +104,7 @@ const THREADS: Thread[] = [
     label: "Live-System Fix",
     preview: "Root cause traced, backlog clearing.",
     time: "Tuesday",
+    color: "linear-gradient(135deg,#f2c14e,#c9922a)",
     script: [
       { kind: "message", text: "Emails aren't sending, something's stuck." },
       {
@@ -114,6 +122,7 @@ const THREADS: Thread[] = [
     label: "Shopify Builds",
     preview: "Inline pattern editor, no build pipeline.",
     time: "Monday",
+    color: "linear-gradient(135deg,#ff8fa3,#e0507a)",
     script: [
       { kind: "message", text: "The stock theme can't do what they're asking for, no app sells this feature." },
       { kind: "reply", text: "Build it into the theme directly, keep it simple." },
@@ -125,6 +134,7 @@ const THREADS: Thread[] = [
     label: "Design + Prototype",
     preview: "Five screens shipped plus a live prototype.",
     time: "Monday",
+    color: "linear-gradient(135deg,#ffb37a,var(--color-accent))",
     script: [
       { kind: "message", text: "Idea's ready to test but there's nothing to click yet." },
       { kind: "reply", text: "Turn it into something people can actually try." },
@@ -140,14 +150,24 @@ const HOLD_MS = 1000;
 
 // Same terminal-prompt badge language as OrbGlyph.tsx / Mascot.tsx, with a
 // loading state: the `>` glyph cross-fades to a spinner while a beat is
-// "typing", then back once it lands -- one accent color only (the site
-// dropped per-item color coding in the fase-2/3 accent collapse), so
-// identity here comes from the thread label, not a hue.
-function ThreadAvatar({ loading, size = 26 }: { loading?: boolean; size?: number }) {
+// "typing", then back once it lands. Sidebar rows tint the badge via
+// `background` (per-thread identity); the panel header and the sidebar-user
+// row stay neutral so the loading spinner keeps full contrast.
+function ThreadAvatar({
+  loading,
+  size = 26,
+  background,
+}: {
+  loading?: boolean;
+  size?: number;
+  background?: string;
+}) {
   return (
     <span
-      className="relative inline-flex shrink-0 items-center justify-center rounded-full border border-line-strong bg-surface-3"
-      style={{ width: size, height: size }}
+      className={`relative inline-flex shrink-0 items-center justify-center rounded-full border border-line-strong ${
+        background ? "" : "bg-surface-3"
+      }`}
+      style={{ width: size, height: size, ...(background ? { background } : {}) }}
     >
       <AnimatePresence initial={false} mode="wait">
         {loading ? (
@@ -298,6 +318,20 @@ function ThreadPanel({ thread, inView }: { thread: Thread; inView: boolean }) {
           </div>
         )}
       </div>
+      <div className="mono flex shrink-0 items-center gap-2 border-t border-line px-4 py-2.5 sm:px-5">
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-surface-3 text-sm text-mute">
+          +
+        </span>
+        <span className="flex-1 truncate rounded-full bg-surface-3 px-3 py-1.5 text-[12px] text-mute">
+          Message {thread.label}
+        </span>
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-surface-3 text-mute">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <rect x="9" y="2" width="6" height="12" rx="3" />
+            <path d="M5 11a7 7 0 0 0 14 0M12 18v4" />
+          </svg>
+        </span>
+      </div>
     </div>
   );
 }
@@ -371,7 +405,7 @@ export default function AgentThreads() {
             aria-orientation="vertical"
             aria-label="Agent threads"
             onKeyDown={onKeyDown}
-            className="flex flex-row overflow-x-auto border-b border-line sm:flex-col sm:overflow-x-visible sm:overflow-y-auto sm:border-b-0"
+            className="flex flex-row overflow-x-auto border-b border-line sm:flex-1 sm:min-h-0 sm:flex-col sm:overflow-x-visible sm:overflow-y-auto sm:border-b-0"
           >
             {THREADS.map((t) => {
             const selected = t.id === activeId;
@@ -392,7 +426,7 @@ export default function AgentThreads() {
                 }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <ThreadAvatar size={22} />
+                  <ThreadAvatar size={22} background={t.color} />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-3">
                       <span className={`mono text-[12.5px] ${selected ? "text-fg" : "text-dim"}`}>
@@ -406,6 +440,10 @@ export default function AgentThreads() {
               </button>
             );
             })}
+          </div>
+          <div className="mono hidden shrink-0 items-center gap-2 border-t border-line px-3.5 py-2.5 sm:flex">
+            <ThreadAvatar size={22} />
+            <span className="text-xs font-medium text-dim">Rafii</span>
           </div>
         </div>
 

@@ -39,10 +39,7 @@ export default function Home() {
         <Reveal>
           <h1 className="t-hero">
             <LineMask
-              lines={[
-                { text: "What do you", className: "text-fg" },
-                { text: "need built?", className: "text-accent", icon: true },
-              ]}
+              lines={[{ text: "What do you need built?", className: "text-fg", icon: true }]}
             />
           </h1>
         </Reveal>
@@ -60,7 +57,7 @@ export default function Home() {
               <a
                 href="#directory"
                 data-unit="cta:work"
-                className="block cursor-pointer rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-bg transition-colors"
+                className="block cursor-pointer rounded-full bg-fg px-5 py-2.5 text-sm font-medium text-bg transition-colors"
               >
                 View the work
               </a>
@@ -117,11 +114,11 @@ export default function Home() {
             <blockquote className="t-h3 max-w-3xl text-fg">
               &ldquo;Trading bots that reach multi-model consensus before risking capital. A
               digital twin that reasons from my own decision history. An inbox that fixes
-              client bugs while I sleep. The code is the easy part, the interesting work is
+              client bugs while I sleep. The code is the easy part: the interesting work is
               the orchestration.&rdquo;
             </blockquote>
             <cite className="mono mt-6 block text-sm not-italic text-mute">
-              {profile.name} &middot; {profile.role}
+              {profile.name} &middot; AI Engineer, Autonomous Systems
             </cite>
           </div>
         </Reveal>
@@ -141,7 +138,7 @@ export default function Home() {
               <a
                 href={`mailto:${profile.email}`}
                 data-unit="cta:email"
-                className="mt-8 inline-block cursor-pointer rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-bg transition-colors"
+                className="mt-8 inline-block cursor-pointer rounded-full bg-fg px-5 py-2.5 text-sm font-medium text-bg transition-colors"
               >
                 Get in touch
               </a>

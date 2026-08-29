@@ -237,7 +237,7 @@ export const capabilities: Capability[] = [
   },
   {
     title: "Multi-agent council review",
-    desc: "A 4-agent adversarial panel that must all pass before work is 'done'. Adversarial self-verification built into the workflow.",
+    desc: "A 4-agent adversarial panel that must all pass before work is \"done\". Self-verification built into the workflow.",
   },
   {
     title: "Self-adaptation hooks",
@@ -245,7 +245,7 @@ export const capabilities: Capability[] = [
   },
   {
     title: "Headless autonomous spawning",
-    desc: "launchd + headless `claude --print` for unattended reactors and always-on daemons, with keychain auth and FDA mastery.",
+    desc: "launchd + headless Claude for unattended reactors and always-on daemons, with keychain auth and Full-Disk-Access mastery.",
   },
   {
     title: "Desktop & web automation tiers",
