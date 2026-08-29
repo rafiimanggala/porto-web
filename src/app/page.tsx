@@ -36,7 +36,7 @@ export default function Home() {
           <h1 className="t-hero">
             <LineMask
               lines={[
-                { text: "What do you", className: "text-grad" },
+                { text: "What do you", className: "text-fg" },
                 { text: "need built?", className: "text-accent", icon: true },
               ]}
             />

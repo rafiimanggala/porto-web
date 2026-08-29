@@ -128,14 +128,6 @@
   .mono { font-family: var(--font-mono); font-feature-settings: normal; letter-spacing: 0; }
   .nums { font-variant-numeric: tabular-nums; }
 
-  /* Subtle gradient on hero text */
-  .text-grad {
-    background: linear-gradient(180deg, #ffffff 0%, #b9b9c2 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
   /* ---------- Depth & texture ---------- */
   .grain {
     position: fixed;

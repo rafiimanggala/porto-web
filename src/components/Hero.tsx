@@ -31,7 +31,7 @@ export default function Hero() {
           <h1 className="t-hero">
             <LineMask
               lines={[
-                { text: "AI agents that", className: "text-grad" },
+                { text: "AI agents that", className: "text-fg" },
                 { text: "do the work.", className: "text-accent", icon: true },
               ]}
             />

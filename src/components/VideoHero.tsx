@@ -33,7 +33,7 @@ export default function VideoHero() {
         <h1 className="t-hero max-w-3xl">
           <LineMask
             lines={[
-              { text: "AI does the editing,", className: "text-grad" },
+              { text: "AI does the editing,", className: "text-fg" },
               { text: "the pipeline does the rest.", className: "text-accent" },
             ]}
           />
