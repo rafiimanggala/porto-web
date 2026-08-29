@@ -85,6 +85,14 @@ export default function Nav({
         </div>
         <div className="flex items-center gap-2">
           {variant === "dev" ? <CmdkHint /> : null}
+          {variant === "home" ? (
+            <a
+              href="#directory"
+              className="mono cursor-pointer rounded-full bg-accent px-4 py-1.5 text-xs font-medium text-bg transition-colors duration-200"
+            >
+              View the work
+            </a>
+          ) : null}
           <a
             href="#contact"
             className="mono cursor-pointer rounded-full border border-line px-4 py-1.5 text-xs text-fg transition-colors duration-200 hover:border-accent hover:text-accent"
