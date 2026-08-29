@@ -18,7 +18,12 @@ type Beat =
   | { kind: "message"; text: string }
   | { kind: "reply"; text: string }
   | { kind: "status"; text: string }
-  | { kind: "tool"; label: string; status: string; desc: string; image: boolean; checklist: string[] };
+  | { kind: "tool"; label: string; status: string; desc: string; image: boolean; checklist: string[] }
+  // Same real evidence as the "Parallel agent teams" capability card
+  // (inventories, audits, and full-stack builds run on 3-5 concurrent
+  // agents): a multi-agent breakdown inside one bubble, bold label + arrow
+  // per line, closing on the plain sentence the single-agent version used.
+  | { kind: "recap"; lines: { label: string; detail: string }[]; text: string };
 
 type Thread = {
   id: string;
@@ -53,7 +58,15 @@ const THREADS: Thread[] = [
         image: true,
         checklist: ["995 schools on the system", "12,495 users unaffected", "18 features delivered"],
       },
-      { kind: "message", text: "All 18 shipped, production stayed green the whole way through." },
+      {
+        kind: "recap",
+        lines: [
+          { label: "Inventory", detail: "mapped all 18 features against the live schema first" },
+          { label: "Audit", detail: "each change checked for breaking risk before merge" },
+          { label: "Build", detail: "4 agents shipped in parallel, one per feature cluster" },
+        ],
+        text: "All 18 shipped, production stayed green the whole way through.",
+      },
       { kind: "status", text: "Marked routine: fix, deploy, self-verify" },
       { kind: "message", text: "Every deploy from here runs the same loop before it counts as done." },
     ],
@@ -259,6 +272,22 @@ function BeatBubble({ beat }: { beat: Beat }) {
       </div>
     );
   }
+  if (beat.kind === "recap") {
+    return (
+      <div className="mono flex max-w-[85%] flex-col gap-2 rounded-2xl bg-[rgba(255,255,255,0.06)] px-3.5 py-3 text-[12.5px] leading-snug text-fg">
+        <div className="flex flex-col gap-1.5">
+          {beat.lines.map((l) => (
+            <div key={l.label} className="flex items-baseline gap-1.5">
+              <span className="font-semibold text-fg">{l.label}</span>
+              <span className="shrink-0 text-accent">&rarr;</span>
+              <span className="text-dim">{l.detail}</span>
+            </div>
+          ))}
+        </div>
+        <p className="text-fg">{beat.text}</p>
+      </div>
+    );
+  }
   if (beat.kind === "reply") {
     return (
       <div className="mono ml-auto max-w-[85%] rounded-2xl bg-[#ecece8] px-3.5 py-2.5 text-[12.5px] leading-snug text-[#141414]">
@@ -309,7 +338,7 @@ function ThreadPanel({ thread, inView }: { thread: Thread; inView: boolean }) {
     if (reduce || !inView) return;
     if (step >= thread.script.length - 1) return;
     const next = thread.script[step + 1];
-    const willType = next.kind === "message";
+    const willType = next.kind === "message" || next.kind === "recap";
     const wait = step === -1 ? START_MS : HOLD_MS;
     if (willType) {
       const dotsOn = window.setTimeout(() => setTyping(true), wait);
