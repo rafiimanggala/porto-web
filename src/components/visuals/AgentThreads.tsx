@@ -387,6 +387,24 @@ function TypingDots() {
   );
 }
 
+// Small persistent mark on every bot-authored bubble (message, recap, tool
+// card) tying every thread back to the same "Email Reactor" identity: all of
+// this, across every skill, runs through the same inbox-triggered agent.
+function BotEnvelope() {
+  return (
+    <span
+      aria-hidden="true"
+      className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
+      style={{ background: "linear-gradient(135deg,#6ea8fe,var(--color-accent))" }}
+    >
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="5" width="18" height="14" rx="2" />
+        <path d="M3 7l9 6 9-6" />
+      </svg>
+    </span>
+  );
+}
+
 function BeatBubble({ beat }: { beat: Beat }) {
   if (beat.kind === "ts" || beat.kind === "status") {
     return <div className="mono text-center text-[11px] text-mute">{beat.text}</div>;
@@ -434,24 +452,30 @@ function BeatBubble({ beat }: { beat: Beat }) {
   }
   if (beat.kind === "message") {
     return (
-      <div className="mono max-w-[78%] rounded-2xl bg-[rgba(255,255,255,0.06)] px-3.5 py-2.5 text-[12.5px] leading-snug text-fg">
-        {beat.text}
+      <div className="flex w-fit max-w-[85%] items-start gap-1.5">
+        <BotEnvelope />
+        <div className="mono min-w-0 rounded-2xl bg-[rgba(255,255,255,0.06)] px-3.5 py-2.5 text-[12.5px] leading-snug text-fg">
+          {beat.text}
+        </div>
       </div>
     );
   }
   if (beat.kind === "recap") {
     return (
-      <div className="mono flex max-w-[85%] flex-col gap-2 rounded-2xl bg-[rgba(255,255,255,0.06)] px-3.5 py-3 text-[12.5px] leading-snug text-fg">
-        <div className="flex flex-col gap-1.5">
-          {beat.lines.map((l) => (
-            <div key={l.label} className="flex items-baseline gap-1.5">
-              <span className="font-semibold text-fg">{l.label}</span>
-              <span className="shrink-0 text-accent">&rarr;</span>
-              <span className="text-dim">{l.detail}</span>
-            </div>
-          ))}
+      <div className="flex w-fit max-w-[90%] items-start gap-1.5">
+        <BotEnvelope />
+        <div className="mono flex min-w-0 flex-col gap-2 rounded-2xl bg-[rgba(255,255,255,0.06)] px-3.5 py-3 text-[12.5px] leading-snug text-fg">
+          <div className="flex flex-col gap-1.5">
+            {beat.lines.map((l) => (
+              <div key={l.label} className="flex items-baseline gap-1.5">
+                <span className="font-semibold text-fg">{l.label}</span>
+                <span className="shrink-0 text-accent">&rarr;</span>
+                <span className="text-dim">{l.detail}</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-fg">{beat.text}</p>
         </div>
-        <p className="text-fg">{beat.text}</p>
       </div>
     );
   }
@@ -473,30 +497,33 @@ function BeatBubble({ beat }: { beat: Beat }) {
   // when `image` is set, matching the reference clone (its two other tool
   // beats omit the block and end at the description).
   return (
-    <div className="max-w-[82%] overflow-hidden rounded-xl border border-line bg-[#2b2e36]">
-      <div className="flex items-center justify-between gap-3 px-3.5 py-2.5 text-[12.5px] font-semibold text-fg">
-        <span className="mono">{beat.label}</span>
-        <span className="mono inline-flex items-center gap-1.5 text-[11px] font-medium text-[#28c840]">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#28c840]" />
-          {beat.status}
-        </span>
-      </div>
-      <p className="px-3.5 pb-3 text-[12px] leading-relaxed text-dim">{beat.desc}</p>
-      {beat.image && (
-        <div
-          className="relative mx-3.5 mb-3.5 h-[100px] overflow-hidden rounded-lg"
-          style={{ background: "linear-gradient(135deg,#2a2f3a,#14161c 60%,#1f2430)" }}
-        >
-          <div className="absolute inset-x-2.5 bottom-2.5 flex flex-col gap-1.5 rounded-lg bg-black/75 px-2.5 py-2 backdrop-blur-sm">
-            {beat.checklist.map((c) => (
-              <div key={c} className="mono flex items-center gap-1.5 text-[10.5px] text-dim">
-                <span className="font-bold text-accent">&#10003;</span>
-                {c}
-              </div>
-            ))}
-          </div>
+    <div className="flex w-fit max-w-[85%] items-start gap-1.5">
+      <BotEnvelope />
+      <div className="min-w-0 overflow-hidden rounded-xl border border-line bg-[#2b2e36]">
+        <div className="flex items-center justify-between gap-3 px-3.5 py-2.5 text-[12.5px] font-semibold text-fg">
+          <span className="mono">{beat.label}</span>
+          <span className="mono inline-flex items-center gap-1.5 text-[11px] font-medium text-[#28c840]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#28c840]" />
+            {beat.status}
+          </span>
         </div>
-      )}
+        <p className="px-3.5 pb-3 text-[12px] leading-relaxed text-dim">{beat.desc}</p>
+        {beat.image && (
+          <div
+            className="relative mx-3.5 mb-3.5 h-[100px] overflow-hidden rounded-lg"
+            style={{ background: "linear-gradient(135deg,#2a2f3a,#14161c 60%,#1f2430)" }}
+          >
+            <div className="absolute inset-x-2.5 bottom-2.5 flex flex-col gap-1.5 rounded-lg bg-black/75 px-2.5 py-2 backdrop-blur-sm">
+              {beat.checklist.map((c) => (
+                <div key={c} className="mono flex items-center gap-1.5 text-[10.5px] text-dim">
+                  <span className="font-bold text-accent">&#10003;</span>
+                  {c}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
