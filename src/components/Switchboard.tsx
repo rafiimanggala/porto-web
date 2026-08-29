@@ -27,7 +27,7 @@ export default function Switchboard() {
         What I get hired for
       </h2>
       <div className="flex items-center gap-4">
-        <Scramble text="// 01 · Directory" className="eyebrow" />
+        <Scramble text="// 03 · Directory" className="eyebrow" />
         <span className="hairline flex-1" />
         <span className="mono hidden text-[11px] text-mute lg:inline">
           press 1 to 7

@@ -2,11 +2,11 @@ import { projectIndex } from "@/data/portfolio";
 import Section from "./ui/Section";
 import Reveal from "./ui/Reveal";
 
-export default function ProjectIndex() {
+export default function ProjectIndex({ index = "08" }: { index?: string }) {
   return (
     <Section
       id="index"
-      index="08"
+      index={index}
       label="The rest of the shelf"
       title="More things I've shipped."
       intro="A sample of the other 40-odd repos. Hover a row for the stack."

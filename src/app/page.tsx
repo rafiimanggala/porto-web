@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import Nav from "@/components/Nav";
 import Switchboard from "@/components/Switchboard";
+import Capabilities from "@/components/Capabilities";
+import ProjectIndex from "@/components/ProjectIndex";
+import FaqAccordion from "@/components/FaqAccordion";
 import Contact from "@/components/Contact";
 import AgentThreads from "@/components/visuals/AgentThreads";
 import Reveal from "@/components/ui/Reveal";
 import LineMask from "@/components/ui/LineMask";
 import Scramble from "@/components/ui/Scramble";
 import Magnetic from "@/components/ui/Magnetic";
+import OrbGlyph from "@/components/ui/OrbGlyph";
 import { profile } from "@/data/portfolio";
 
 export const metadata: Metadata = {
@@ -79,19 +83,45 @@ export default function Home() {
         </Reveal>
       </section>
 
-      <section className="mx-auto w-full max-w-[1120px] px-6 pb-16 text-center lg:px-8 lg:pb-20">
+      <section className="mx-auto w-full max-w-[1120px] px-6 pb-16 lg:px-8 lg:pb-20">
         <Reveal>
-          <p className="t-body mx-auto max-w-[62ch] text-dim">
-            <span className="text-fg">{profile.name}</span> &middot; {profile.role},
-            based in {profile.location.split(" · ")[0]} ({profile.location.split(" · ")[1]}).
-            Most people use Claude Code to write functions; I deploy it as the engine:
-            always-on agents that observe, decide, and act in production.
-          </p>
+          <div className="card flex flex-col items-start gap-6 p-8 sm:flex-row sm:items-center sm:justify-between sm:p-10">
+            <div className="max-w-2xl">
+              <h2 className="t-h3 text-fg">How I actually work with Claude Code.</h2>
+              <p className="t-body mt-4 text-dim">
+                <span className="text-fg">{profile.name}</span> &middot; {profile.role}, based
+                in {profile.location.split(" · ")[0]} ({profile.location.split(" · ")[1]}).{" "}
+                Most people use Claude Code to write functions; I deploy it as the engine:
+                always-on agents that observe, decide, and act in production.
+              </p>
+            </div>
+            <OrbGlyph size="4.5rem" />
+          </div>
         </Reveal>
       </section>
 
+      <Capabilities />
       <Switchboard />
-      <Contact index="02" lean />
+
+      <section className="mx-auto w-full max-w-[1120px] px-6 pb-16 lg:px-8 lg:pb-20">
+        <Reveal>
+          <div className="card p-8 sm:p-12">
+            <blockquote className="t-h3 max-w-3xl text-fg">
+              &ldquo;Trading bots that reach multi-model consensus before risking capital. A
+              digital twin that reasons from my own decision history. An inbox that fixes
+              client bugs while I sleep. The code is the easy part, the interesting work is
+              the orchestration.&rdquo;
+            </blockquote>
+            <cite className="mono mt-6 block text-sm not-italic text-mute">
+              {profile.name} &middot; {profile.role}
+            </cite>
+          </div>
+        </Reveal>
+      </section>
+
+      <ProjectIndex index="04" />
+      <FaqAccordion index="05" />
+      <Contact index="06" lean />
     </main>
   );
 }

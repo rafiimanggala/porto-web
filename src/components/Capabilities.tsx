@@ -6,7 +6,7 @@ export default function Capabilities() {
   return (
     <Section
       id="capabilities"
-      index="03"
+      index="02"
       label="How I work with AI"
       title="Orchestration, not autocomplete."
       intro="The interesting work isn't prompting, it's the harness. Fleets of parallel agents, adversarial review panels, and self-correcting loops."
