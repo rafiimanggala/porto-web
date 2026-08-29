@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { motion, AnimatePresence, useInView, useReducedMotion } from "framer-motion";
 
 /* Named pattern: Tabs (vertical), APG contract -- tablist/tab/tabpanel,
@@ -19,6 +19,7 @@ type Beat =
   | { kind: "reply"; text: string; reaction?: string }
   | { kind: "status"; text: string }
   | { kind: "routine"; text: string }
+  | { kind: "email"; from: string }
   | { kind: "tool"; label: string; status: string; desc: string; image: boolean; checklist: string[] }
   // Same real evidence as the "Parallel agent teams" capability card
   // (inventories, audits, and full-stack builds run on 3-5 concurrent
@@ -31,7 +32,8 @@ type Thread = {
   label: string;
   preview: string;
   time: string;
-  avatar: string;
+  avatar?: string;
+  icon?: boolean;
   script: Beat[];
 };
 
@@ -171,6 +173,31 @@ const THREADS: Thread[] = [
       { kind: "message", text: "Five responsive screens shipped plus a live clickable prototype, closes the pipeline for the week." },
     ],
   },
+  // Real build, not a skill case study: launchd cron reads new client
+  // email hourly and reacts. Grounded in the "Email Reactor" entry in
+  // data/portfolio.ts (cmd: "launchd · hourly").
+  {
+    id: "email-reactor",
+    label: "Email Reactor",
+    preview: "Branch fixed, reply drafted and held.",
+    time: "Hourly",
+    icon: true,
+    script: [
+      { kind: "ts", text: "6:03" },
+      { kind: "email", from: "Client Inbox" },
+      { kind: "message", text: "Checkout button throws a 500 on mobile Safari since this morning's deploy." },
+      { kind: "status", text: "Warmed up the right repo" },
+      {
+        kind: "tool",
+        label: "Computer",
+        status: "Done",
+        desc: "Reproduced on a branch, traced it to a null cart-total on an empty promo code, patched and tested.",
+        image: false,
+        checklist: ["Repro confirmed on branch", "Fix tested against the live cart flow"],
+      },
+      { kind: "message", text: "Fix pushed to a branch, reply drafted and held. Nothing goes out without you seeing it first." },
+    ],
+  },
 ];
 
 const START_MS = 350;
@@ -182,14 +209,35 @@ const HOLD_MS = 900;
 // IS the badge). A loading state overlays a small spinner disc on top while
 // a beat is "typing", then fades out once it lands. The pinned sidebar-user
 // row has no thread identity, so it keeps the neutral terminal-prompt glyph.
+function MailIcon({ size }: { size: number }) {
+  return (
+    <svg
+      width={size * 0.5}
+      height={size * 0.5}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="white"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="M3 7l9 6 9-6" />
+    </svg>
+  );
+}
+
 function ThreadAvatar({
   loading,
   size = 26,
   avatar,
+  icon,
 }: {
   loading?: boolean;
   size?: number;
   avatar?: string;
+  icon?: ReactNode;
 }) {
   if (avatar) {
     return (
@@ -210,6 +258,39 @@ function ThreadAvatar({
               className="absolute inset-0 flex items-center justify-center rounded-full bg-surface-1"
             >
               <span className="h-3 w-3 animate-spin rounded-full border-2 border-line-strong border-t-accent" />
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </span>
+    );
+  }
+
+  if (icon) {
+    return (
+      <span
+        className="relative inline-flex shrink-0 items-center justify-center rounded-full"
+        style={{ width: size, height: size, background: "linear-gradient(135deg,#6ea8fe,var(--color-accent))" }}
+      >
+        <AnimatePresence initial={false} mode="wait">
+          {loading ? (
+            <motion.span
+              key="spin"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="h-3 w-3 animate-spin rounded-full border-2 border-white/40 border-t-white"
+            />
+          ) : (
+            <motion.span
+              key="icon"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="flex items-center justify-center"
+            >
+              {icon}
             </motion.span>
           )}
         </AnimatePresence>
@@ -280,6 +361,20 @@ function BeatBubble({ beat }: { beat: Beat }) {
           </svg>
         </span>
         <span className="font-semibold text-fg">{beat.text}</span>
+      </div>
+    );
+  }
+  if (beat.kind === "email") {
+    return (
+      <div className="mono flex items-center justify-center gap-1.5 text-center text-[11px] text-mute">
+        <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-line-strong">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="2" />
+            <path d="M3 7l9 6 9-6" />
+          </svg>
+        </span>
+        <span>New email from</span>
+        <span className="font-semibold text-fg">{beat.from}</span>
       </div>
     );
   }
@@ -385,7 +480,7 @@ function ThreadPanel({ thread, inView }: { thread: Thread; inView: boolean }) {
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="mono flex shrink-0 items-center gap-2.5 border-b border-line px-4 py-3 text-[12.5px] text-fg sm:px-5">
-        <ThreadAvatar loading={typing} avatar={thread.avatar} size={22} />
+        <ThreadAvatar loading={typing} avatar={thread.avatar} icon={thread.icon ? <MailIcon size={22} /> : undefined} size={22} />
         {thread.label}
         <svg
           className="ml-auto shrink-0 text-mute"
@@ -519,7 +614,7 @@ export default function AgentThreads() {
                 }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <ThreadAvatar size={30} avatar={t.avatar} />
+                  <ThreadAvatar size={30} avatar={t.avatar} icon={t.icon ? <MailIcon size={30} /> : undefined} />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-3">
                       <span className={`mono truncate text-[12.5px] ${selected ? "text-fg" : "text-dim"}`}>
