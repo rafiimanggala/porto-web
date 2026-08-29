@@ -16,8 +16,9 @@ import { motion, AnimatePresence, useInView, useReducedMotion } from "framer-mot
 type Beat =
   | { kind: "ts"; text: string }
   | { kind: "message"; text: string }
-  | { kind: "reply"; text: string }
+  | { kind: "reply"; text: string; reaction?: string }
   | { kind: "status"; text: string }
+  | { kind: "routine"; text: string }
   | { kind: "tool"; label: string; status: string; desc: string; image: boolean; checklist: string[] }
   // Same real evidence as the "Parallel agent teams" capability card
   // (inventories, audits, and full-stack builds run on 3-5 concurrent
@@ -101,10 +102,13 @@ const THREADS: Thread[] = [
     script: [
       { kind: "ts", text: "Yesterday, 4:52" },
       { kind: "message", text: "Can we get the content pipeline off manual scheduling entirely?" },
+      { kind: "routine", text: "Content Pipeline" },
       { kind: "status", text: "Mapping the 30+ node workflow" },
       { kind: "message", text: "Self-hosted n8n graph is live: sources in, script and voiceover and render in the middle, publishing out the other end." },
-      { kind: "reply", text: "Good. What happens if a scrape fails?" },
+      { kind: "ts", text: "Yesterday, 5:20" },
+      { kind: "reply", text: "Good, what happens if a scrape fails?" },
       { kind: "message", text: "Publishing keeps running, the scrape workflow is decoupled, so one failure never blocks the schedule." },
+      { kind: "reply", text: "Perfect, ship it.", reaction: "👍" },
     ],
   },
   {
@@ -265,6 +269,20 @@ function BeatBubble({ beat }: { beat: Beat }) {
   if (beat.kind === "ts" || beat.kind === "status") {
     return <div className="mono text-center text-[11px] text-mute">{beat.text}</div>;
   }
+  if (beat.kind === "routine") {
+    return (
+      <div className="mono flex items-center justify-center gap-1.5 text-center text-[11px] text-mute">
+        <span>Created routine</span>
+        <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-line-strong">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v5l3 2" />
+          </svg>
+        </span>
+        <span className="font-semibold text-fg">{beat.text}</span>
+      </div>
+    );
+  }
   if (beat.kind === "message") {
     return (
       <div className="mono max-w-[78%] rounded-2xl bg-[rgba(255,255,255,0.06)] px-3.5 py-2.5 text-[12.5px] leading-snug text-fg">
@@ -290,8 +308,15 @@ function BeatBubble({ beat }: { beat: Beat }) {
   }
   if (beat.kind === "reply") {
     return (
-      <div className="mono ml-auto max-w-[85%] rounded-2xl bg-[#ecece8] px-3.5 py-2.5 text-[12.5px] leading-snug text-[#141414]">
-        {beat.text}
+      <div className="relative ml-auto w-fit max-w-[85%]">
+        <div className="mono rounded-2xl bg-[#ecece8] px-3.5 py-2.5 text-[12.5px] leading-snug text-[#141414]">
+          {beat.text}
+        </div>
+        {beat.reaction && (
+          <span className="absolute -bottom-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full border border-line bg-surface-3 text-[11px] leading-none">
+            {beat.reaction}
+          </span>
+        )}
       </div>
     );
   }
