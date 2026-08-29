@@ -56,7 +56,13 @@ export default function Nav({
       }`}
     >
       <nav className="mx-auto flex h-14 w-full max-w-[1120px] items-center justify-between px-6 lg:px-8">
-        <Link href="/" className="mono text-sm font-medium text-fg">
+        <Link href="/" className="mono flex items-center gap-2 text-sm font-medium text-fg">
+          <span
+            aria-hidden
+            className="flex h-5 w-5 items-center justify-center rounded-full border border-line-strong bg-surface-2 text-[10px] font-bold text-accent"
+          >
+            &gt;
+          </span>
           {profile.handle}
           <span className="text-accent">.</span>
         </Link>

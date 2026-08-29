@@ -11,7 +11,6 @@ import Reveal from "@/components/ui/Reveal";
 import LineMask from "@/components/ui/LineMask";
 import Scramble from "@/components/ui/Scramble";
 import Magnetic from "@/components/ui/Magnetic";
-import OrbGlyph from "@/components/ui/OrbGlyph";
 import { profile } from "@/data/portfolio";
 
 export const metadata: Metadata = {
@@ -97,7 +96,14 @@ export default function Home() {
                 always-on agents that observe, decide, and act in production.
               </p>
             </div>
-            <OrbGlyph size="4.5rem" />
+            <div
+              aria-hidden
+              className="h-[110px] w-[110px] shrink-0 rounded-full"
+              style={{
+                background:
+                  "radial-gradient(circle at 35% 30%, #fff, #d5d9e2 60%, #a9adb3 100%)",
+              }}
+            />
           </div>
         </Reveal>
       </section>
