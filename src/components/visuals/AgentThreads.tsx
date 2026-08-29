@@ -19,7 +19,11 @@ type Beat =
   | { kind: "reply"; text: string; reaction?: string }
   | { kind: "status"; text: string }
   | { kind: "routine"; text: string }
-  | { kind: "email"; from: string }
+  | { kind: "email"; from: string; drafted?: boolean }
+  // An external party's own words, visually distinct from the bot's own
+  // "message" narration so an inbound client email doesn't read as
+  // something the bot said.
+  | { kind: "incoming"; from: string; text: string }
   | { kind: "tool"; label: string; status: string; desc: string; image: boolean; checklist: string[] }
   // Same real evidence as the "Parallel agent teams" capability card
   // (inventories, audits, and full-stack builds run on 3-5 concurrent
@@ -134,13 +138,13 @@ const GROUPS: Group[] = [
       {
         id: "email-reactor",
         label: "Email Reactor",
-        preview: "Branch fixed, reply drafted and held.",
+        preview: "Fix branched, reply drafted, recap ready.",
         time: "Hourly",
         icon: true,
         script: [
           { kind: "ts", text: "6:03" },
           { kind: "email", from: "Client Inbox" },
-          { kind: "message", text: "Checkout button throws a 500 on mobile Safari since this morning's deploy." },
+          { kind: "incoming", from: "Client Inbox", text: "Checkout button throws a 500 on mobile Safari since this morning's deploy." },
           { kind: "status", text: "Warmed up the right repo" },
           {
             kind: "tool",
@@ -150,7 +154,19 @@ const GROUPS: Group[] = [
             image: false,
             checklist: ["Repro confirmed on branch", "Fix tested against the live cart flow"],
           },
-          { kind: "message", text: "Fix pushed to a branch, reply drafted and held. Nothing goes out without you seeing it first." },
+          { kind: "email", from: "Client Inbox", drafted: true },
+          { kind: "message", text: "Reply drafted with the fix summary, held for your review. Nothing goes out without you seeing it first." },
+          { kind: "ts", text: "6:47" },
+          { kind: "reply", text: "What's the recap for today?" },
+          {
+            kind: "recap",
+            lines: [
+              { label: "Trigger", detail: "email landed from Client Inbox at 6:03" },
+              { label: "Fix", detail: "reproduced, patched and tested on a branch" },
+              { label: "Reply", detail: "drafted and held for review inside the hour" },
+            ],
+            text: "One email in, one fix and drafted reply out, you approve before anything ships.",
+          },
         ],
       },
     ],
@@ -398,8 +414,21 @@ function BeatBubble({ beat }: { beat: Beat }) {
             <path d="M3 7l9 6 9-6" />
           </svg>
         </span>
-        <span>New email from</span>
+        <span>{beat.drafted ? "Drafted a reply to" : "New email from"}</span>
         <span className="font-semibold text-fg">{beat.from}</span>
+      </div>
+    );
+  }
+  if (beat.kind === "incoming") {
+    return (
+      <div className="flex max-w-[78%] flex-col items-start gap-1">
+        <span className="mono px-0.5 text-[10.5px] text-mute">{beat.from}</span>
+        <div
+          className="mono rounded-2xl px-3.5 py-2.5 text-[12.5px] leading-snug text-fg"
+          style={{ background: "rgba(110,168,254,.12)" }}
+        >
+          {beat.text}
+        </div>
       </div>
     );
   }
@@ -618,13 +647,15 @@ export default function AgentThreads() {
             aria-orientation="vertical"
             aria-label="Agent threads"
             onKeyDown={onKeyDown}
-            className="flex flex-row overflow-x-auto sm:flex-1 sm:min-h-0 sm:flex-col sm:overflow-x-visible sm:overflow-y-auto"
+            className="flex flex-row max-sm:overflow-x-auto sm:flex-1 sm:min-h-0 sm:flex-col sm:overflow-y-auto"
           >
-            {GROUPS.map((g) => (
+            {GROUPS.map((g, gi) => (
               <div key={g.id} className="contents sm:block">
                 <div
                   aria-hidden="true"
-                  className="mono flex shrink-0 items-center gap-1.5 px-2.5 pt-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-mute first:pt-0.5"
+                  className={`mono flex shrink-0 items-center gap-1.5 px-2.5 pb-1.5 text-[11px] font-medium text-dim ${
+                    gi === 0 ? "pt-1" : "mt-1.5 border-t border-line pt-3"
+                  }`}
                 >
                   <span className="relative flex h-1.5 w-1.5 shrink-0">
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#28c840] opacity-60" />
