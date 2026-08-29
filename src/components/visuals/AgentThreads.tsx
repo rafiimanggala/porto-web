@@ -507,6 +507,16 @@ function ThreadPanel({ thread, inView }: { thread: Thread; inView: boolean }) {
   const reduce = useReducedMotion();
   const [step, setStep] = useState(() => (reduce ? thread.script.length - 1 : -1));
   const [typing, setTyping] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Scripts have grown past the fixed panel height, so the latest beat
+  // (recap especially) can land below the fold with nothing to hint it's
+  // there. Keep the scroll pinned to whatever just landed.
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollTo({ top: el.scrollHeight, behavior: reduce ? "auto" : "smooth" });
+  }, [step, typing, reduce]);
 
   useEffect(() => {
     if (reduce || !inView) return;
@@ -551,6 +561,7 @@ function ThreadPanel({ thread, inView }: { thread: Thread; inView: boolean }) {
         </svg>
       </div>
       <div
+        ref={scrollRef}
         role="tabpanel"
         id={`panel-${thread.id}`}
         aria-labelledby={`tab-${thread.id}`}
