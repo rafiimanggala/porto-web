@@ -688,7 +688,7 @@ export default function AgentThreads() {
                       aria-controls={`panel-${t.id}`}
                       tabIndex={selected ? 0 : -1}
                       onClick={() => setActiveId(t.id)}
-                      className={`cursor-pointer rounded-md px-2 py-2 text-left transition-colors ${
+                      className={`min-w-0 shrink-0 cursor-pointer rounded-md px-2 py-2 text-left transition-colors sm:block sm:w-full ${
                         selected ? "bg-surface-3" : "hover:bg-surface-3"
                       }`}
                     >
