@@ -111,7 +111,7 @@ function TypingDots() {
 function BeatBubble({ beat }: { beat: Beat }) {
   if (beat.kind === "message") {
     return (
-      <div className="mono max-w-[85%] rounded-xl border border-line bg-surface-2 px-3.5 py-2.5 text-[13px] leading-snug text-fg">
+      <div className="mono max-w-[85%] rounded-2xl bg-[rgba(255,255,255,0.06)] px-3.5 py-2.5 text-[13px] leading-snug text-fg">
         {beat.text}
       </div>
     );
@@ -181,7 +181,7 @@ function ThreadPanel({ thread, inView }: { thread: Thread; inView: boolean }) {
         ))}
       </AnimatePresence>
       {!reduce && typing && (
-        <div className="w-fit rounded-xl border border-line bg-surface-2 px-3.5 py-2.5">
+        <div className="w-fit rounded-2xl bg-[rgba(255,255,255,0.06)] px-3.5 py-2.5">
           <TypingDots />
         </div>
       )}
