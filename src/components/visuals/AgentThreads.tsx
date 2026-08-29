@@ -14,10 +14,11 @@ import { motion, AnimatePresence, useInView, useReducedMotion } from "framer-mot
    of a static dashboard. */
 
 type Beat =
+  | { kind: "ts"; text: string }
   | { kind: "message"; text: string }
   | { kind: "reply"; text: string }
   | { kind: "status"; text: string }
-  | { kind: "tool"; label: string; status: string; desc: string; checklist: string[] };
+  | { kind: "tool"; label: string; status: string; desc: string; image: boolean; checklist: string[] };
 
 type Thread = {
   id: string;
@@ -40,6 +41,7 @@ const THREADS: Thread[] = [
     time: "11:04",
     avatar: "/mascots/mascot-c1.png",
     script: [
+      { kind: "ts", text: "11:04" },
       { kind: "message", text: "New spec is in: an existing production app needs 18 features added without breaking the system underneath." },
       { kind: "reply", text: "Go through it end to end, and don't take the live system down while you're at it." },
       { kind: "message", text: "Understood, working through the .NET 9 backend and Angular frontend now." },
@@ -48,10 +50,12 @@ const THREADS: Thread[] = [
         label: "Computer",
         status: "Done",
         desc: "Shipped features against the live database, tested each one before merging.",
+        image: true,
         checklist: ["995 schools on the system", "12,495 users unaffected", "18 features delivered"],
       },
       { kind: "message", text: "All 18 shipped, production stayed green the whole way through." },
       { kind: "status", text: "Marked routine: fix, deploy, self-verify" },
+      { kind: "message", text: "Every deploy from here runs the same loop before it counts as done." },
     ],
   },
   {
@@ -61,6 +65,7 @@ const THREADS: Thread[] = [
     time: "9:41",
     avatar: "/mascots/mascot-c2.png",
     script: [
+      { kind: "ts", text: "9:41" },
       { kind: "message", text: "Client wants an AI layer that actually reasons across their data, not a chatbot bolted onto the corner." },
       { kind: "reply", text: "Pull blood work, DNA, DEXA scans and wearables into one score. Make the reasoning visible, not a black box." },
       {
@@ -68,6 +73,7 @@ const THREADS: Thread[] = [
         label: "Computer",
         status: "Done",
         desc: "Built the multi-source scoring engine and wired the AI layer to explain each score.",
+        image: false,
         checklist: ["4 data sources reconciled", "Per-report transparency added"],
       },
       { kind: "message", text: "Live, the AI layer reasons across all four sources and surfaces compounding risk early." },
@@ -80,6 +86,7 @@ const THREADS: Thread[] = [
     time: "Yesterday",
     avatar: "/mascots/mascot-c3.png",
     script: [
+      { kind: "ts", text: "Yesterday, 4:52" },
       { kind: "message", text: "Can we get the content pipeline off manual scheduling entirely?" },
       { kind: "status", text: "Mapping the 30+ node workflow" },
       { kind: "message", text: "Self-hosted n8n graph is live: sources in, script and voiceover and render in the middle, publishing out the other end." },
@@ -94,6 +101,7 @@ const THREADS: Thread[] = [
     time: "Yesterday",
     avatar: "/mascots/mascot-c4.png",
     script: [
+      { kind: "ts", text: "Yesterday, 6:18" },
       { kind: "message", text: "Batch is ready: 14 client accounts, all queued for this week." },
       { kind: "reply", text: "Looks good so far, just confirm scheduling holds across all 14." },
       { kind: "message", text: "Confirmed. 600+ assets produced and published this run, nothing stuck in the queue." },
@@ -106,15 +114,17 @@ const THREADS: Thread[] = [
     time: "Tuesday",
     avatar: "/mascots/mascot-c5.png",
     script: [
+      { kind: "ts", text: "Tuesday, 2:30" },
       { kind: "message", text: "Emails aren't sending, something's stuck." },
       {
         kind: "tool",
         label: "Computer",
         status: "Done",
         desc: "Traced the backlog to a silent SMTP rate limit at the provider, not the app.",
+        image: false,
         checklist: ["9,800 stuck emails identified", "Root cause confirmed at provider level"],
       },
-      { kind: "message", text: "Root cause traced and fixed behind a tagged rollback. Backlog is clearing now." },
+      { kind: "message", text: "Root cause traced and fixed behind a tagged rollback. Backlog's clearing now." },
     ],
   },
   {
@@ -124,6 +134,7 @@ const THREADS: Thread[] = [
     time: "Monday",
     avatar: "/mascots/mascot-c6.png",
     script: [
+      { kind: "ts", text: "Monday, 10:05" },
       { kind: "message", text: "The stock theme can't do what they're asking for, no app sells this feature." },
       { kind: "reply", text: "Build it into the theme directly, keep it simple." },
       { kind: "message", text: "Done, inline pattern editor wired to an external API, pure Liquid and vanilla JS, no build pipeline." },
@@ -136,6 +147,7 @@ const THREADS: Thread[] = [
     time: "Monday",
     avatar: "/mascots/mascot-c2.png",
     script: [
+      { kind: "ts", text: "Monday, 8:35" },
       { kind: "message", text: "Idea's ready to test but there's nothing to click yet." },
       { kind: "reply", text: "Turn it into something people can actually try." },
       { kind: "status", text: "Marked routine: reference-first design pass" },
@@ -146,7 +158,7 @@ const THREADS: Thread[] = [
 
 const START_MS = 350;
 const TYPE_MS = 800;
-const HOLD_MS = 1000;
+const HOLD_MS = 900;
 
 // Per-thread mascot illustration is the avatar itself: no circle mask, no
 // crop, no disc behind it, matching the reference clone (its own silhouette
@@ -237,6 +249,9 @@ function TypingDots() {
 }
 
 function BeatBubble({ beat }: { beat: Beat }) {
+  if (beat.kind === "ts" || beat.kind === "status") {
+    return <div className="mono text-center text-[11px] text-mute">{beat.text}</div>;
+  }
   if (beat.kind === "message") {
     return (
       <div className="mono max-w-[85%] rounded-2xl bg-[rgba(255,255,255,0.06)] px-3.5 py-2.5 text-[13px] leading-snug text-fg">
@@ -251,14 +266,9 @@ function BeatBubble({ beat }: { beat: Beat }) {
       </div>
     );
   }
-  if (beat.kind === "status") {
-    return (
-      <div className="mono flex w-fit items-center gap-2 rounded-xl border border-line bg-[rgba(255,255,255,0.03)] px-3.5 py-2.5 text-[11px] text-mute">
-        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-        {beat.text}
-      </div>
-    );
-  }
+  // tool: the decorative gradient block + glass checklist overlay only shows
+  // when `image` is set, matching the reference clone (its two other tool
+  // beats omit the block and end at the description).
   return (
     <div className="max-w-[90%] overflow-hidden rounded-xl border border-line bg-surface-2">
       <div className="flex items-center justify-between gap-3 px-3.5 py-2.5 text-[12.5px] font-semibold text-fg">
@@ -269,14 +279,21 @@ function BeatBubble({ beat }: { beat: Beat }) {
         </span>
       </div>
       <p className="px-3.5 pb-3 text-[12px] leading-relaxed text-dim">{beat.desc}</p>
-      <div className="flex flex-col gap-1.5 border-t border-line px-3.5 py-3">
-        {beat.checklist.map((c) => (
-          <div key={c} className="mono flex items-center gap-1.5 text-[10.5px] text-dim">
-            <span className="font-bold text-accent">&#10003;</span>
-            {c}
+      {beat.image && (
+        <div
+          className="relative mx-3.5 mb-3.5 h-[100px] overflow-hidden rounded-lg"
+          style={{ background: "linear-gradient(135deg,#2a2f3a,#14161c 60%,#1f2430)" }}
+        >
+          <div className="absolute inset-x-2.5 bottom-2.5 flex flex-col gap-1.5 rounded-lg bg-black/75 px-2.5 py-2 backdrop-blur-sm">
+            {beat.checklist.map((c) => (
+              <div key={c} className="mono flex items-center gap-1.5 text-[10.5px] text-dim">
+                <span className="font-bold text-accent">&#10003;</span>
+                {c}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -316,6 +333,19 @@ function ThreadPanel({ thread, inView }: { thread: Thread; inView: boolean }) {
       <div className="mono flex shrink-0 items-center gap-2.5 border-b border-line px-4 py-3 text-[12.5px] text-fg sm:px-5">
         <ThreadAvatar loading={typing} avatar={thread.avatar} />
         {thread.label}
+        <svg
+          className="ml-auto shrink-0 text-mute"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          aria-hidden="true"
+        >
+          <rect x="3" y="4" width="18" height="12" rx="2" />
+          <path d="M8 20h8M12 16v4" />
+        </svg>
       </div>
       <div
         role="tabpanel"
@@ -399,29 +429,17 @@ export default function AgentThreads() {
           "radial-gradient(120% 90% at 50% -10%, color-mix(in srgb, var(--color-accent) 6%, transparent), transparent 60%), var(--color-surface-1)",
       }}
     >
-      <div className="flex items-center gap-3 border-b border-line px-4 py-3">
-        <div className="flex gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
-        </div>
-        <span className="mono ml-1 text-xs text-mute">agent-threads</span>
-        <span className="ml-auto flex items-center gap-1.5">
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-70" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
-          </span>
-          <span className="mono text-[10px] text-mute">live</span>
-        </span>
-      </div>
-
       <div className="flex flex-col sm:flex-row sm:h-[340px]">
         <div className="flex shrink-0 flex-col sm:w-[220px] sm:border-r sm:border-line">
-          <div className="mono hidden shrink-0 items-center gap-2 border-b border-line px-3.5 py-2.5 text-[11px] text-mute sm:flex">
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.4" />
-              <path d="M11 11L14.5 14.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-            </svg>
+          <div className="flex shrink-0 items-center justify-between px-3.5 pt-4 pb-3.5">
+            <div className="flex gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+            </div>
+            <span className="text-lg leading-none text-mute">+</span>
+          </div>
+          <div className="mono mx-3.5 mb-2 hidden h-[30px] shrink-0 items-center rounded-md bg-surface-3 px-2.5 text-[12px] text-mute sm:flex">
             Search
           </div>
           <div
