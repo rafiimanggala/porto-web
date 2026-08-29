@@ -37,168 +37,193 @@ type Thread = {
   script: Beat[];
 };
 
-// One thread per skill, matching the reference clone's exact seven, each
-// script grounded in that skill's real evidence from data/skills.ts. Sidebar
-// avatar images are the clone's own c1-c6 mascot illustrations, reused
-// thread-for-thread (Design + Prototype shares c2 with AI Features there too).
-const THREADS: Thread[] = [
+// Threads read as a live multi-agent monitor, grouped by what's being
+// watched: Web is the two client platforms Rafii runs point-of-contact
+// fixes on, Automation is the scheduled/background agents, Agent is the
+// one-off engagements. Content stays grounded in the same real evidence as
+// data/skills.ts. Sidebar avatar images are the clone's own c1-c6 mascot
+// illustrations, reused thread-for-thread (Design + Prototype shares c2
+// with Health Tech there too).
+type Group = { id: string; label: string; threads: Thread[] };
+
+const GROUPS: Group[] = [
   {
-    id: "full-stack",
-    label: "Full-Stack Apps",
-    preview: "995 schools, 12,495 users, live.",
-    time: "11:04",
-    avatar: "/mascots/mascot-c1.png",
-    script: [
-      { kind: "ts", text: "11:04" },
-      { kind: "message", text: "New spec is in: an existing production app needs 18 features added without breaking the system underneath." },
-      { kind: "reply", text: "Go through it end to end, and don't take the live system down while you're at it." },
-      { kind: "message", text: "Understood, working through the .NET 9 backend and Angular frontend now." },
+    id: "web",
+    label: "Web",
+    threads: [
       {
-        kind: "tool",
-        label: "Computer",
-        status: "Done",
-        desc: "Shipped features against the live database, tested each one before merging.",
-        image: true,
-        checklist: ["995 schools on the system", "12,495 users unaffected", "18 features delivered"],
-      },
-      {
-        kind: "recap",
-        lines: [
-          { label: "Inventory", detail: "mapped all 18 features against the live schema first" },
-          { label: "Audit", detail: "each change checked for breaking risk before merge" },
-          { label: "Build", detail: "4 agents shipped in parallel, one per feature cluster" },
+        id: "health-tech",
+        label: "Health Tech",
+        preview: "Live, reasoning across all four sources.",
+        time: "9:41",
+        avatar: "/mascots/mascot-c2.png",
+        script: [
+          { kind: "ts", text: "9:41" },
+          { kind: "message", text: "Client wants an AI layer that actually reasons across their data, not a chatbot bolted onto the corner." },
+          { kind: "reply", text: "Pull blood work, DNA, DEXA scans and wearables into one score. Make the reasoning visible, not a black box." },
+          {
+            kind: "tool",
+            label: "Computer",
+            status: "Done",
+            desc: "Built the multi-source scoring engine and wired the AI layer to explain each score.",
+            image: false,
+            checklist: ["4 data sources reconciled", "Per-report transparency added"],
+          },
+          { kind: "message", text: "Live, the AI layer reasons across all four sources and surfaces compounding risk early." },
         ],
-        text: "All 18 shipped, production stayed green the whole way through.",
       },
-      { kind: "status", text: "Marked routine: fix, deploy, self-verify" },
-      { kind: "message", text: "Every deploy from here runs the same loop before it counts as done." },
-    ],
-  },
-  {
-    id: "ai-features",
-    label: "AI Features",
-    preview: "Live, reasoning across all four sources.",
-    time: "9:41",
-    avatar: "/mascots/mascot-c2.png",
-    script: [
-      { kind: "ts", text: "9:41" },
-      { kind: "message", text: "Client wants an AI layer that actually reasons across their data, not a chatbot bolted onto the corner." },
-      { kind: "reply", text: "Pull blood work, DNA, DEXA scans and wearables into one score. Make the reasoning visible, not a black box." },
       {
-        kind: "tool",
-        label: "Computer",
-        status: "Done",
-        desc: "Built the multi-source scoring engine and wired the AI layer to explain each score.",
-        image: false,
-        checklist: ["4 data sources reconciled", "Per-report transparency added"],
+        id: "ed-tech",
+        label: "Ed Tech",
+        preview: "995 schools, 12,495 users, live.",
+        time: "11:04",
+        avatar: "/mascots/mascot-c1.png",
+        script: [
+          { kind: "ts", text: "11:04" },
+          { kind: "message", text: "New spec is in: an existing production app needs 18 features added without breaking the system underneath." },
+          { kind: "reply", text: "Go through it end to end, and don't take the live system down while you're at it." },
+          { kind: "message", text: "Understood, working through the .NET 9 backend and Angular frontend now." },
+          {
+            kind: "tool",
+            label: "Computer",
+            status: "Done",
+            desc: "Shipped features against the live database, tested each one before merging.",
+            image: true,
+            checklist: ["995 schools on the system", "12,495 users unaffected", "18 features delivered"],
+          },
+          {
+            kind: "recap",
+            lines: [
+              { label: "Inventory", detail: "mapped all 18 features against the live schema first" },
+              { label: "Audit", detail: "each change checked for breaking risk before merge" },
+              { label: "Build", detail: "4 agents shipped in parallel, one per feature cluster" },
+            ],
+            text: "All 18 shipped, production stayed green the whole way through.",
+          },
+          { kind: "status", text: "Marked routine: fix, deploy, self-verify" },
+          { kind: "message", text: "Every deploy from here runs the same loop before it counts as done." },
+        ],
       },
-      { kind: "message", text: "Live, the AI layer reasons across all four sources and surfaces compounding risk early." },
     ],
   },
   {
     id: "automation",
     label: "Automation",
-    preview: "One failure never blocks the schedule.",
-    time: "Yesterday",
-    avatar: "/mascots/mascot-c3.png",
-    script: [
-      { kind: "ts", text: "Yesterday, 4:52" },
-      { kind: "message", text: "Can we get the content pipeline off manual scheduling entirely?" },
-      { kind: "routine", text: "Content Pipeline" },
-      { kind: "status", text: "Mapping the 30+ node workflow" },
-      { kind: "message", text: "Self-hosted n8n graph is live: sources in, script and voiceover and render in the middle, publishing out the other end." },
-      { kind: "ts", text: "Yesterday, 5:20" },
-      { kind: "reply", text: "Good, what happens if a scrape fails?" },
-      { kind: "message", text: "Publishing keeps running, the scrape workflow is decoupled, so one failure never blocks the schedule." },
-      { kind: "reply", text: "Perfect, ship it.", reaction: "👍" },
-    ],
-  },
-  {
-    id: "ai-video",
-    label: "AI Video",
-    preview: "600+ assets produced, nothing stuck.",
-    time: "Yesterday",
-    avatar: "/mascots/mascot-c4.png",
-    script: [
-      { kind: "ts", text: "Yesterday, 6:18" },
-      { kind: "message", text: "Batch is ready: 14 client accounts, all queued for this week." },
-      { kind: "reply", text: "Looks good so far, just confirm scheduling holds across all 14." },
-      { kind: "message", text: "Confirmed. 600+ assets produced and published this run, nothing stuck in the queue." },
-    ],
-  },
-  {
-    id: "live-system-fix",
-    label: "Live-System Fix",
-    preview: "Root cause traced, backlog clearing.",
-    time: "Tuesday",
-    avatar: "/mascots/mascot-c5.png",
-    script: [
-      { kind: "ts", text: "Tuesday, 2:30" },
-      { kind: "message", text: "Emails aren't sending, something's stuck." },
+    threads: [
       {
-        kind: "tool",
-        label: "Computer",
-        status: "Done",
-        desc: "Traced the backlog to a silent SMTP rate limit at the provider, not the app.",
-        image: false,
-        checklist: ["9,800 stuck emails identified", "Root cause confirmed at provider level"],
+        id: "content-pipeline",
+        label: "Content Pipeline",
+        preview: "One failure never blocks the schedule.",
+        time: "Yesterday",
+        avatar: "/mascots/mascot-c3.png",
+        script: [
+          { kind: "ts", text: "Yesterday, 4:52" },
+          { kind: "message", text: "Can we get the content pipeline off manual scheduling entirely?" },
+          { kind: "routine", text: "Content Pipeline" },
+          { kind: "status", text: "Mapping the 30+ node workflow" },
+          { kind: "message", text: "Self-hosted n8n graph is live: sources in, script and voiceover and render in the middle, publishing out the other end." },
+          { kind: "ts", text: "Yesterday, 5:20" },
+          { kind: "reply", text: "Good, what happens if a scrape fails?" },
+          { kind: "message", text: "Publishing keeps running, the scrape workflow is decoupled, so one failure never blocks the schedule." },
+          { kind: "reply", text: "Perfect, ship it.", reaction: "👍" },
+        ],
       },
-      { kind: "message", text: "Root cause traced and fixed behind a tagged rollback. Backlog's clearing now." },
-    ],
-  },
-  {
-    id: "shopify",
-    label: "Shopify Builds",
-    preview: "Inline pattern editor, no build pipeline.",
-    time: "Monday",
-    avatar: "/mascots/mascot-c6.png",
-    script: [
-      { kind: "ts", text: "Monday, 10:05" },
-      { kind: "message", text: "The stock theme can't do what they're asking for, no app sells this feature." },
-      { kind: "reply", text: "Build it into the theme directly, keep it simple." },
-      { kind: "message", text: "Done, inline pattern editor wired to an external API, pure Liquid and vanilla JS, no build pipeline." },
-    ],
-  },
-  {
-    id: "design-prototype",
-    label: "Design + Prototype",
-    preview: "Five screens shipped plus a live prototype.",
-    time: "Monday",
-    avatar: "/mascots/mascot-c2.png",
-    script: [
-      { kind: "ts", text: "Monday, 8:35" },
-      { kind: "message", text: "Idea's ready to test but there's nothing to click yet." },
-      { kind: "reply", text: "Turn it into something people can actually try." },
-      { kind: "status", text: "Marked routine: reference-first design pass" },
-      { kind: "message", text: "Five responsive screens shipped plus a live clickable prototype, closes the pipeline for the week." },
-    ],
-  },
-  // Real build, not a skill case study: launchd cron reads new client
-  // email hourly and reacts. Grounded in the "Email Reactor" entry in
-  // data/portfolio.ts (cmd: "launchd · hourly").
-  {
-    id: "email-reactor",
-    label: "Email Reactor",
-    preview: "Branch fixed, reply drafted and held.",
-    time: "Hourly",
-    icon: true,
-    script: [
-      { kind: "ts", text: "6:03" },
-      { kind: "email", from: "Client Inbox" },
-      { kind: "message", text: "Checkout button throws a 500 on mobile Safari since this morning's deploy." },
-      { kind: "status", text: "Warmed up the right repo" },
+      // Real build, not a skill case study: launchd cron reads new client
+      // email hourly and reacts. Grounded in the "Email Reactor" entry in
+      // data/portfolio.ts (cmd: "launchd · hourly").
       {
-        kind: "tool",
-        label: "Computer",
-        status: "Done",
-        desc: "Reproduced on a branch, traced it to a null cart-total on an empty promo code, patched and tested.",
-        image: false,
-        checklist: ["Repro confirmed on branch", "Fix tested against the live cart flow"],
+        id: "email-reactor",
+        label: "Email Reactor",
+        preview: "Branch fixed, reply drafted and held.",
+        time: "Hourly",
+        icon: true,
+        script: [
+          { kind: "ts", text: "6:03" },
+          { kind: "email", from: "Client Inbox" },
+          { kind: "message", text: "Checkout button throws a 500 on mobile Safari since this morning's deploy." },
+          { kind: "status", text: "Warmed up the right repo" },
+          {
+            kind: "tool",
+            label: "Computer",
+            status: "Done",
+            desc: "Reproduced on a branch, traced it to a null cart-total on an empty promo code, patched and tested.",
+            image: false,
+            checklist: ["Repro confirmed on branch", "Fix tested against the live cart flow"],
+          },
+          { kind: "message", text: "Fix pushed to a branch, reply drafted and held. Nothing goes out without you seeing it first." },
+        ],
       },
-      { kind: "message", text: "Fix pushed to a branch, reply drafted and held. Nothing goes out without you seeing it first." },
+    ],
+  },
+  {
+    id: "agent",
+    label: "Agent",
+    threads: [
+      {
+        id: "ai-video",
+        label: "AI Video",
+        preview: "600+ assets produced, nothing stuck.",
+        time: "Yesterday",
+        avatar: "/mascots/mascot-c4.png",
+        script: [
+          { kind: "ts", text: "Yesterday, 6:18" },
+          { kind: "message", text: "Batch is ready: 14 client accounts, all queued for this week." },
+          { kind: "reply", text: "Looks good so far, just confirm scheduling holds across all 14." },
+          { kind: "message", text: "Confirmed. 600+ assets produced and published this run, nothing stuck in the queue." },
+        ],
+      },
+      {
+        id: "live-system-fix",
+        label: "Live-System Fix",
+        preview: "Root cause traced, backlog clearing.",
+        time: "Tuesday",
+        avatar: "/mascots/mascot-c5.png",
+        script: [
+          { kind: "ts", text: "Tuesday, 2:30" },
+          { kind: "message", text: "Emails aren't sending, something's stuck." },
+          {
+            kind: "tool",
+            label: "Computer",
+            status: "Done",
+            desc: "Traced the backlog to a silent SMTP rate limit at the provider, not the app.",
+            image: false,
+            checklist: ["9,800 stuck emails identified", "Root cause confirmed at provider level"],
+          },
+          { kind: "message", text: "Root cause traced and fixed behind a tagged rollback. Backlog's clearing now." },
+        ],
+      },
+      {
+        id: "shopify",
+        label: "Shopify Builds",
+        preview: "Inline pattern editor, no build pipeline.",
+        time: "Monday",
+        avatar: "/mascots/mascot-c6.png",
+        script: [
+          { kind: "ts", text: "Monday, 10:05" },
+          { kind: "message", text: "The stock theme can't do what they're asking for, no app sells this feature." },
+          { kind: "reply", text: "Build it into the theme directly, keep it simple." },
+          { kind: "message", text: "Done, inline pattern editor wired to an external API, pure Liquid and vanilla JS, no build pipeline." },
+        ],
+      },
+      {
+        id: "design-prototype",
+        label: "Design + Prototype",
+        preview: "Five screens shipped plus a live prototype.",
+        time: "Monday",
+        avatar: "/mascots/mascot-c2.png",
+        script: [
+          { kind: "ts", text: "Monday, 8:35" },
+          { kind: "message", text: "Idea's ready to test but there's nothing to click yet." },
+          { kind: "reply", text: "Turn it into something people can actually try." },
+          { kind: "status", text: "Marked routine: reference-first design pass" },
+          { kind: "message", text: "Five responsive screens shipped plus a live clickable prototype, closes the pipeline for the week." },
+        ],
+      },
     ],
   },
 ];
+
+const THREADS: Thread[] = GROUPS.flatMap((g) => g.threads);
 
 const START_MS = 350;
 const TYPE_MS = 800;
@@ -595,39 +620,53 @@ export default function AgentThreads() {
             onKeyDown={onKeyDown}
             className="flex flex-row overflow-x-auto sm:flex-1 sm:min-h-0 sm:flex-col sm:overflow-x-visible sm:overflow-y-auto"
           >
-            {THREADS.map((t) => {
-            const selected = t.id === activeId;
-            return (
-              <button
-                key={t.id}
-                ref={(el) => {
-                  tabRefs.current[t.id] = el;
-                }}
-                role="tab"
-                id={`tab-${t.id}`}
-                aria-selected={selected}
-                aria-controls={`panel-${t.id}`}
-                tabIndex={selected ? 0 : -1}
-                onClick={() => setActiveId(t.id)}
-                className={`cursor-pointer rounded-md px-2 py-2 text-left transition-colors ${
-                  selected ? "bg-surface-3" : "hover:bg-surface-3"
-                }`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <ThreadAvatar size={30} avatar={t.avatar} icon={t.icon ? <MailIcon size={30} /> : undefined} />
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between gap-3">
-                      <span className={`mono truncate text-[12.5px] ${selected ? "text-fg" : "text-dim"}`}>
-                        {t.label}
-                      </span>
-                      <span className="mono shrink-0 text-[10px] text-mute">{t.time}</span>
-                    </div>
-                    <p className="mono mt-0.5 truncate text-[11px] text-mute">{t.preview}</p>
-                  </div>
+            {GROUPS.map((g) => (
+              <div key={g.id} className="contents sm:block">
+                <div
+                  aria-hidden="true"
+                  className="mono flex shrink-0 items-center gap-1.5 px-2.5 pt-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-mute first:pt-0.5"
+                >
+                  <span className="relative flex h-1.5 w-1.5 shrink-0">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#28c840] opacity-60" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#28c840]" />
+                  </span>
+                  {g.label}
                 </div>
-              </button>
-            );
-            })}
+                {g.threads.map((t) => {
+                  const selected = t.id === activeId;
+                  return (
+                    <button
+                      key={t.id}
+                      ref={(el) => {
+                        tabRefs.current[t.id] = el;
+                      }}
+                      role="tab"
+                      id={`tab-${t.id}`}
+                      aria-selected={selected}
+                      aria-controls={`panel-${t.id}`}
+                      tabIndex={selected ? 0 : -1}
+                      onClick={() => setActiveId(t.id)}
+                      className={`cursor-pointer rounded-md px-2 py-2 text-left transition-colors ${
+                        selected ? "bg-surface-3" : "hover:bg-surface-3"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <ThreadAvatar size={30} avatar={t.avatar} icon={t.icon ? <MailIcon size={30} /> : undefined} />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-3">
+                            <span className={`mono truncate text-[12.5px] ${selected ? "text-fg" : "text-dim"}`}>
+                              {t.label}
+                            </span>
+                            <span className="mono shrink-0 text-[10px] text-mute">{t.time}</span>
+                          </div>
+                          <p className="mono mt-0.5 truncate text-[11px] text-mute">{t.preview}</p>
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
           </div>
           <div className="mono mt-auto hidden shrink-0 items-center gap-2 border-t border-line px-2 pt-2.5 pb-0.5 sm:flex">
             <ThreadAvatar size={22} />
