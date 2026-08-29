@@ -75,7 +75,7 @@ export default function Home() {
         </Reveal>
 
         <Reveal delay={0.2}>
-          <div className="mx-auto mt-20 max-w-[940px] text-left">
+          <div className="mx-auto mt-[88px] max-w-[740px] text-left">
             <AgentThreads />
           </div>
         </Reveal>

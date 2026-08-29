@@ -254,14 +254,14 @@ function BeatBubble({ beat }: { beat: Beat }) {
   }
   if (beat.kind === "message") {
     return (
-      <div className="mono max-w-[85%] rounded-2xl bg-[rgba(255,255,255,0.06)] px-3.5 py-2.5 text-[13px] leading-snug text-fg">
+      <div className="mono max-w-[78%] rounded-2xl bg-[rgba(255,255,255,0.06)] px-3.5 py-2.5 text-[12.5px] leading-snug text-fg">
         {beat.text}
       </div>
     );
   }
   if (beat.kind === "reply") {
     return (
-      <div className="mono ml-auto max-w-[85%] rounded-2xl bg-[#ecece8] px-3.5 py-2.5 text-[13px] leading-snug text-[#141414]">
+      <div className="mono ml-auto max-w-[85%] rounded-2xl bg-[#ecece8] px-3.5 py-2.5 text-[12.5px] leading-snug text-[#141414]">
         {beat.text}
       </div>
     );
@@ -270,7 +270,7 @@ function BeatBubble({ beat }: { beat: Beat }) {
   // when `image` is set, matching the reference clone (its two other tool
   // beats omit the block and end at the description).
   return (
-    <div className="max-w-[90%] overflow-hidden rounded-xl border border-line bg-surface-2">
+    <div className="max-w-[82%] overflow-hidden rounded-xl border border-line bg-[#2b2e36]">
       <div className="flex items-center justify-between gap-3 px-3.5 py-2.5 text-[12.5px] font-semibold text-fg">
         <span className="mono">{beat.label}</span>
         <span className="mono inline-flex items-center gap-1.5 text-[11px] font-medium text-[#28c840]">
@@ -331,7 +331,7 @@ function ThreadPanel({ thread, inView }: { thread: Thread; inView: boolean }) {
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="mono flex shrink-0 items-center gap-2.5 border-b border-line px-4 py-3 text-[12.5px] text-fg sm:px-5">
-        <ThreadAvatar loading={typing} avatar={thread.avatar} />
+        <ThreadAvatar loading={typing} avatar={thread.avatar} size={22} />
         {thread.label}
         <svg
           className="ml-auto shrink-0 text-mute"
@@ -352,7 +352,7 @@ function ThreadPanel({ thread, inView }: { thread: Thread; inView: boolean }) {
         id={`panel-${thread.id}`}
         aria-labelledby={`tab-${thread.id}`}
         tabIndex={0}
-        className="flex flex-1 flex-col gap-3 overflow-y-auto p-4 sm:p-5"
+        className="flex flex-1 flex-col gap-3 overflow-y-auto px-4 pt-2.5 pb-5 sm:px-5"
       >
         <AnimatePresence initial={false}>
           {visible.map((beat, i) => (
@@ -373,13 +373,13 @@ function ThreadPanel({ thread, inView }: { thread: Thread; inView: boolean }) {
         )}
       </div>
       <div className="mono flex shrink-0 items-center gap-2 border-t border-line px-4 py-2.5 sm:px-5">
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-surface-3 text-sm text-mute">
+        <span className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-surface-3 text-sm text-mute">
           +
         </span>
-        <span className="flex-1 truncate rounded-full bg-surface-3 px-3 py-1.5 text-[12px] text-mute">
+        <span className="flex h-8 flex-1 items-center truncate rounded-full bg-surface-3 px-3.5 text-[12px] text-mute">
           Message {thread.label}
         </span>
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-surface-3 text-mute">
+        <span className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-surface-3 text-mute">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <rect x="9" y="2" width="6" height="12" rx="3" />
             <path d="M5 11a7 7 0 0 0 14 0M12 18v4" />
@@ -423,19 +423,16 @@ export default function AgentThreads() {
   return (
     <div
       ref={containerRef}
-      className="card mx-auto w-full overflow-hidden p-0"
-      style={{
-        background:
-          "radial-gradient(120% 90% at 50% -10%, color-mix(in srgb, var(--color-accent) 6%, transparent), transparent 60%), var(--color-surface-1)",
-      }}
+      className="mx-auto w-full overflow-hidden rounded-[24px] border border-line bg-[#1a1a1a] p-0"
+      style={{ boxShadow: "0 40px 80px -30px rgba(0,0,0,.6)" }}
     >
-      <div className="flex flex-col sm:flex-row sm:h-[340px]">
-        <div className="flex shrink-0 flex-col sm:w-[220px] sm:border-r sm:border-line">
+      <div className="flex flex-col sm:h-[660px] sm:flex-row">
+        <div className="flex shrink-0 flex-col bg-bg sm:w-[232px] sm:border-r sm:border-line">
           <div className="flex shrink-0 items-center justify-between px-3.5 pt-4 pb-3.5">
             <div className="flex gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
-              <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
-              <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+              <span className="h-[11px] w-[11px] rounded-full bg-[#ff5f57]" />
+              <span className="h-[11px] w-[11px] rounded-full bg-[#febc2e]" />
+              <span className="h-[11px] w-[11px] rounded-full bg-[#28c840]" />
             </div>
             <span className="text-lg leading-none text-mute">+</span>
           </div>
@@ -447,7 +444,7 @@ export default function AgentThreads() {
             aria-orientation="vertical"
             aria-label="Agent threads"
             onKeyDown={onKeyDown}
-            className="flex flex-row overflow-x-auto border-b border-line sm:flex-1 sm:min-h-0 sm:flex-col sm:overflow-x-visible sm:overflow-y-auto sm:border-b-0"
+            className="flex flex-row overflow-x-auto sm:flex-1 sm:min-h-0 sm:flex-col sm:overflow-x-visible sm:overflow-y-auto"
           >
             {THREADS.map((t) => {
             const selected = t.id === activeId;
@@ -463,15 +460,15 @@ export default function AgentThreads() {
                 aria-controls={`panel-${t.id}`}
                 tabIndex={selected ? 0 : -1}
                 onClick={() => setActiveId(t.id)}
-                className={`cursor-pointer border-b border-line px-4 py-3 text-left transition-colors last:border-b-0 sm:border-b sm:last:border-b-0 ${
-                  selected ? "bg-surface-2" : "hover:bg-surface-2/60"
+                className={`cursor-pointer rounded-md px-2 py-2 text-left transition-colors ${
+                  selected ? "bg-surface-3" : "hover:bg-surface-3"
                 }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <ThreadAvatar size={22} avatar={t.avatar} />
+                  <ThreadAvatar size={30} avatar={t.avatar} />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-3">
-                      <span className={`mono text-[12.5px] ${selected ? "text-fg" : "text-dim"}`}>
+                      <span className={`mono truncate text-[12.5px] ${selected ? "text-fg" : "text-dim"}`}>
                         {t.label}
                       </span>
                       <span className="mono shrink-0 text-[10px] text-mute">{t.time}</span>
@@ -483,7 +480,7 @@ export default function AgentThreads() {
             );
             })}
           </div>
-          <div className="mono hidden shrink-0 items-center gap-2 border-t border-line px-3.5 py-2.5 sm:flex">
+          <div className="mono mt-auto hidden shrink-0 items-center gap-2 border-t border-line px-2 pt-2.5 pb-0.5 sm:flex">
             <ThreadAvatar size={22} />
             <span className="text-xs font-medium text-dim">Rafii</span>
           </div>
