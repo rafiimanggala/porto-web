@@ -121,9 +121,31 @@ export default function Home() {
         </Reveal>
       </section>
 
-      <ProjectIndex index="04" />
+      <ProjectIndex index="04" cardStyle />
+
+      <section className="mx-auto w-full max-w-[1120px] px-6 pb-16 text-center lg:px-8 lg:pb-20">
+        <Reveal>
+          <div className="card mx-auto max-w-2xl p-10 sm:p-14">
+            <h2 className="t-h2 text-fg">Tell me what is broken, or what you want built.</h2>
+            <p className="t-lead mx-auto mt-5 max-w-[46ch] text-dim">
+              Not sure which one? Describe the problem and I will tell you if it is mine to
+              solve. Reply within a day, Indonesia time.
+            </p>
+            <Magnetic>
+              <a
+                href={`mailto:${profile.email}`}
+                data-unit="cta:email"
+                className="mt-8 inline-block cursor-pointer rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-bg transition-colors"
+              >
+                Get in touch
+              </a>
+            </Magnetic>
+          </div>
+        </Reveal>
+      </section>
+
       <FaqAccordion index="05" />
-      <Contact index="06" lean />
+      <Contact index="06" lean hideHeading />
       <FooterLinks />
     </main>
   );

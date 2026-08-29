@@ -20,7 +20,7 @@ import { skills } from "@/data/skills";
 type Beat =
   | { kind: "status"; text: string }
   | { kind: "message"; text: string }
-  | { kind: "result"; text: string; href: string };
+  | { kind: "actions"; primaryText: string; href: string; secondaryText: string };
 
 const SHORT_LABEL: Record<string, string> = {
   "full-stack-product-build": "Full-Stack",
@@ -42,7 +42,12 @@ const ROLES = Object.keys(SHORT_LABEL)
   script: [
     { kind: "status", text: s.evidence } as Beat,
     { kind: "message", text: s.value } as Beat,
-    { kind: "result", text: `Open ${s.proof[0].label}`, href: s.proof[0].href } as Beat,
+    {
+      kind: "actions",
+      primaryText: "View case study",
+      href: s.proof[0].href,
+      secondaryText: s.tools.slice(0, 2).join(" · "),
+    } as Beat,
   ],
 }));
 
@@ -82,13 +87,18 @@ function BeatRow({ beat }: { beat: Beat }) {
     );
   }
   return (
-    <Link
-      href={beat.href}
-      className="mono inline-flex w-fit items-center gap-1.5 rounded-full border border-line-strong bg-bg px-3 py-1.5 text-[11px] text-accent transition-colors hover:border-accent"
-    >
-      {beat.text}
-      <span aria-hidden>&rarr;</span>
-    </Link>
+    <div className="flex flex-wrap items-center gap-2">
+      <Link
+        href={beat.href}
+        className="mono inline-flex w-fit items-center gap-1.5 rounded-full border border-line-strong bg-bg px-3 py-1.5 text-[11px] text-accent transition-colors hover:border-accent"
+      >
+        {beat.primaryText}
+        <span aria-hidden>&rarr;</span>
+      </Link>
+      <span className="mono inline-flex w-fit items-center rounded-full border border-line px-3 py-1.5 text-[11px] text-mute">
+        {beat.secondaryText}
+      </span>
+    </div>
   );
 }
 

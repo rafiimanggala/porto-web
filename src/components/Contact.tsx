@@ -8,9 +8,11 @@ import Marquee from "./ui/Marquee";
 export default function Contact({
   index = "09",
   lean = false,
+  hideHeading = false,
 }: {
   index?: string;
   lean?: boolean;
+  hideHeading?: boolean;
 }) {
   return (
     <footer id="contact" className="relative overflow-hidden border-t border-line">
@@ -51,36 +53,42 @@ export default function Contact({
 
         <div className={lean ? "" : "mt-20 border-t border-line pt-16"}>
           <Reveal>
-            {lean ? (
+            {hideHeading ? (
               <span className="eyebrow">{`// ${index} · Contact`}</span>
             ) : (
-              <div className="mb-8 inline-flex w-fit items-center gap-2 rounded-full border border-line bg-surface-2/60 px-3 py-1">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
-                </span>
-                <span className="eyebrow">Available · Remote · UTC+7</span>
-              </div>
-            )}
+              <>
+                {lean ? (
+                  <span className="eyebrow">{`// ${index} · Contact`}</span>
+                ) : (
+                  <div className="mb-8 inline-flex w-fit items-center gap-2 rounded-full border border-line bg-surface-2/60 px-3 py-1">
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
+                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
+                    </span>
+                    <span className="eyebrow">Available · Remote · UTC+7</span>
+                  </div>
+                )}
 
-            <h2 className={`t-h2 max-w-3xl text-fg${lean ? " mt-4" : ""}`}>
-              {lean ? (
-                <>
-                  <span>Tell me what is broken, or </span>
-                  <span className="text-accent">what you want built.</span>
-                </>
-              ) : (
-                <>
-                  Let&apos;s build something that{" "}
-                  <span className="text-accent">runs without you.</span>
-                </>
-              )}
-            </h2>
-            <p className={`mt-5 text-dim${lean ? " t-body max-w-[54ch]" : " t-lead max-w-xl"}`}>
-              {lean
-                ? "Not sure which one? Describe the problem and I will tell you if it is mine to solve. Reply within a day, Indonesia time."
-                : "Open to remote AI engineering roles and freelance builds: autonomous systems, agent orchestration, and full-stack products."}
-            </p>
+                <h2 className={`t-h2 max-w-3xl text-fg${lean ? " mt-4" : ""}`}>
+                  {lean ? (
+                    <>
+                      <span>Tell me what is broken, or </span>
+                      <span className="text-accent">what you want built.</span>
+                    </>
+                  ) : (
+                    <>
+                      Let&apos;s build something that{" "}
+                      <span className="text-accent">runs without you.</span>
+                    </>
+                  )}
+                </h2>
+                <p className={`mt-5 text-dim${lean ? " t-body max-w-[54ch]" : " t-lead max-w-xl"}`}>
+                  {lean
+                    ? "Not sure which one? Describe the problem and I will tell you if it is mine to solve. Reply within a day, Indonesia time."
+                    : "Open to remote AI engineering roles and freelance builds: autonomous systems, agent orchestration, and full-stack products."}
+                </p>
+              </>
+            )}
 
             {/* contact cards */}
             <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
