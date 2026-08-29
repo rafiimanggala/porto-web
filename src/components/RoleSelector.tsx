@@ -13,17 +13,31 @@ import { skills } from "@/data/skills";
    that replays a scripted beat sequence per role. Beat vocabulary and
    timing constants are the same ones AgentThreads already established
    (status/message/result, START_MS/TYPE_MS/HOLD_MS), so the two demos read
-   as one motion language rather than two invented ones. */
+   as one motion language rather than two invented ones. This section IS the
+   site's "Directory" -- there is no separate card-grid alongside it, same
+   as the reference clone. */
 
 type Beat =
   | { kind: "status"; text: string }
   | { kind: "message"; text: string }
   | { kind: "result"; text: string; href: string };
 
-const ROLES = skills.slice(0, 6).map((s) => ({
+const SHORT_LABEL: Record<string, string> = {
+  "full-stack-product-build": "Full-Stack",
+  "ai-features-in-product": "AI Features",
+  "automation-that-runs-itself": "Automation",
+  "ai-video-at-scale": "AI Video",
+  "live-system-rescue": "Live Fixes",
+  "shopify-storefronts": "Shopify",
+};
+
+const ROLES = Object.keys(SHORT_LABEL)
+  .map((slug) => skills.find((s) => s.slug === slug)!)
+  .map((s) => ({
   slug: s.slug,
   n: s.n,
   title: s.title,
+  shortLabel: SHORT_LABEL[s.slug] ?? s.title,
   value: s.value,
   script: [
     { kind: "status", text: s.evidence } as Beat,
@@ -162,11 +176,10 @@ export default function RoleSelector({ index }: { index: string }) {
 
   return (
     <Section
-      id="roles"
+      id="directory"
       index={index}
-      label="Give each thing a job"
-      title="Pick what you need, watch it work."
-      intro="Six of the seven, live. Full list in the directory below."
+      label="Directory"
+      title="Seven things I get hired for"
     >
       <div ref={containerRef} className="grid gap-8 lg:grid-cols-[1fr_320px] lg:items-start">
         <div>
@@ -196,7 +209,7 @@ export default function RoleSelector({ index }: { index: string }) {
                       : "border-line text-dim hover:border-line-strong hover:text-fg"
                   }`}
                 >
-                  {r.title.replace(/^(Custom |Fixing )/, "")}
+                  {r.shortLabel}
                 </button>
               );
             })}
@@ -219,7 +232,7 @@ export default function RoleSelector({ index }: { index: string }) {
             <span className="mono nums rounded-sm border border-line px-1.5 py-0.5 text-[10px] text-mute">
               {String(active.n).padStart(2, "0")}
             </span>
-            <span className="mono text-[11px] text-fg">{active.title.replace(/^(Custom |Fixing )/, "")}</span>
+            <span className="mono text-[11px] text-fg">{active.shortLabel}</span>
             <span className="relative ml-auto flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-70" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Nav from "@/components/Nav";
-import Switchboard from "@/components/Switchboard";
 import Capabilities from "@/components/Capabilities";
 import RoleSelector from "@/components/RoleSelector";
 import ProjectIndex from "@/components/ProjectIndex";
@@ -51,7 +50,8 @@ export default function Home() {
 
         <Reveal delay={0.1}>
           <p className="t-lead mx-auto mt-7 max-w-[54ch] text-dim">
-            Seven things I get hired for. Open the one that matches your problem.
+            I build systems where AI agents do the work, not just write the code. Seven
+            things I get hired for below.
           </p>
         </Reveal>
 
@@ -89,11 +89,11 @@ export default function Home() {
         <Reveal>
           <div className="card flex flex-col items-start gap-6 p-8 sm:flex-row sm:items-center sm:justify-between sm:p-10">
             <div className="max-w-2xl">
-              <h2 className="t-h3 text-fg">How I actually work with Claude Code.</h2>
+              <h2 className="t-h3 text-fg">
+                Agents that observe, decide, and act: not just autocomplete.
+              </h2>
               <p className="t-body mt-4 text-dim">
-                <span className="text-fg">{profile.name}</span> &middot; {profile.role}, based
-                in {profile.location.split(" · ")[0]} ({profile.location.split(" · ")[1]}).{" "}
-                Most people use Claude Code to write functions; I deploy it as the engine:
+                Most people use Claude Code to write functions. I deploy it as the engine:
                 always-on agents that observe, decide, and act in production.
               </p>
             </div>
@@ -102,9 +102,8 @@ export default function Home() {
         </Reveal>
       </section>
 
-      <Capabilities />
+      <Capabilities limit={4} />
       <RoleSelector index="03" />
-      <Switchboard />
 
       <section className="mx-auto w-full max-w-[1120px] px-6 pb-16 lg:px-8 lg:pb-20">
         <Reveal>
@@ -122,9 +121,9 @@ export default function Home() {
         </Reveal>
       </section>
 
-      <ProjectIndex index="05" />
-      <FaqAccordion index="06" />
-      <Contact index="07" lean />
+      <ProjectIndex index="04" />
+      <FaqAccordion index="05" />
+      <Contact index="06" lean />
       <FooterLinks />
     </main>
   );
