@@ -15,8 +15,9 @@ import { motion, AnimatePresence, useInView, useReducedMotion } from "framer-mot
 
 type Beat =
   | { kind: "message"; text: string }
+  | { kind: "reply"; text: string }
   | { kind: "status"; text: string }
-  | { kind: "result"; text: string };
+  | { kind: "tool"; label: string; status: string; desc: string; checklist: string[] };
 
 type Thread = {
   id: string;
@@ -26,65 +27,109 @@ type Thread = {
   script: Beat[];
 };
 
+// One thread per skill, matching the reference clone's exact seven, each
+// script grounded in that skill's real evidence from data/skills.ts.
 const THREADS: Thread[] = [
   {
-    id: "email-reactor",
-    label: "Email Reactor",
-    preview: "PR #482 open for review.",
-    time: "4:15",
+    id: "full-stack",
+    label: "Full-Stack Apps",
+    preview: "All 18 shipped, production stayed green.",
+    time: "11:04",
     script: [
-      { kind: "message", text: "New client email: checkout button stopped saving the cart." },
-      { kind: "status", text: "Reproducing on an isolated branch" },
-      { kind: "message", text: "Fixed. Tests green, PR #482 open for review." },
-      { kind: "result", text: "Routine saved · runs every hour" },
+      { kind: "message", text: "New spec is in: an existing production app needs 18 features added without breaking the system underneath." },
+      { kind: "reply", text: "Go through it end to end, and don't take the live system down while you're at it." },
+      { kind: "message", text: "Understood, working through the .NET 9 backend and Angular frontend now." },
+      {
+        kind: "tool",
+        label: "Computer",
+        status: "Done",
+        desc: "Shipped features against the live database, tested each one before merging.",
+        checklist: ["995 schools on the system", "12,495 users unaffected", "18 features delivered"],
+      },
+      { kind: "message", text: "All 18 shipped, production stayed green the whole way through." },
+      { kind: "status", text: "Marked routine: fix, deploy, self-verify" },
     ],
   },
   {
-    id: "trading",
-    label: "Trading Bots",
-    preview: "Position sized and logged.",
-    time: "3:16",
+    id: "ai-features",
+    label: "AI Features",
+    preview: "Live, reasoning across all four sources.",
+    time: "9:41",
     script: [
-      { kind: "message", text: "12 bots flagged a BTC entry. Running it through the consensus gate before sizing." },
-      { kind: "status", text: "claude → BUY · groq → BUY" },
-      { kind: "message", text: "Both models agree. Position sized and logged to paper P&L." },
-      { kind: "result", text: "+2.4% paper P&L this session" },
+      { kind: "message", text: "Client wants an AI layer that actually reasons across their data, not a chatbot bolted onto the corner." },
+      { kind: "reply", text: "Pull blood work, DNA, DEXA scans and wearables into one score. Make the reasoning visible, not a black box." },
+      {
+        kind: "tool",
+        label: "Computer",
+        status: "Done",
+        desc: "Built the multi-source scoring engine and wired the AI layer to explain each score.",
+        checklist: ["4 data sources reconciled", "Per-report transparency added"],
+      },
+      { kind: "message", text: "Live, the AI layer reasons across all four sources and surfaces compounding risk early." },
     ],
   },
   {
-    id: "amadeus",
-    label: "Amadeus",
-    preview: "Drafted a note in your voice.",
-    time: "1:15",
+    id: "automation",
+    label: "Automation",
+    preview: "One failure never blocks the schedule.",
+    time: "Yesterday",
     script: [
-      { kind: "message", text: "Heartbeat cycle: reviewing today's git commits and the self-correction log." },
-      { kind: "status", text: "Matched against 320 stored decision exemplars" },
-      { kind: "message", text: "Drafted a note in your voice. Held for review, nothing sent automatically." },
-      { kind: "result", text: "Next wake in 2h" },
+      { kind: "message", text: "Can we get the content pipeline off manual scheduling entirely?" },
+      { kind: "status", text: "Mapping the 30+ node workflow" },
+      { kind: "message", text: "Self-hosted n8n graph is live: sources in, script and voiceover and render in the middle, publishing out the other end." },
+      { kind: "reply", text: "Good. What happens if a scrape fails?" },
+      { kind: "message", text: "Publishing keeps running, the scrape workflow is decoupled, so one failure never blocks the schedule." },
     ],
   },
   {
-    id: "mahoraga",
-    label: "Mahoraga",
-    preview: "Locked. Won't happen again.",
-    time: "0:42",
+    id: "ai-video",
+    label: "AI Video",
+    preview: "600+ assets produced, nothing stuck.",
+    time: "Yesterday",
     script: [
-      { kind: "message", text: "Same correction came up twice this session." },
-      { kind: "status", text: "Writing a permanent rule from the pattern" },
-      { kind: "message", text: "Locked. This won't happen a third time." },
-      { kind: "result", text: "59 self-learned rules, permanent" },
+      { kind: "message", text: "Batch is ready: 14 client accounts, all queued for this week." },
+      { kind: "reply", text: "Looks good so far, just confirm scheduling holds across all 14." },
+      { kind: "message", text: "Confirmed. 600+ assets produced and published this run, nothing stuck in the queue." },
     ],
   },
   {
-    id: "te-loop",
-    label: "TE Loop",
-    preview: "12/12 passed. Proof attached.",
-    time: "0:08",
+    id: "live-system-fix",
+    label: "Live-System Fix",
+    preview: "Root cause traced, backlog clearing.",
+    time: "Tuesday",
     script: [
-      { kind: "message", text: "Feature branch ready. Running Fix → Deploy → Test → Proof." },
-      { kind: "status", text: "Deployed to an isolated test port · Playwright running" },
-      { kind: "message", text: "12/12 passed. Proof screenshot attached." },
-      { kind: "result", text: "Marked done, not claimed" },
+      { kind: "message", text: "Emails aren't sending, something's stuck." },
+      {
+        kind: "tool",
+        label: "Computer",
+        status: "Done",
+        desc: "Traced the backlog to a silent SMTP rate limit at the provider, not the app.",
+        checklist: ["9,800 stuck emails identified", "Root cause confirmed at provider level"],
+      },
+      { kind: "message", text: "Root cause traced and fixed behind a tagged rollback. Backlog is clearing now." },
+    ],
+  },
+  {
+    id: "shopify",
+    label: "Shopify Builds",
+    preview: "Inline pattern editor, no build pipeline.",
+    time: "Monday",
+    script: [
+      { kind: "message", text: "The stock theme can't do what they're asking for, no app sells this feature." },
+      { kind: "reply", text: "Build it into the theme directly, keep it simple." },
+      { kind: "message", text: "Done, inline pattern editor wired to an external API, pure Liquid and vanilla JS, no build pipeline." },
+    ],
+  },
+  {
+    id: "design-prototype",
+    label: "Design + Prototype",
+    preview: "Five screens shipped plus a live prototype.",
+    time: "Monday",
+    script: [
+      { kind: "message", text: "Idea's ready to test but there's nothing to click yet." },
+      { kind: "reply", text: "Turn it into something people can actually try." },
+      { kind: "status", text: "Marked routine: reference-first design pass" },
+      { kind: "message", text: "Five responsive screens shipped plus a live clickable prototype, closes the pipeline for the week." },
     ],
   },
 ];
@@ -155,6 +200,13 @@ function BeatBubble({ beat }: { beat: Beat }) {
       </div>
     );
   }
+  if (beat.kind === "reply") {
+    return (
+      <div className="mono ml-auto max-w-[85%] rounded-2xl bg-[#ecece8] px-3.5 py-2.5 text-[13px] leading-snug text-[#141414]">
+        {beat.text}
+      </div>
+    );
+  }
   if (beat.kind === "status") {
     return (
       <div className="mono flex w-fit items-center gap-2 rounded-xl border border-line bg-[rgba(255,255,255,0.03)] px-3.5 py-2.5 text-[11px] text-mute">
@@ -164,8 +216,23 @@ function BeatBubble({ beat }: { beat: Beat }) {
     );
   }
   return (
-    <div className="mono inline-flex w-fit items-center gap-1.5 rounded-full border border-line bg-bg px-3 py-1 text-[11px] text-accent">
-      {beat.text}
+    <div className="max-w-[90%] overflow-hidden rounded-xl border border-line bg-surface-2">
+      <div className="flex items-center justify-between gap-3 px-3.5 py-2.5 text-[12.5px] font-semibold text-fg">
+        <span className="mono">{beat.label}</span>
+        <span className="mono inline-flex items-center gap-1.5 text-[11px] font-medium text-[#28c840]">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#28c840]" />
+          {beat.status}
+        </span>
+      </div>
+      <p className="px-3.5 pb-3 text-[12px] leading-relaxed text-dim">{beat.desc}</p>
+      <div className="flex flex-col gap-1.5 border-t border-line px-3.5 py-3">
+        {beat.checklist.map((c) => (
+          <div key={c} className="mono flex items-center gap-1.5 text-[10.5px] text-dim">
+            <span className="font-bold text-accent">&#10003;</span>
+            {c}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

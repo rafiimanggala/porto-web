@@ -20,6 +20,7 @@ import { skills } from "@/data/skills";
 type Beat =
   | { kind: "status"; text: string }
   | { kind: "message"; text: string }
+  | { kind: "reply"; text: string }
   | { kind: "actions"; primaryText: string; href: string; secondaryText: string };
 
 const SHORT_LABEL: Record<string, string> = {
@@ -31,25 +32,55 @@ const SHORT_LABEL: Record<string, string> = {
   "shopify-storefronts": "Shopify",
 };
 
+// The phone-mock's script is its own narrative beat, not a repeat of the
+// static copy panel next to it (which already shows skill.value). Text
+// ported from the reference clone's ROLES object, grounded in the same
+// skill.evidence facts.
+const SCRIPT: Record<string, Beat[]> = {
+  "full-stack-product-build": [
+    { kind: "message", text: "18 features shipped into the production system, tested end to end first." },
+    { kind: "actions", primaryText: "View case study", href: "", secondaryText: "See the stack" },
+    { kind: "reply", text: "Good, keep the fix, deploy, self-verify loop running on every change." },
+  ],
+  "ai-features-in-product": [
+    { kind: "message", text: "Blood work, DNA, DEXA and wearables reconciled into one transparent score." },
+    { kind: "actions", primaryText: "View case study", href: "", secondaryText: "See the stack" },
+    { kind: "reply", text: "Make sure every report shows its reasoning, not just the number." },
+  ],
+  "automation-that-runs-itself": [
+    { kind: "message", text: "Sources merged, script rewritten, voiceover rendered, publish queued: all unattended." },
+    { kind: "actions", primaryText: "View case study", href: "", secondaryText: "See the stack" },
+  ],
+  "ai-video-at-scale": [
+    { kind: "message", text: "This run: 600+ AI-generated assets produced and published across 14 accounts." },
+    { kind: "actions", primaryText: "View the video lane", href: "", secondaryText: "See the stack" },
+  ],
+  "live-system-rescue": [
+    { kind: "message", text: "Backlog traced to a silent SMTP rate limit, fixed behind a tagged rollback." },
+    { kind: "reply", text: "Good catch. Confirm it stays fixed after tomorrow's deploy." },
+    { kind: "message", text: "Confirmed clean, verified through a real browser before it counted as done." },
+  ],
+  "shopify-storefronts": [
+    { kind: "message", text: "Built into the theme directly, pure Liquid and vanilla JS, no build pipeline." },
+    { kind: "actions", primaryText: "View case study", href: "", secondaryText: "See the stack" },
+  ],
+};
+
 const ROLES = Object.keys(SHORT_LABEL)
   .map((slug) => skills.find((s) => s.slug === slug)!)
   .map((s) => ({
-  slug: s.slug,
-  n: s.n,
-  title: s.title,
-  shortLabel: SHORT_LABEL[s.slug] ?? s.title,
-  value: s.value,
-  script: [
-    { kind: "status", text: s.evidence } as Beat,
-    { kind: "message", text: s.value } as Beat,
-    {
-      kind: "actions",
-      primaryText: "View case study",
-      href: s.proof[0].href,
-      secondaryText: s.tools.slice(0, 2).join(" · "),
-    } as Beat,
-  ],
-}));
+    slug: s.slug,
+    n: s.n,
+    title: s.title,
+    shortLabel: SHORT_LABEL[s.slug] ?? s.title,
+    value: s.value,
+    script: [
+      { kind: "status", text: s.evidence } as Beat,
+      ...SCRIPT[s.slug].map((beat) =>
+        beat.kind === "actions" ? { ...beat, href: s.proof[0].href } : beat
+      ),
+    ],
+  }));
 
 const START_MS = 350;
 const TYPE_MS = 700;
@@ -82,6 +113,13 @@ function BeatRow({ beat }: { beat: Beat }) {
   if (beat.kind === "message") {
     return (
       <div className="max-w-[92%] rounded-2xl bg-[rgba(255,255,255,0.06)] px-3.5 py-2.5 text-[13px] leading-snug text-fg">
+        {beat.text}
+      </div>
+    );
+  }
+  if (beat.kind === "reply") {
+    return (
+      <div className="ml-auto max-w-[92%] rounded-2xl bg-[#ecece8] px-3.5 py-2.5 text-[13px] leading-snug text-[#141414]">
         {beat.text}
       </div>
     );
