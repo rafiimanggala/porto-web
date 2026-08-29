@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { profile } from "@/data/portfolio";
 import CmdkHint from "./ui/CmdkHint";
 
@@ -34,9 +37,24 @@ export default function Nav({
   variant?: "dev" | "video" | "home";
 }) {
   const links = linkSets[variant];
+  // Nav sits flush with the hero at rest (matches the x.ai/bot reference:
+  // no visible chrome until the page moves) and only picks up its border,
+  // fill and blur once the user actually scrolls past it.
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-bg/70 backdrop-blur-xl">
+    <header
+      className={`sticky top-0 z-40 border-b transition-colors duration-300 ${
+        scrolled ? "border-line bg-bg/70 backdrop-blur-xl" : "border-transparent bg-transparent"
+      }`}
+    >
       <nav className="mx-auto flex h-14 w-full max-w-[1120px] items-center justify-between px-6 lg:px-8">
         <Link href="/" className="mono text-sm font-medium text-fg">
           {profile.handle}

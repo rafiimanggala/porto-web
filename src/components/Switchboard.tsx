@@ -21,7 +21,7 @@ export default function Switchboard() {
     <section
       id="directory"
       aria-labelledby="directory-h"
-      className="mx-auto w-full max-w-[1120px] scroll-mt-20 px-6 pb-16 lg:px-8"
+      className="mx-auto w-full max-w-[1120px] scroll-mt-20 px-6 pb-24 lg:px-8 lg:pb-32"
     >
       <h2 id="directory-h" className="sr-only">
         What I get hired for
@@ -52,7 +52,7 @@ export default function Switchboard() {
                 aria-labelledby={`${s.slug}-t ${s.slug}-v`}
                 aria-keyshortcuts={String(s.n)}
                 data-unit={`skill:${s.slug}`}
-                className="group relative flex h-full w-full cursor-pointer flex-col bg-surface-1 p-6 transition-colors duration-200 before:absolute before:inset-y-0 before:left-0 before:w-[2px] before:origin-top before:scale-y-0 before:bg-accent before:transition-transform before:duration-200 before:ease-[cubic-bezier(0.165,0.84,0.44,1)] hover:bg-surface-2 hover:before:scale-y-100 focus-visible:bg-surface-2 focus-visible:[outline-offset:-3px] focus-visible:before:scale-y-100 active:bg-surface-2"
+                className="group relative flex h-full w-full cursor-pointer flex-col bg-surface-1 p-8 transition-colors duration-200 before:absolute before:inset-y-0 before:left-0 before:w-[2px] before:origin-top before:scale-y-0 before:bg-accent before:transition-transform before:duration-200 before:ease-[cubic-bezier(0.165,0.84,0.44,1)] hover:bg-surface-2 hover:before:scale-y-100 focus-visible:bg-surface-2 focus-visible:[outline-offset:-3px] focus-visible:before:scale-y-100 active:bg-surface-2"
               >
                 <div className="flex items-center justify-between">
                   <span

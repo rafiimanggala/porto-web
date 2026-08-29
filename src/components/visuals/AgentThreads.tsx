@@ -222,7 +222,7 @@ export default function AgentThreads() {
   return (
     <div
       ref={containerRef}
-      className="mx-auto w-full overflow-hidden rounded-2xl border border-line"
+      className="card mx-auto w-full overflow-hidden p-0"
       style={{
         background:
           "radial-gradient(120% 90% at 50% -10%, color-mix(in srgb, var(--color-accent) 6%, transparent), transparent 60%), var(--color-surface-1)",

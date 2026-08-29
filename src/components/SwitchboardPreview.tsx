@@ -26,16 +26,23 @@ const BOX =
 // 1 · Full-Stack Web Apps: two NDA engagements, side by side. Both crops are
 // taken from the illustrated device frames on their own case study pages —
 // invented data, same as the full-size screens they're cut from.
+//
+// The frames' own colors (bright blue UI, a green gauge, a rainbow legend)
+// read as a competing brand palette sitting in this near-black, single-accent
+// panel. grayscale+contrast+brightness flattens every hue to neutral first;
+// the shared accent color-blend wash on top then gives the pair the same
+// one-accent-focal-point treatment as every other preview in this row,
+// without cropping out the toggle or the score gauge underneath.
 function ShellPreview() {
   return (
-    <div className={`${BOX} flex`}>
+    <div className={`${BOX} relative flex`}>
       <div className="relative flex-1 border-r border-line-strong">
         <Image
           src="/work/education-saas/quiz-engine-thumb.webp"
           alt=""
           fill
           sizes="(min-width: 1024px) 17vw, (min-width: 640px) 25vw, 50vw"
-          className="object-cover object-center"
+          className="object-cover object-center grayscale contrast-125 brightness-50"
         />
       </div>
       <div className="relative flex-1">
@@ -44,9 +51,10 @@ function ShellPreview() {
           alt=""
           fill
           sizes="(min-width: 1024px) 17vw, (min-width: 640px) 25vw, 50vw"
-          className="object-cover object-left"
+          className="object-cover object-left grayscale contrast-125 brightness-75"
         />
       </div>
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-accent/10 mix-blend-color" />
     </div>
   );
 }

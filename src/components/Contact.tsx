@@ -137,15 +137,17 @@ export default function Contact({
         </div>
 
         {lean ? (
-          <p className="mono mt-12 border-t border-line pt-6 text-[11px] text-mute">
-            {profile.name} · Indonesia · UTC+7 ·{" "}
+          <div className="mono mt-12 flex flex-col items-start justify-between gap-2 border-t border-line pt-6 text-[11px] text-mute sm:flex-row sm:items-center">
+            <span>
+              {profile.name} · Indonesia · UTC+7
+            </span>
             <a
               href="/dev"
               className="cursor-pointer transition-colors hover:text-accent"
             >
               Engineering deep dive ↗
             </a>
-          </p>
+          </div>
         ) : (
           <div className="mono mt-20 flex flex-col items-start justify-between gap-4 border-t border-line pt-8 text-xs text-mute sm:flex-row sm:items-center">
             <span>
