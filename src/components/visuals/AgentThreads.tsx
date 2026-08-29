@@ -93,6 +93,45 @@ const START_MS = 350;
 const TYPE_MS = 800;
 const HOLD_MS = 1000;
 
+// Same terminal-prompt badge language as OrbGlyph.tsx / Mascot.tsx, with a
+// loading state: the `>` glyph cross-fades to a spinner while a beat is
+// "typing", then back once it lands -- one accent color only (the site
+// dropped per-item color coding in the fase-2/3 accent collapse), so
+// identity here comes from the thread label, not a hue.
+function ThreadAvatar({ loading, size = 26 }: { loading?: boolean; size?: number }) {
+  return (
+    <span
+      className="relative inline-flex shrink-0 items-center justify-center rounded-full border border-line-strong bg-surface-3"
+      style={{ width: size, height: size }}
+    >
+      <AnimatePresence initial={false} mode="wait">
+        {loading ? (
+          <motion.span
+            key="spin"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="h-3 w-3 animate-spin rounded-full border-2 border-line-strong border-t-accent"
+          />
+        ) : (
+          <motion.span
+            key="glyph"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="mono font-semibold text-accent"
+            style={{ fontSize: size * 0.36, lineHeight: 1 }}
+          >
+            &gt;
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </span>
+  );
+}
+
 function TypingDots() {
   return (
     <span className="inline-flex items-center gap-1" aria-hidden>
@@ -118,8 +157,9 @@ function BeatBubble({ beat }: { beat: Beat }) {
   }
   if (beat.kind === "status") {
     return (
-      <div className="mono flex items-center gap-1.5 text-[11px] text-mute">
-        <span className="text-accent">▸</span> {beat.text}
+      <div className="mono flex w-fit items-center gap-2 rounded-xl border border-line bg-[rgba(255,255,255,0.03)] px-3.5 py-2.5 text-[11px] text-mute">
+        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+        {beat.text}
       </div>
     );
   }
@@ -161,30 +201,36 @@ function ThreadPanel({ thread, inView }: { thread: Thread; inView: boolean }) {
   const visible = reduce ? thread.script : thread.script.slice(0, Math.max(step + 1, 0));
 
   return (
-    <div
-      role="tabpanel"
-      id={`panel-${thread.id}`}
-      aria-labelledby={`tab-${thread.id}`}
-      tabIndex={0}
-      className="flex h-full flex-col gap-3 overflow-y-auto p-4 sm:p-5"
-    >
-      <AnimatePresence initial={false}>
-        {visible.map((beat, i) => (
-          <motion.div
-            key={i}
-            initial={reduce ? false : { opacity: 0, y: 10, filter: "blur(6px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
-          >
-            <BeatBubble beat={beat} />
-          </motion.div>
-        ))}
-      </AnimatePresence>
-      {!reduce && typing && (
-        <div className="w-fit rounded-2xl bg-[rgba(255,255,255,0.06)] px-3.5 py-2.5">
-          <TypingDots />
-        </div>
-      )}
+    <div className="flex h-full min-h-0 flex-col">
+      <div className="mono flex shrink-0 items-center gap-2.5 border-b border-line px-4 py-3 text-[12.5px] text-fg sm:px-5">
+        <ThreadAvatar loading={typing} />
+        {thread.label}
+      </div>
+      <div
+        role="tabpanel"
+        id={`panel-${thread.id}`}
+        aria-labelledby={`tab-${thread.id}`}
+        tabIndex={0}
+        className="flex flex-1 flex-col gap-3 overflow-y-auto p-4 sm:p-5"
+      >
+        <AnimatePresence initial={false}>
+          {visible.map((beat, i) => (
+            <motion.div
+              key={i}
+              initial={reduce ? false : { opacity: 0, y: 10, filter: "blur(6px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
+            >
+              <BeatBubble beat={beat} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+        {!reduce && typing && (
+          <div className="w-fit rounded-2xl bg-[rgba(255,255,255,0.06)] px-3.5 py-2.5">
+            <TypingDots />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -245,14 +291,22 @@ export default function AgentThreads() {
       </div>
 
       <div className="flex flex-col sm:flex-row sm:h-[340px]">
-        <div
-          role="tablist"
-          aria-orientation="vertical"
-          aria-label="Agent threads"
-          onKeyDown={onKeyDown}
-          className="flex shrink-0 flex-row overflow-x-auto border-b border-line sm:w-[220px] sm:flex-col sm:overflow-x-visible sm:overflow-y-auto sm:border-b-0 sm:border-r"
-        >
-          {THREADS.map((t) => {
+        <div className="flex shrink-0 flex-col sm:w-[220px] sm:border-r sm:border-line">
+          <div className="mono hidden shrink-0 items-center gap-2 border-b border-line px-3.5 py-2.5 text-[11px] text-mute sm:flex">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.4" />
+              <path d="M11 11L14.5 14.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+            </svg>
+            Search
+          </div>
+          <div
+            role="tablist"
+            aria-orientation="vertical"
+            aria-label="Agent threads"
+            onKeyDown={onKeyDown}
+            className="flex flex-row overflow-x-auto border-b border-line sm:flex-col sm:overflow-x-visible sm:overflow-y-auto sm:border-b-0"
+          >
+            {THREADS.map((t) => {
             const selected = t.id === activeId;
             return (
               <button
@@ -270,16 +324,22 @@ export default function AgentThreads() {
                   selected ? "bg-surface-2" : "hover:bg-surface-2/60"
                 }`}
               >
-                <div className="flex items-center justify-between gap-3">
-                  <span className={`mono text-[12.5px] ${selected ? "text-fg" : "text-dim"}`}>
-                    {t.label}
-                  </span>
-                  <span className="mono shrink-0 text-[10px] text-mute">{t.time}</span>
+                <div className="flex items-center gap-2.5">
+                  <ThreadAvatar size={22} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className={`mono text-[12.5px] ${selected ? "text-fg" : "text-dim"}`}>
+                        {t.label}
+                      </span>
+                      <span className="mono shrink-0 text-[10px] text-mute">{t.time}</span>
+                    </div>
+                    <p className="mono mt-0.5 truncate text-[11px] text-mute">{t.preview}</p>
+                  </div>
                 </div>
-                <p className="mono mt-0.5 truncate text-[11px] text-mute">{t.preview}</p>
               </button>
             );
-          })}
+            })}
+          </div>
         </div>
 
         <div className="min-w-0 flex-1">
