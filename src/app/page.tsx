@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Nav from "@/components/Nav";
 import Switchboard from "@/components/Switchboard";
 import Capabilities from "@/components/Capabilities";
+import RoleSelector from "@/components/RoleSelector";
 import ProjectIndex from "@/components/ProjectIndex";
 import FaqAccordion from "@/components/FaqAccordion";
 import Contact from "@/components/Contact";
+import FooterLinks from "@/components/FooterLinks";
 import AgentThreads from "@/components/visuals/AgentThreads";
 import Reveal from "@/components/ui/Reveal";
 import LineMask from "@/components/ui/LineMask";
@@ -101,6 +103,7 @@ export default function Home() {
       </section>
 
       <Capabilities />
+      <RoleSelector index="03" />
       <Switchboard />
 
       <section className="mx-auto w-full max-w-[1120px] px-6 pb-16 lg:px-8 lg:pb-20">
@@ -119,9 +122,10 @@ export default function Home() {
         </Reveal>
       </section>
 
-      <ProjectIndex index="04" />
-      <FaqAccordion index="05" />
-      <Contact index="06" lean />
+      <ProjectIndex index="05" />
+      <FaqAccordion index="06" />
+      <Contact index="07" lean />
+      <FooterLinks />
     </main>
   );
 }

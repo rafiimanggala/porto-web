@@ -1,0 +1,235 @@
+"use client";
+
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { motion, AnimatePresence, useInView, useReducedMotion } from "framer-motion";
+import Link from "next/link";
+import Section from "./ui/Section";
+import { skills } from "@/data/skills";
+
+/* Named pattern: Tabs (horizontal), APG contract -- tablist/tab/tabpanel,
+   roving tabindex, automatic activation on Left/Right Arrow (wraps),
+   Home/End jump to first/last. This is x.ai/bot's "Give each Bot a job"
+   role-selector: a row of pill tabs drives a copy panel plus a phone-mock
+   that replays a scripted beat sequence per role. Beat vocabulary and
+   timing constants are the same ones AgentThreads already established
+   (status/message/result, START_MS/TYPE_MS/HOLD_MS), so the two demos read
+   as one motion language rather than two invented ones. */
+
+type Beat =
+  | { kind: "status"; text: string }
+  | { kind: "message"; text: string }
+  | { kind: "result"; text: string; href: string };
+
+const ROLES = skills.slice(0, 6).map((s) => ({
+  slug: s.slug,
+  n: s.n,
+  title: s.title,
+  value: s.value,
+  script: [
+    { kind: "status", text: s.evidence } as Beat,
+    { kind: "message", text: s.value } as Beat,
+    { kind: "result", text: `Open ${s.proof[0].label}`, href: s.proof[0].href } as Beat,
+  ],
+}));
+
+const START_MS = 350;
+const TYPE_MS = 700;
+const HOLD_MS = 900;
+
+function TypingDots() {
+  return (
+    <span className="inline-flex items-center gap-1" aria-hidden>
+      {[0, 1, 2].map((i) => (
+        <motion.span
+          key={i}
+          className="h-1.5 w-1.5 rounded-full bg-mute"
+          animate={{ y: [0, -3, 0] }}
+          transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.15, ease: "easeInOut" }}
+        />
+      ))}
+    </span>
+  );
+}
+
+function BeatRow({ beat }: { beat: Beat }) {
+  if (beat.kind === "status") {
+    return (
+      <div className="mono flex w-fit items-center gap-2 rounded-xl border border-line bg-[rgba(255,255,255,0.03)] px-3.5 py-2.5 text-[11px] text-mute">
+        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+        {beat.text}
+      </div>
+    );
+  }
+  if (beat.kind === "message") {
+    return (
+      <div className="max-w-[92%] rounded-2xl bg-[rgba(255,255,255,0.06)] px-3.5 py-2.5 text-[13px] leading-snug text-fg">
+        {beat.text}
+      </div>
+    );
+  }
+  return (
+    <Link
+      href={beat.href}
+      className="mono inline-flex w-fit items-center gap-1.5 rounded-full border border-line-strong bg-bg px-3 py-1.5 text-[11px] text-accent transition-colors hover:border-accent"
+    >
+      {beat.text}
+      <span aria-hidden>&rarr;</span>
+    </Link>
+  );
+}
+
+function PhoneScreen({ role, active }: { role: (typeof ROLES)[number]; active: boolean }) {
+  const reduce = useReducedMotion();
+  const [step, setStep] = useState(() => (reduce ? role.script.length - 1 : -1));
+  const [typing, setTyping] = useState(false);
+
+  useEffect(() => {
+    if (reduce || !active) return;
+    if (step >= role.script.length - 1) return;
+    const next = role.script[step + 1];
+    const willType = next.kind === "message";
+    const wait = step === -1 ? START_MS : HOLD_MS;
+    if (willType) {
+      const dotsOn = window.setTimeout(() => setTyping(true), wait);
+      const reveal = window.setTimeout(() => {
+        setTyping(false);
+        setStep((s) => s + 1);
+      }, wait + TYPE_MS);
+      return () => {
+        window.clearTimeout(dotsOn);
+        window.clearTimeout(reveal);
+      };
+    }
+    const t = window.setTimeout(() => setStep((s) => s + 1), wait);
+    return () => window.clearTimeout(t);
+  }, [step, active, reduce, role]);
+
+  const visible = reduce ? role.script : role.script.slice(0, Math.max(step + 1, 0));
+
+  return (
+    <div className="flex h-full flex-col gap-3 overflow-y-auto p-4">
+      <AnimatePresence initial={false}>
+        {visible.map((beat, i) => (
+          <motion.div
+            key={i}
+            initial={reduce ? false : { opacity: 0, y: 10, filter: "blur(6px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
+          >
+            <BeatRow beat={beat} />
+          </motion.div>
+        ))}
+      </AnimatePresence>
+      {!reduce && typing && (
+        <div className="w-fit rounded-2xl bg-[rgba(255,255,255,0.06)] px-3.5 py-2.5">
+          <TypingDots />
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function RoleSelector({ index }: { index: string }) {
+  const [activeSlug, setActiveSlug] = useState(ROLES[0].slug);
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const containerRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(containerRef, { once: true, margin: "-15% 0px" });
+
+  const activeIndex = ROLES.findIndex((r) => r.slug === activeSlug);
+  const active = ROLES[activeIndex];
+
+  const focusAndActivate = (i: number) => {
+    const r = ROLES[(i + ROLES.length) % ROLES.length];
+    setActiveSlug(r.slug);
+    tabRefs.current[r.slug]?.focus();
+  };
+
+  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      focusAndActivate(activeIndex + 1);
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      focusAndActivate(activeIndex - 1);
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      focusAndActivate(0);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      focusAndActivate(ROLES.length - 1);
+    }
+  };
+
+  return (
+    <Section
+      id="roles"
+      index={index}
+      label="Give each thing a job"
+      title="Pick what you need, watch it work."
+      intro="Six of the seven, live. Full list in the directory below."
+    >
+      <div ref={containerRef} className="grid gap-8 lg:grid-cols-[1fr_320px] lg:items-start">
+        <div>
+          <div
+            role="tablist"
+            aria-label="What I get hired for"
+            onKeyDown={onKeyDown}
+            className="flex flex-wrap gap-2"
+          >
+            {ROLES.map((r) => {
+              const selected = r.slug === activeSlug;
+              return (
+                <button
+                  key={r.slug}
+                  ref={(el) => {
+                    tabRefs.current[r.slug] = el;
+                  }}
+                  role="tab"
+                  id={`role-tab-${r.slug}`}
+                  aria-selected={selected}
+                  aria-controls={`role-panel-${r.slug}`}
+                  tabIndex={selected ? 0 : -1}
+                  onClick={() => setActiveSlug(r.slug)}
+                  className={`mono cursor-pointer rounded-full border px-4 py-2 text-[12.5px] transition-colors ${
+                    selected
+                      ? "border-accent bg-surface-2 text-fg"
+                      : "border-line text-dim hover:border-line-strong hover:text-fg"
+                  }`}
+                >
+                  {r.title.replace(/^(Custom |Fixing )/, "")}
+                </button>
+              );
+            })}
+          </div>
+
+          <div
+            id={`role-panel-${active.slug}`}
+            role="tabpanel"
+            aria-labelledby={`role-tab-${active.slug}`}
+            tabIndex={0}
+            className="mt-6"
+          >
+            <h3 className="t-h3 text-fg">{active.title}</h3>
+            <p className="t-body mt-3 max-w-[52ch] text-dim">{active.value}</p>
+          </div>
+        </div>
+
+        <div className="card mx-auto w-full max-w-[320px] overflow-hidden rounded-[28px] p-0">
+          <div className="flex items-center gap-2 border-b border-line px-4 py-3">
+            <span className="mono nums rounded-sm border border-line px-1.5 py-0.5 text-[10px] text-mute">
+              {String(active.n).padStart(2, "0")}
+            </span>
+            <span className="mono text-[11px] text-fg">{active.title.replace(/^(Custom |Fixing )/, "")}</span>
+            <span className="relative ml-auto flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-70" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
+            </span>
+          </div>
+          <div className="h-[280px]">
+            <PhoneScreen key={active.slug} role={active} active={inView} />
+          </div>
+        </div>
+      </div>
+    </Section>
+  );
+}
