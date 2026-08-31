@@ -7,6 +7,7 @@ import FaqAccordion from "@/components/FaqAccordion";
 import Contact from "@/components/Contact";
 import FooterLinks from "@/components/FooterLinks";
 import AgentThreads from "@/components/visuals/AgentThreads";
+import SwitchboardPreview from "@/components/SwitchboardPreview";
 import Reveal from "@/components/ui/Reveal";
 import LineMask from "@/components/ui/LineMask";
 import Scramble from "@/components/ui/Scramble";
@@ -77,6 +78,7 @@ export default function Home() {
         <Reveal delay={0.2}>
           <div className="mx-auto mt-[88px] max-w-[740px] text-left">
             <AgentThreads />
+            <SwitchboardPreview slug="full-stack-product-build" />
           </div>
         </Reveal>
       </section>
