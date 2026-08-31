@@ -13,7 +13,6 @@ import LineMask from "@/components/ui/LineMask";
 import Scramble from "@/components/ui/Scramble";
 import Magnetic from "@/components/ui/Magnetic";
 import { profile } from "@/data/portfolio";
-import { skills } from "@/data/skills";
 
 export const metadata: Metadata = {
   title: "Rafii Manggala · Web apps, AI features, automation",
@@ -79,10 +78,16 @@ export default function Home() {
         <Reveal delay={0.2}>
           <div className="mx-auto mt-[88px] max-w-[740px] text-left">
             <AgentThreads />
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {skills.map((s) => (
-                <SwitchboardPreview key={s.slug} slug={s.slug} />
-              ))}
+            <div className="mt-8">
+              <p className="mono text-xs text-mute">View the work</p>
+              <p className="t-body mt-1.5 text-dim">
+                Two of the seven, shown straight: real screens from a live NDA platform,
+                and a live Shopify storefront.
+              </p>
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                <SwitchboardPreview slug="full-stack-product-build" />
+                <SwitchboardPreview slug="shopify-storefronts" />
+              </div>
             </div>
           </div>
         </Reveal>
