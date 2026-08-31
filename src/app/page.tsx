@@ -13,6 +13,7 @@ import LineMask from "@/components/ui/LineMask";
 import Scramble from "@/components/ui/Scramble";
 import Magnetic from "@/components/ui/Magnetic";
 import { profile } from "@/data/portfolio";
+import { skills } from "@/data/skills";
 
 export const metadata: Metadata = {
   title: "Rafii Manggala · Web apps, AI features, automation",
@@ -78,7 +79,11 @@ export default function Home() {
         <Reveal delay={0.2}>
           <div className="mx-auto mt-[88px] max-w-[740px] text-left">
             <AgentThreads />
-            <SwitchboardPreview slug="full-stack-product-build" />
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {skills.map((s) => (
+                <SwitchboardPreview key={s.slug} slug={s.slug} />
+              ))}
+            </div>
           </div>
         </Reveal>
       </section>
