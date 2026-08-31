@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Nav from "@/components/Nav";
-import Capabilities from "@/components/Capabilities";
-import RoleSelector from "@/components/RoleSelector";
-import ProjectIndex from "@/components/ProjectIndex";
 import FaqAccordion from "@/components/FaqAccordion";
 import Contact from "@/components/Contact";
 import FooterLinks from "@/components/FooterLinks";
@@ -12,7 +10,7 @@ import Reveal from "@/components/ui/Reveal";
 import LineMask from "@/components/ui/LineMask";
 import Scramble from "@/components/ui/Scramble";
 import Magnetic from "@/components/ui/Magnetic";
-import { profile } from "@/data/portfolio";
+import { skills } from "@/data/skills";
 
 export const metadata: Metadata = {
   title: "Rafii Manggala · Web apps, AI features, automation",
@@ -78,83 +76,45 @@ export default function Home() {
         <Reveal delay={0.2}>
           <div className="mx-auto mt-[88px] max-w-[740px] text-left">
             <AgentThreads />
-            <div className="mt-8">
-              <p className="mono text-xs text-mute">View the work</p>
-              <p className="t-body mt-1.5 text-dim">
-                Two of the seven, shown straight: real screens from a live NDA platform,
-                and a live Shopify storefront.
-              </p>
-              <div className="mt-4 grid grid-cols-2 gap-3">
-                <SwitchboardPreview slug="full-stack-product-build" />
-                <SwitchboardPreview slug="shopify-storefronts" />
-              </div>
-            </div>
           </div>
         </Reveal>
       </section>
 
-      <section className="mx-auto w-full max-w-[1120px] px-6 pb-16 lg:px-8 lg:pb-20">
+      <section
+        id="directory"
+        aria-labelledby="directory-h"
+        className="mx-auto w-full max-w-[1120px] scroll-mt-20 px-6 pb-24 lg:px-8 lg:pb-32"
+      >
         <Reveal>
-          <div className="card flex flex-col items-start gap-6 p-8 sm:flex-row sm:items-center sm:justify-between sm:p-10">
-            <div className="max-w-2xl">
-              <h2 className="t-h3 text-fg">
-                Agents that observe, decide, and act: not just autocomplete.
-              </h2>
-              <p className="t-body mt-4 text-dim">
-                Most people use Claude Code to write functions. I deploy it as the engine:
-                always-on agents that observe, decide, and act in production.
-              </p>
-            </div>
-            <div
-              aria-hidden
-              className="h-[110px] w-[110px] shrink-0 rounded-full"
-              style={{
-                background:
-                  "radial-gradient(circle at 35% 30%, #fff, #d5d9e2 60%, #a9adb3 100%)",
-              }}
-            />
+          <div className="flex items-center gap-4">
+            <Scramble text="// View the work" className="eyebrow" />
+            <span className="hairline flex-1" />
           </div>
+          <h2 id="directory-h" className="t-h2 mt-5 text-fg">
+            Seven things I get hired for.
+          </h2>
+          <p className="t-body mt-3 max-w-[54ch] text-dim">
+            Press any card for the case study, the numbers, and the stack behind it.
+          </p>
         </Reveal>
-      </section>
 
-      <Capabilities limit={4} />
-      <RoleSelector index="03" />
-
-      <section className="mx-auto w-full max-w-[1120px] px-6 pb-16 lg:px-8 lg:pb-20">
-        <Reveal>
-          <div className="card p-8 sm:p-12">
-            <blockquote className="t-h3 max-w-3xl text-fg">
-              &ldquo;Trading bots that reach multi-model consensus before risking capital. A
-              digital twin that reasons from my own decision history. An inbox that fixes
-              client bugs while I sleep. The code is the easy part: the interesting work is
-              the orchestration.&rdquo;
-            </blockquote>
-            <cite className="mono mt-6 block text-sm not-italic text-mute">
-              {profile.name} &middot; AI Engineer, Autonomous Systems
-            </cite>
-          </div>
-        </Reveal>
-      </section>
-
-      <ProjectIndex index="04" cardStyle />
-
-      <section className="mx-auto w-full max-w-[1120px] px-6 pb-16 text-center lg:px-8 lg:pb-20">
-        <Reveal>
-          <div className="card mx-auto max-w-2xl p-10 sm:p-14">
-            <h2 className="t-h2 text-fg">Tell me what is broken, or what you want built.</h2>
-            <p className="t-lead mx-auto mt-5 max-w-[46ch] text-dim">
-              Not sure which one? Describe the problem and I will tell you if it is mine to
-              solve. Reply within a day, Indonesia time.
-            </p>
-            <Magnetic>
-              <a
-                href={`mailto:${profile.email}`}
-                data-unit="cta:email"
-                className="mt-8 inline-block cursor-pointer rounded-full bg-fg px-5 py-2.5 text-sm font-medium text-bg transition-colors"
+        <Reveal delay={0.1}>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {skills.map((s) => (
+              <Link
+                key={s.slug}
+                href={`/skills/${s.slug}`}
+                data-unit={`skill:${s.slug}`}
+                className="group flex flex-col gap-4 rounded-xl border border-line bg-surface-1 p-4 transition-colors duration-200 hover:bg-surface-2"
               >
-                Get in touch
-              </a>
-            </Magnetic>
+                <SwitchboardPreview slug={s.slug} />
+                <div>
+                  <span className="mono nums text-[11px] text-mute">{s.n}</span>
+                  <h3 className="mt-1 text-sm font-medium text-fg">{s.title}</h3>
+                  <p className="mt-1 text-[13px] leading-relaxed text-dim">{s.value}</p>
+                </div>
+              </Link>
+            ))}
           </div>
         </Reveal>
       </section>
