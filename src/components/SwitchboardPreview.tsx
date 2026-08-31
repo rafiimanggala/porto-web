@@ -42,7 +42,7 @@ function ShellPreview() {
           alt=""
           fill
           sizes="(min-width: 1024px) 17vw, (min-width: 640px) 25vw, 50vw"
-          className="object-cover object-center grayscale contrast-125 brightness-50"
+          className="object-cover object-center grayscale contrast-125 brightness-90"
         />
       </div>
       <div className="relative flex-1">
