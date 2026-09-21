@@ -14,6 +14,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/`, changeFrequency: "monthly", priority: 1 },
     { url: `${base}/video`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/dev`, changeFrequency: "monthly", priority: 0.7 },
+    ...["", "/halftone", "/drag-row", "/grid-trail"].map((path) => ({
+      url: `${base}/lab${path}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
     ...skills.map((s) => ({
       url: `${base}/skills/${s.slug}`,
       changeFrequency: "monthly" as const,

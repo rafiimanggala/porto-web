@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Nav from "@/components/Nav";
 import FaqAccordion from "@/components/FaqAccordion";
 import Contact from "@/components/Contact";
 import FooterLinks from "@/components/FooterLinks";
 import AgentThreads from "@/components/visuals/AgentThreads";
-import SwitchboardPreview from "@/components/SwitchboardPreview";
+import ServiceOrbit from "@/components/orbit/ServiceOrbit";
 import Reveal from "@/components/ui/Reveal";
 import LineMask from "@/components/ui/LineMask";
 import Scramble from "@/components/ui/Scramble";
 import Magnetic from "@/components/ui/Magnetic";
-import { skills } from "@/data/skills";
 
 export const metadata: Metadata = {
   title: "Rafii Manggala · Web apps, AI features, automation",
@@ -94,29 +92,15 @@ export default function Home() {
             Seven things I get hired for.
           </h2>
           <p className="t-body mt-3 max-w-[54ch] text-dim">
-            Press any card for the case study, the numbers, and the stack behind it.
+            Press a node, or a row on your phone, for the case study, the numbers, and the stack behind it.
           </p>
         </Reveal>
 
-        <Reveal delay={0.1}>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {skills.map((s) => (
-              <Link
-                key={s.slug}
-                href={`/skills/${s.slug}`}
-                data-unit={`skill:${s.slug}`}
-                className="group flex flex-col gap-4 rounded-xl border border-line bg-surface-1 p-4 transition-colors duration-200 hover:bg-surface-2"
-              >
-                <SwitchboardPreview slug={s.slug} />
-                <div>
-                  <span className="mono nums text-[11px] text-mute">{s.n}</span>
-                  <h3 className="mt-1 text-sm font-medium text-fg">{s.title}</h3>
-                  <p className="mt-1 text-[13px] leading-relaxed text-dim">{s.value}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </Reveal>
+        {/* Not wrapped in Reveal: its blur filter would sit on the WebGL canvas's
+            ancestor for the life of the page. The orbit fades its own canvas in. */}
+        <div className="mt-8">
+          <ServiceOrbit />
+        </div>
       </section>
 
       <FaqAccordion index="05" />

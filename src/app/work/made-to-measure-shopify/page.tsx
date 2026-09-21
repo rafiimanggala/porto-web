@@ -8,6 +8,7 @@ import {
   Callout,
   NextCase,
 } from "@/components/work/casestudy";
+import ResultNumbers from "@/components/work/ResultNumbers";
 import { PhoneRow, ScreenBoard } from "@/components/mockups/frame";
 import { ACCENT } from "@/components/mockups/accent";
 import {
@@ -255,6 +256,13 @@ export default function MadeToMeasureShopifyCase() {
           rounds of fixes and refinements still come in and go out the same
           way.
         </Lead>
+        <ResultNumbers
+          caption="Outcome in numbers"
+          stats={[
+            { value: "10", label: "Klaviyo flows live, replacing every default transactional email" },
+            { value: "3", label: "stacked copies of one broken login helper, untangled" },
+          ]}
+        />
       </Section>
 
       <NextCase href="/work/spotter-eld" label="Next case study" title="Spotter ELD" />

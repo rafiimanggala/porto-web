@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Arrow from "@/components/ui/Arrow";
+import RoleSwap from "@/components/ui/RoleSwap";
 
 /* Shared case-study primitives. Rendered in the portfolio's dark theme so the
    site stays cohesive; product screenshots carry each project's own identity. */
@@ -24,9 +25,15 @@ export function CaseShell({ children }: { children: React.ReactNode }) {
           </Link>
           <Link
             href="/"
-            className="mono text-sm font-medium text-fg"
+            className="mono inline-flex items-center gap-2 text-sm font-medium text-fg"
           >
-            rafii<span className="text-accent">.</span>
+            <span>
+              rafii<span className="text-accent">.</span>
+            </span>
+            <span aria-hidden className="hidden text-mute sm:inline">
+              /
+            </span>
+            <RoleSwap className="hidden text-[12px] font-normal text-dim sm:inline-flex" />
           </Link>
         </div>
       </nav>

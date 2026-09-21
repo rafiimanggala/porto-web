@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { profile } from "@/data/portfolio";
 import CmdkHint from "./ui/CmdkHint";
+import RoleSwap from "./ui/RoleSwap";
 
 const devLinks = [
   { href: "#automation", label: "AI" },
@@ -22,10 +23,11 @@ const videoLinks = [
   { href: "/", label: "Directory" },
 ];
 
-// The switchboard homepage carries two links and nothing else. The cards are the
+// The switchboard homepage carries three links and nothing else. The cards are the
 // call to action, so a second row of choices above them is the failure mode.
 const homeLinks = [
   { href: "#directory", label: "Directory" },
+  { href: "/lab", label: "Lab" },
   { href: "/video", label: "AI video" },
 ];
 
@@ -65,6 +67,10 @@ export default function Nav({
           </span>
           {profile.handle}
           <span className="text-accent">.</span>
+          <span aria-hidden className="hidden text-mute sm:inline">
+            /
+          </span>
+          <RoleSwap className="hidden text-[12px] font-normal text-dim sm:inline-flex" />
         </Link>
         <div data-unit="nav" className="hidden items-center gap-7 md:flex">
           {links.map((l) => {

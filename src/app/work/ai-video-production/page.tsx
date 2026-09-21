@@ -10,6 +10,8 @@ import {
   RangeStrip,
   NextCase,
 } from "@/components/work/casestudy";
+import ResultNumbers from "@/components/work/ResultNumbers";
+import BenchmarkBars from "@/components/work/BenchmarkBars";
 
 export const metadata: Metadata = {
   title: "AI Video Production at Scale · Rafii Manggala",
@@ -105,6 +107,21 @@ export default function AiVideoProductionCase() {
             { src: `${B}/strip-08-presenter-ext.mp4`, poster: `${B}/strip-08-presenter-ext.jpg`, label: "In-character presenter, exterior" },
             { src: `${B}/strip-09-lookbook.mp4`, poster: `${B}/strip-09-lookbook.jpg`, label: "Garment lookbook, three angles" },
             { src: `${B}/strip-10-hospitality.mp4`, poster: `${B}/strip-10-hospitality.jpg`, label: "Hospitality venue, 4K source" },
+          ]}
+        />
+        <ResultNumbers
+          caption="Scale"
+          stats={[
+            { value: "600+", label: "AI-generated and AI-edited assets" },
+            { value: "14", label: "client accounts" },
+          ]}
+        />
+        <BenchmarkBars
+          title="Made versus shown on this page"
+          description="Two bars compare the 600 or more assets produced with the 20 clips shown and playable on this page. The 600 is a lower bound, and the bar for the 20 clips is drawn against exactly 600."
+          bars={[
+            { label: "Assets produced across 14 client accounts", value: 600, display: "600+", own: true },
+            { label: "Clips shown and playable on this page", value: 20, display: "20" },
           ]}
         />
         <p className="mono mt-8 text-[11px] text-mute">

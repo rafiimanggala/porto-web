@@ -9,6 +9,7 @@ import {
   ProtoButton,
   NextCase,
 } from "@/components/work/casestudy";
+import ResultNumbers from "@/components/work/ResultNumbers";
 
 export const metadata: Metadata = {
   title: "Streak · UI/UX case study · Rafii Manggala",
@@ -246,6 +247,14 @@ export default function StreakCase() {
             body="The detail screen leads with the current streak, then a 17-week heat map so consistency is visible even after an off day."
           />
         </Columns2>
+        <ResultNumbers
+          caption="The build in numbers"
+          stats={[
+            { value: "1", label: "week from a one-line problem to a clickable prototype" },
+            { value: "5", label: "responsive screens" },
+            { value: "17", label: "weeks of history in the heat map" },
+          ]}
+        />
         <PhoneRow
           shots={[
             { src: `${B}/m-home.png`, label: "Today" },

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import SiteChrome from "@/components/SiteChrome";
@@ -22,6 +22,10 @@ const jb = JetBrains_Mono({
   subsets: ["latin"],
   display: "swap",
 });
+
+// viewportFit cover makes env(safe-area-inset-bottom) real on notched phones, which
+// the sticky brief bar relies on.
+export const viewport: Viewport = { viewportFit: "cover" };
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://rafiimanggala.vercel.app"),

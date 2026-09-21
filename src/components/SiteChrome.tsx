@@ -17,6 +17,9 @@ export default function SiteChrome() {
 
   if (pathname.startsWith("/demo")) return null;
   if (pathname === "/" || pathname.startsWith("/skills")) return null;
+  // The lab pages own their canvas and grid. The grain overlay shifts the halftone
+  // pixels and the cursor glow is noise on the grid trail.
+  if (pathname.startsWith("/lab")) return null;
 
   const isDev = pathname === "/dev";
 

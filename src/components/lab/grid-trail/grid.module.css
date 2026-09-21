@@ -1,0 +1,94 @@
+/* Grid trail + Snake. The cells are plain divs; a data attribute is the whole
+   state, and every fade below is a CSS transition, not a React render. */
+
+.stage {
+  display: none;
+  position: relative;
+}
+.caption {
+  display: none;
+}
+.note {
+  display: block;
+}
+/* Desktop with a fine pointer only. Elsewhere the stage is not rendered at all. */
+@media (pointer: fine) and (min-width: 768px) {
+  .stage,
+  .caption {
+    display: block;
+  }
+  .note {
+    display: none;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+  gap: 1px;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  cursor: crosshair;
+  user-select: none;
+  background: var(--color-line);
+  border: 1px solid var(--color-line);
+  border-radius: 16px;
+}
+
+.cell {
+  background: var(--color-surface-1);
+  transition: background-color 1100ms var(--ease-out-quart);
+}
+.cell[data-lit="true"] {
+  background: color-mix(in oklab, var(--color-accent) 34%, var(--color-surface-1));
+  transition-duration: 0ms;
+}
+
+/* In a game the fade is short, so a left-behind cell reads as a tail, not a smear. */
+.grid[data-mode="game"] .cell {
+  transition-duration: 160ms;
+}
+.grid .cell[data-snake] {
+  background: var(--color-dim);
+  transition-duration: 0ms;
+}
+.grid .cell[data-snake="head"] {
+  background: var(--color-fg);
+}
+.grid .cell[data-target] {
+  background: var(--color-accent);
+  transition-duration: 0ms;
+}
+.grid[data-over="true"] .cell[data-snake] {
+  background: var(--color-mute);
+}
+
+.panel {
+  position: absolute;
+  left: 50%;
+  bottom: 1.5rem;
+  width: min(92%, 380px);
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 16px;
+  background: color-mix(in oklab, var(--color-surface-2) 94%, transparent);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(12px);
+  /* Hidden: parked below, invisible, out of the tab order. Only transform and opacity animate. */
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 28px);
+  transition:
+    transform 520ms var(--ease-out-expo),
+    opacity 320ms ease,
+    visibility 0s linear 520ms;
+}
+.panel[data-phase="invite"],
+.panel[data-phase="over"] {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+  transition-delay: 0s;
+}

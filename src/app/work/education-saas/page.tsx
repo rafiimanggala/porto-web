@@ -7,6 +7,7 @@ import {
   Callout,
   NextCase,
 } from "@/components/work/casestudy";
+import ResultNumbers from "@/components/work/ResultNumbers";
 import { PhoneRow, ScreenBoard } from "@/components/mockups/frame";
 import { ACCENT } from "@/components/mockups/accent";
 import {
@@ -161,6 +162,15 @@ export default function EducationSaasCase() {
           case for it. The kind of fix that only shows up once you
           stop trusting the happy path.
         </Lead>
+        <ResultNumbers
+          caption="Outcome in numbers"
+          stats={[
+            { value: "995", label: "schools on the live production system" },
+            { value: "12,495", label: "users on that system" },
+            { value: "18", label: "features shipped into it" },
+            { value: "9,800", label: "stuck emails traced to a silent SMTP rate limit" },
+          ]}
+        />
       </Section>
 
       <NextCase

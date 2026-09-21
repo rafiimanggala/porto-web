@@ -7,6 +7,7 @@ import {
   Callout,
   NextCase,
 } from "@/components/work/casestudy";
+import ResultNumbers from "@/components/work/ResultNumbers";
 import { PhoneRow, ScreenBoard } from "@/components/mockups/frame";
 import { ACCENT } from "@/components/mockups/accent";
 import {
@@ -27,15 +28,6 @@ export const metadata: Metadata = {
 };
 
 const accent = ACCENT.violet;
-
-function Metric({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="rounded-2xl border border-line bg-surface-1 p-5">
-      <div className="t-h3 text-fg">{value}</div>
-      <div className="mt-1.5 text-sm text-dim">{label}</div>
-    </div>
-  );
-}
 
 export default function HealthPlatformCase() {
   return (
@@ -131,11 +123,18 @@ export default function HealthPlatformCase() {
           templates, then scored against reference percentiles instead of a
           fixed cutoff.
         </Lead>
-        <div className="mt-8 grid gap-4 sm:grid-cols-3">
-          <Metric value="70+" label="blood markers parsed per panel" />
-          <Metric value="6/6" label="domains feeding the bio-age model" />
-          <Metric value="3" label="ingestion sources: labs, DNA, DEXA" />
-        </div>
+        <ResultNumbers
+          caption="Scale of the ingestion"
+          stats={[
+            { value: "70+", label: "blood markers parsed per panel" },
+            {
+              value: "6/6",
+              label: "domains feeding the bio-age model",
+              spoken: "All 6 domains feeding the bio-age model",
+            },
+            { value: "3", label: "ingestion sources: labs, DNA, DEXA" },
+          ]}
+        />
       </Section>
 
       <Section n="04" kicker="The scoring engine" title="Reconciling four sources into one number.">

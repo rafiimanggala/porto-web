@@ -7,9 +7,15 @@ import { fieldNoteBySlug, notesForSkill } from "@/data/fieldNotes";
 import { skills, skillBySlug } from "@/data/skills";
 import { profile } from "@/data/portfolio";
 import Arrow from "@/components/ui/Arrow";
+import { BriefProvider, BriefSpacer } from "@/components/skills/BriefProvider";
+import BriefBar from "@/components/skills/BriefBar";
+import BriefBuilder from "@/components/skills/BriefBuilder";
+import SkillDemo from "@/components/skills/SkillDemo";
+import { hasSkillDemo } from "@/components/skills/demoSlugs";
 
 const EMAIL = profile.email;
 const NUMBER_WORDS: Record<number, string> = { 2: "two", 3: "three", 4: "four" };
+const pad = (n: number) => String(n).padStart(2, "0");
 
 export function generateStaticParams() {
   return skills.map((s) => ({ slug: s.slug }));
@@ -104,102 +110,133 @@ export default async function SkillPage({
     .map(fieldNoteBySlug)
     .filter((f) => f !== undefined);
 
+  // Section numbers follow what is actually on the page: the demo and the
+  // field notes only exist for some skills.
+  const demo = hasSkillDemo(slug);
+  const briefN = 2;
+  const demoN = briefN + 1;
+  const notesN = demo ? demoN + 1 : demoN;
+  const startN = notes.length > 0 ? notesN + 1 : notesN;
+
   return (
-    <CaseShell>
-      <CaseHero
-        eyebrow="What I get hired for"
-        title={skill.title}
-        subtitle={skill.value}
-        meta={[
-          {
-            label: "Proof",
-            value: `${skill.proof.length} piece${skill.proof.length === 1 ? "" : "s"} of work`,
-          },
-          { label: "Tools", value: skill.tools.slice(0, 3).join(", ") },
-          { label: "Availability", value: "Remote · UTC+7" },
-          { label: "Reply", value: "Within a day" },
-        ]}
-      />
+    <BriefProvider slug={skill.slug} skillTitle={skill.title} email={EMAIL}>
+      <CaseShell>
+        <CaseHero
+          eyebrow="What I get hired for"
+          title={skill.title}
+          subtitle={skill.value}
+          meta={[
+            {
+              label: "Proof",
+              value: `${skill.proof.length} piece${skill.proof.length === 1 ? "" : "s"} of work`,
+            },
+            { label: "Tools", value: skill.tools.slice(0, 3).join(", ") },
+            { label: "Availability", value: "Remote · UTC+7" },
+            { label: "Reply", value: "Within a day" },
+          ]}
+        />
 
-      <Section n="01" kicker="Proof" title="Where this has already shipped.">
-        <Lead>
-          {skill.evidence}.{" "}
-          {skill.proof.length === 1
-            ? "Open it to read how it was built."
-            : `Open any of the ${NUMBER_WORDS[skill.proof.length] ?? skill.proof.length} to read how it was built.`}
-        </Lead>
-        <ul className="mt-8 grid gap-px overflow-hidden rounded-2xl border border-line bg-line">
-          {skill.proof.map((p) => (
-            <ProofRow key={p.label} {...p} />
-          ))}
-        </ul>
-        <p className="mono mt-12 text-[11px] text-mute">
-          {skill.tools.join(" · ")}
-        </p>
-      </Section>
-
-      {notes.length > 0 ? (
-        <Section
-          n="02"
-          kicker="Field notes"
-          title="What I already knew about your domain."
-        >
+        <Section n="01" kicker="Proof" title="Where this has already shipped.">
           <Lead>
-            The traps specific to this kind of product, each one from work that
-            shipped rather than from a reading list.
+            {skill.evidence}.{" "}
+            {skill.proof.length === 1
+              ? "Open it to read how it was built."
+              : `Open any of the ${NUMBER_WORDS[skill.proof.length] ?? skill.proof.length} to read how it was built.`}
           </Lead>
-          <ul className="mt-8 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2">
-            {notes.map((f) => (
-              <li key={f.slug} className="flex min-w-0">
-                <Link
-                  href={`/build/${f.slug}`}
-                  className="group block w-full bg-surface-1 p-6 transition-colors hover:bg-surface-2 focus-visible:bg-surface-2 focus-visible:[outline-offset:-3px]"
-                >
-                  <span className="eyebrow">{f.domain}</span>
-                  <h3 className="t-h3 mt-2 text-fg">{f.title}</h3>
-                  <span className="mono mt-3 inline-flex items-center gap-2 text-[11px] text-mute transition-colors group-hover:text-accent">
-                    {f.notes.length} notes
-                    <Arrow className="transition-transform group-hover:translate-x-1" />
-                  </span>
-                </Link>
-              </li>
+          <ul className="mt-8 grid gap-px overflow-hidden rounded-2xl border border-line bg-line">
+            {skill.proof.map((p) => (
+              <ProofRow key={p.label} {...p} />
             ))}
           </ul>
+          <p className="mono mt-12 text-[11px] text-mute">
+            {skill.tools.join(" · ")}
+          </p>
         </Section>
-      ) : null}
 
-      <Section
-        n={notes.length > 0 ? "03" : "02"}
-        kicker="Start"
-        title="Think this is your problem?"
-      >
-        <Lead>
-          Tell me what is happening in your own words. No brief needed, no spec.
-          I will tell you within a day whether it is mine to solve, and roughly
-          what it takes.
-        </Lead>
-        <div className="mt-8 flex flex-wrap items-center gap-3">
-          <a
-            href={`mailto:${EMAIL}?subject=${encodeURIComponent(skill.title)}`}
-            data-unit={`cta:skill:${skill.slug}`}
-            className="mono cursor-pointer rounded-full bg-accent px-5 py-2.5 text-xs font-semibold text-bg transition-opacity duration-200 hover:opacity-90"
+        <Section n={pad(briefN)} kicker="Brief" title="Build your brief.">
+          <Lead>
+            Tick the parts that sound like your project. They collect in a bar at
+            the bottom of the page, and one button turns them into an email to me.
+            Nothing is sent until you press it.
+          </Lead>
+          <BriefBuilder />
+        </Section>
+
+        {demo ? (
+          <Section n={pad(demoN)} kicker="Demo" title="Try it.">
+            <Lead>
+              A small game that runs in your browser. It only starts when you
+              press play.
+            </Lead>
+            <SkillDemo slug={slug} />
+          </Section>
+        ) : null}
+
+        {notes.length > 0 ? (
+          <Section
+            n={pad(notesN)}
+            kicker="Field notes"
+            title="What I already knew about your domain."
           >
-            Describe the problem
-          </a>
-          <span className="mono text-[11px] text-mute">
-            {EMAIL} · reply within a day
-          </span>
-        </div>
-      </Section>
+            <Lead>
+              The traps specific to this kind of product, each one from work that
+              shipped rather than from a reading list.
+            </Lead>
+            <ul className="mt-8 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2">
+              {notes.map((f) => (
+                <li key={f.slug} className="flex min-w-0">
+                  <Link
+                    href={`/build/${f.slug}`}
+                    className="group block w-full bg-surface-1 p-6 transition-colors hover:bg-surface-2 focus-visible:bg-surface-2 focus-visible:[outline-offset:-3px]"
+                  >
+                    <span className="eyebrow">{f.domain}</span>
+                    <h3 className="t-h3 mt-2 text-fg">{f.title}</h3>
+                    <span className="mono mt-3 inline-flex items-center gap-2 text-[11px] text-mute transition-colors group-hover:text-accent">
+                      {f.notes.length} notes
+                      <Arrow className="transition-transform group-hover:translate-x-1" />
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </Section>
+        ) : null}
 
-      <div className="mt-16 border-t border-line pt-8">
-        <Link
-          href="/#directory"
-          className="mono inline-flex items-center gap-2 text-sm text-dim transition-colors hover:text-fg"
+        <Section
+          n={pad(startN)}
+          kicker="Start"
+          title="Think this is your problem?"
         >
-          <Arrow dir="left" /> All seven
-        </Link>
-      </div>
-    </CaseShell>
+          <Lead>
+            Tell me what is happening in your own words. No brief needed, no spec.
+            I will tell you within a day whether it is mine to solve, and roughly
+            what it takes.
+          </Lead>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <a
+              href={`mailto:${EMAIL}?subject=${encodeURIComponent(skill.title)}`}
+              data-unit={`cta:skill:${skill.slug}`}
+              className="mono cursor-pointer rounded-full bg-accent px-5 py-2.5 text-xs font-semibold text-bg transition-opacity duration-200 hover:opacity-90"
+            >
+              Describe the problem
+            </a>
+            <span className="mono text-[11px] text-mute">
+              {EMAIL} · reply within a day
+            </span>
+          </div>
+        </Section>
+
+        <div className="mt-16 border-t border-line pt-8">
+          <Link
+            href="/#directory"
+            className="mono inline-flex items-center gap-2 text-sm text-dim transition-colors hover:text-fg"
+          >
+            <Arrow dir="left" /> All seven
+          </Link>
+        </div>
+        <BriefSpacer />
+      </CaseShell>
+      <BriefBar />
+    </BriefProvider>
   );
 }
