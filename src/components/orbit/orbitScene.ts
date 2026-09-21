@@ -7,19 +7,12 @@
 // canvas is offscreen, the tab is hidden, or the GL context is lost.
 
 import type * as ThreeNS from "three";
-import { buildOrbit, type OrbitParts, type Three } from "./orbitBuild";
+import { buildOrbit, type Three } from "./orbitBuild";
 import { ACCENT, EXTENT_X, EXTENT_Y, FOV, INK, RINGS } from "./orbitConfig";
+import type { Ctx, OrbitSceneOptions } from "./orbitCtx";
+import { clamp, depthOf, projectSpots, writeButtons } from "./orbitLabels";
 
-export type OrbitSceneOptions = {
-  // One element per node, in skill order. Positioned by transform each frame.
-  buttons: HTMLElement[];
-  // Element that receives pointer parallax (usually the stage root).
-  pointerTarget: HTMLElement;
-  reducedMotion: boolean;
-  // Pixels on the right the scene keeps clear (the evidence card). Read per frame.
-  getInsetRight: () => number;
-  onContextLost: () => void;
-};
+export type { OrbitSceneOptions } from "./orbitCtx";
 
 export type OrbitScene = {
   setSelected: (index: number) => void;
@@ -30,38 +23,9 @@ export type OrbitScene = {
 
 const MAX_TILT = 0.25;
 
-type Ctx = {
-  renderer: ThreeNS.WebGLRenderer;
-  scene: ThreeNS.Scene;
-  camera: ThreeNS.PerspectiveCamera;
-  parts: OrbitParts;
-  opts: OrbitSceneOptions;
-  host: HTMLElement;
-  w: number;
-  h: number;
-  half: number[];
-  labelW: number[];
-  side: string[];
-  inset: number;
-  time: number;
-  reduced: boolean;
-  visible: boolean;
-  lost: boolean;
-  disposed: boolean;
-  resetPointer: () => void;
-  selected: number;
-  hovered: number;
-  pointer: { tx: number; ty: number; x: number; y: number };
-  sel: number[];
-  hov: number[];
-  dim: number[];
-  ink: ThreeNS.Color;
-  accent: ThreeNS.Color;
-  tmp: { v: ThreeNS.Vector3; f: ThreeNS.Vector3; q: ThreeNS.Quaternion };
-};
-
 const approach = (cur: number, target: number, k: number) => cur + (target - cur) * k;
-const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
+// Device pixel ratio the canvas renders at: sharp on retina, capped for cost.
+const pixelRatio = () => Math.min(window.devicePixelRatio || 1, 2);
 
 function fitCamera(c: Ctx): void {
   const labelPad = c.w < 900 ? 70 : 90;
@@ -127,9 +91,7 @@ function stepNodes(c: Ctx, dt: number): void {
     const scale = 1 + c.hov[i] * 0.5 + c.sel[i] * 0.7;
     node.mesh.scale.setScalar(scale);
     node.mesh.material.color.copy(c.ink).lerp(c.accent, c.sel[i]);
-    node.mesh.material.opacity = 1 - c.dim[i] * 0.7;
     node.halo.material.color.copy(node.mesh.material.color);
-    node.halo.material.opacity = 0.2 + c.hov[i] * 0.25 + c.sel[i] * 0.45 - c.dim[i] * 0.12;
     // Pull the selected node toward the camera: world +z, expressed in the
     // ring's local frame because the ring is tilted and spinning.
     node.mesh.position.copy(node.base);
@@ -141,94 +103,17 @@ function stepNodes(c: Ctx, dt: number): void {
     node.mesh.getWorldPosition(tmp.v);
     node.halo.position.copy(tmp.v);
     node.halo.scale.setScalar(scale * (1 + c.sel[i] * 0.2));
-  });
-}
-
-type Spot = { x: number; y: number; depth: number; pri: number; side: "left" | "right" };
-
-// Screen position of every node. Reads world position back from the halo
-// (already synced in stepNodes) and projects with the live camera, view
-// offset included. `pri` ranks who keeps its label when labels collide.
-function projectSpots(c: Ctx): Spot[] {
-  const cx = (c.w - c.inset) / 2;
-  return c.parts.nodes.map((node, i) => {
-    const v = c.tmp.v.copy(node.halo.position);
-    const depth = clamp((v.z + 3.2) / 6.4, 0, 1);
-    v.project(c.camera);
-    const x = (v.x * 0.5 + 0.5) * c.w;
-    return {
-      x,
-      y: (-v.y * 0.5 + 0.5) * c.h,
-      depth,
-      pri: depth + c.sel[i] * 10 + c.hov[i] * 10,
-      side: x > cx ? "right" : "left",
-    };
-  });
-}
-
-const LABEL_GAP = 18;
-const LABEL_H = 18;
-const DOT = 13;
-
-type Box = { x0: number; x1: number; y0: number; y1: number };
-const overlaps = (a: Box, b: Box) => a.x0 < b.x1 && a.x1 > b.x0 && a.y0 < b.y1 && a.y1 > b.y0;
-
-function labelBox(s: Spot, width: number): Box {
-  const x0 = s.side === "right" ? s.x + LABEL_GAP : s.x - LABEL_GAP - width;
-  return { x0, x1: x0 + width, y0: s.y - LABEL_H / 2, y1: s.y + LABEL_H / 2 };
-}
-
-const dotBox = (s: Spot): Box => ({ x0: s.x - DOT, x1: s.x + DOT, y0: s.y - DOT, y1: s.y + DOT });
-
-type Placement = { side: "left" | "right"; hidden: boolean };
-
-// Labels claim space in priority order (selected, hovered, then nearest to the
-// camera). Each takes its outward side if free, else the opposite side, else
-// it fades out. The node dot and its button always stay. Higher-priority dots
-// count as obstacles too, so text never sits on top of another node.
-function placeLabels(c: Ctx, spots: Spot[]): Placement[] {
-  const order = spots.map((_, i) => i).sort((a, b) => spots[b].pri - spots[a].pri);
-  // The evidence card is an obstacle too: labels never run under it.
-  const taken: Box[] = c.inset > 0 ? [{ x0: c.w - c.inset + 12, x1: c.w, y0: 0, y1: c.h }] : [];
-  const out: Placement[] = spots.map((s) => ({ side: s.side, hidden: true }));
-  order.forEach((i) => {
-    const spot = spots[i];
-    const width = c.labelW[i] ?? 140;
-    const flipped = spot.side === "right" ? "left" : "right";
-    const side = ([spot.side, flipped] as const).find(
-      (candidate) => !taken.some((box) => overlaps(labelBox({ ...spot, side: candidate }, width), box)),
-    );
-    if (side) {
-      out[i] = { side, hidden: false };
-      taken.push(labelBox({ ...spot, side }, width));
-    }
-    taken.push(dotBox(spot));
-  });
-  return out;
-}
-
-// Move each button to its node with a transform, and write the label opacity
-// as a CSS variable. Nothing here goes through React.
-function writeButtons(c: Ctx, spots: Spot[]): void {
-  const placed = placeLabels(c, spots);
-  spots.forEach((spot, i) => {
-    const btn = c.opts.buttons[i];
-    if (!btn) return;
-    const half = c.half[i] ?? 22;
-    btn.style.transform = `translate3d(${(spot.x - half).toFixed(1)}px, ${(spot.y - half).toFixed(1)}px, 0)`;
-    btn.style.zIndex = String(Math.round(spot.depth * 10));
-    const base = (0.42 + 0.58 * spot.depth) * (1 - c.dim[i] * 0.55);
-    const lo = Math.max(base, c.hov[i], c.sel[i]);
-    btn.style.setProperty("--lo", placed[i].hidden ? "0" : lo.toFixed(2));
-    if (c.side[i] !== placed[i].side) {
-      c.side[i] = placed[i].side;
-      btn.dataset.side = placed[i].side;
-    }
+    // Depth and dim read through the dot and its halo (the labels stay legible).
+    const depth = depthOf(tmp.v.z);
+    node.mesh.material.opacity = (0.55 + 0.45 * depth) * (1 - c.dim[i] * 0.7);
+    node.halo.material.opacity =
+      0.1 + 0.12 * depth + c.hov[i] * 0.25 + c.sel[i] * 0.45 - c.dim[i] * 0.1;
   });
 }
 
 function renderFrame(c: Ctx, dt: number): void {
   const target = Math.max(0, c.opts.getInsetRight());
+  c.insetTarget = target;
   if (c.inset !== target) {
     const next = c.reduced ? target : approach(c.inset, target, 1 - Math.exp(-dt * 7));
     c.inset = Math.abs(next - target) < 0.5 ? target : next;
@@ -243,7 +128,7 @@ function renderFrame(c: Ctx, dt: number): void {
 function createRenderer(THREE: Three, host: HTMLElement): ThreeNS.WebGLRenderer | null {
   try {
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(pixelRatio());
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.setClearColor(0x000000, 0);
     const canvas = renderer.domElement;
@@ -257,24 +142,30 @@ function createRenderer(THREE: Three, host: HTMLElement): ThreeNS.WebGLRenderer 
   }
 }
 
-export async function initOrbitScene(
+// Release a renderer that never made it into a running scene: free the GL
+// context and take the canvas back out of the host.
+function releaseRenderer(renderer: ThreeNS.WebGLRenderer): void {
+  renderer.dispose();
+  renderer.forceContextLoss();
+  renderer.domElement.remove();
+}
+
+function createContext(
+  THREE: Three,
+  renderer: ThreeNS.WebGLRenderer,
   host: HTMLElement,
   opts: OrbitSceneOptions,
-): Promise<OrbitScene | null> {
-  const THREE = await import("three");
-  const renderer = createRenderer(THREE, host);
-  if (!renderer) return null;
-
+): Ctx {
   const count = opts.buttons.length;
   const parts = buildOrbit(THREE, count);
   parts.core.rotation.set(0.4, 0.6, 0.1);
   const scene = new THREE.Scene();
   scene.add(parts.root, parts.overlay);
   const zeros = () => Array.from({ length: count }, () => 0);
-  const c: Ctx = {
+  return {
     renderer, scene, parts, opts, host,
     camera: new THREE.PerspectiveCamera(FOV, 1, 0.1, 80),
-    w: 0, h: 0, half: [], labelW: [], side: [], inset: 0, time: 0,
+    w: 0, h: 0, half: [], labelW: [], side: [], inset: 0, insetTarget: 0, time: 0,
     reduced: opts.reducedMotion, visible: false, lost: false, disposed: false,
     resetPointer: () => {},
     selected: -1, hovered: -1,
@@ -283,7 +174,25 @@ export async function initOrbitScene(
     ink: new THREE.Color(INK), accent: new THREE.Color(ACCENT),
     tmp: { v: new THREE.Vector3(), f: new THREE.Vector3(), q: new THREE.Quaternion() },
   };
-  return wireLifecycle(c);
+}
+
+// `isCancelled` lets the caller (an effect that may already have cleaned up)
+// stop the build right after the chunk load, before any renderer exists.
+export async function initOrbitScene(
+  host: HTMLElement,
+  opts: OrbitSceneOptions,
+  isCancelled: () => boolean = () => false,
+): Promise<OrbitScene | null> {
+  const THREE = await import("three");
+  if (isCancelled()) return null;
+  const renderer = createRenderer(THREE, host);
+  if (!renderer) return null;
+  try {
+    return wireLifecycle(createContext(THREE, renderer, host, opts));
+  } catch (err) {
+    releaseRenderer(renderer);
+    throw err;
+  }
 }
 
 type Loop = { kick: () => void; stop: () => void };
@@ -310,6 +219,42 @@ function createLoop(c: Ctx): Loop {
   return { kick, stop: () => raf && cancelAnimationFrame(raf) };
 }
 
+// devicePixelRatio has no change event. A `(resolution: Ndppx)` query does: it
+// stops matching when the ratio moves (window dragged to another monitor, zoom
+// change), then is re-armed for the new value. On change the renderer takes
+// the new ratio, the cached size is dropped so the next frame calls setSize,
+// and a frame is kicked (reduced motion draws only on demand).
+function watchPixelRatio(c: Ctx, kick: () => void): () => void {
+  let query: MediaQueryList | null = null;
+  function onChange(): void {
+    if (c.disposed) return;
+    c.renderer.setPixelRatio(pixelRatio());
+    c.w = 0;
+    c.h = 0;
+    arm();
+    kick();
+  }
+  function arm(): void {
+    query?.removeEventListener("change", onChange);
+    query = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
+    query.addEventListener("change", onChange);
+  }
+  arm();
+  return () => query?.removeEventListener("change", onChange);
+}
+
+// Label widths are measured with whatever font is loaded at that moment. When
+// the web font arrives later, drop the cached size so the next frame measures
+// again and label placement works from the real widths.
+function remeasureWhenFontsLoad(c: Ctx, kick: () => void): void {
+  void document.fonts?.ready.then(() => {
+    if (c.disposed) return;
+    c.w = 0;
+    c.h = 0;
+    kick();
+  });
+}
+
 // Listeners and observers; returns one teardown. Pointer parallax listens on
 // the stage root and never on the wheel or touch, so page scroll is untouched.
 function attach(c: Ctx, kick: () => void): () => void {
@@ -333,21 +278,25 @@ function attach(c: Ctx, kick: () => void): () => void {
   const onVisibility = () => {
     if (!document.hidden) kick();
   };
-  canvas.addEventListener("webglcontextlost", onLost);
-  target.addEventListener("pointermove", onMove);
-  target.addEventListener("pointerleave", onLeave);
-  document.addEventListener("visibilitychange", onVisibility);
+  // Observers are built before any listener is added, so a constructor that
+  // throws leaves nothing behind to tear down.
   const ro = new ResizeObserver(kick);
-  ro.observe(c.host);
   const io = new IntersectionObserver(([entry]) => {
     c.visible = entry.isIntersecting;
     if (c.visible) kick();
   });
+  canvas.addEventListener("webglcontextlost", onLost);
+  target.addEventListener("pointermove", onMove);
+  target.addEventListener("pointerleave", onLeave);
+  document.addEventListener("visibilitychange", onVisibility);
+  ro.observe(c.host);
   io.observe(c.host);
+  const unwatchRatio = watchPixelRatio(c, kick);
   c.resetPointer = onLeave;
   return () => {
     ro.disconnect();
     io.disconnect();
+    unwatchRatio();
     canvas.removeEventListener("webglcontextlost", onLost);
     target.removeEventListener("pointermove", onMove);
     target.removeEventListener("pointerleave", onLeave);
@@ -358,10 +307,19 @@ function attach(c: Ctx, kick: () => void): () => void {
 function wireLifecycle(c: Ctx): OrbitScene {
   const loop = createLoop(c);
   const detach = attach(c, loop.kick);
+  remeasureWhenFontsLoad(c, loop.kick);
 
   // First frame is drawn synchronously so labels have positions before the
-  // stage is revealed, whether or not the canvas is on screen yet.
-  if (resize(c)) renderFrame(c, 0);
+  // stage is revealed, whether or not the canvas is on screen yet. If it
+  // throws, undo what attach() set up before the caller releases the renderer.
+  try {
+    if (resize(c)) renderFrame(c, 0);
+  } catch (err) {
+    loop.stop();
+    detach();
+    c.parts.dispose();
+    throw err;
+  }
 
   return {
     setSelected: (i) => { c.selected = i; loop.kick(); },

@@ -45,12 +45,12 @@ export default function OrbitNode({
     >
       <span
         data-label
-        style={{ opacity: "var(--lo, 0.7)" }}
+        style={{ opacity: "var(--lo, 0.8)" }}
         className="pointer-events-none absolute left-[calc(50%+18px)] top-1/2 flex w-max -translate-y-1/2 items-baseline gap-1.5 whitespace-nowrap text-left transition-opacity duration-200 [text-shadow:0_0_10px_var(--color-bg),0_0_4px_var(--color-bg)] group-data-[side=left]/n:right-[calc(50%+18px)] group-data-[side=left]/n:left-auto group-data-[side=left]/n:flex-row-reverse group-data-[side=left]/n:text-right"
       >
         <span
           aria-hidden
-          className="mono nums text-[10px] text-mute transition-colors duration-200 group-aria-pressed/n:text-accent"
+          className="mono nums text-[10px] text-dim transition-colors duration-200 group-aria-pressed/n:text-accent"
         >
           {String(skill.n).padStart(2, "0")}
         </span>

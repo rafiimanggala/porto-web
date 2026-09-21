@@ -39,7 +39,7 @@ export default function OrbitCard({
           type="button"
           onClick={onClose}
           data-unit="orbit:close"
-          className="mono -mr-2 -mt-2 flex min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-full text-[11px] text-mute transition-colors hover:text-fg"
+          className="mono -mr-2 -mt-2 flex min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-full text-[11px] text-dim transition-colors hover:text-fg"
         >
           Close
         </button>

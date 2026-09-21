@@ -7,6 +7,10 @@ export const LINE = 0x9a9aa4;
 
 export const FOV = 32;
 
+// Radius of the wireframe core in world units. Labels keep clear of its
+// projected circle, so orbitBuild and orbitLabels read the same number.
+export const CORE_RADIUS = 0.95;
+
 // Camera fit: how many world units of the outer ring must stay on screen.
 // Width is the outer radius plus a little perspective growth; height is
 // smaller because every ring is tilted toward edge-on.

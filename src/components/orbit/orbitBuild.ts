@@ -4,7 +4,7 @@
 // server or first-load bundle.
 
 import type * as ThreeNS from "three";
-import { ACCENT, INK, LINE, RINGS, nodeSlots } from "./orbitConfig";
+import { ACCENT, CORE_RADIUS, INK, LINE, RINGS, nodeSlots } from "./orbitConfig";
 
 export type Three = typeof ThreeNS;
 
@@ -86,7 +86,7 @@ function makeKit(THREE: Three): { kit: Kit; dispose: () => void } {
 function buildCore({ THREE, track }: Kit) {
   const core = new THREE.Group();
   const outer = new THREE.LineSegments(
-    track(new THREE.EdgesGeometry(track(new THREE.IcosahedronGeometry(0.95, 1)))),
+    track(new THREE.EdgesGeometry(track(new THREE.IcosahedronGeometry(CORE_RADIUS, 1)))),
     track(new THREE.LineBasicMaterial({ color: INK, transparent: true, opacity: 0.5 })),
   );
   const coreInner = new THREE.LineSegments(

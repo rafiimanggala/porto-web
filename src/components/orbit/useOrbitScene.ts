@@ -36,14 +36,18 @@ export function useOrbitScene(args: Args): RefObject<OrbitScene | null> {
       return;
     }
     let cancelled = false;
-    initOrbitScene(host, {
-      buttons: nodes,
-      pointerTarget: root,
-      reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-      // Room the scene keeps clear on the right while the evidence card is open.
-      getInsetRight: () => (selectedRef.current ? cardInset(window.innerWidth) : 0),
-      onContextLost: onFail,
-    })
+    initOrbitScene(
+      host,
+      {
+        buttons: nodes,
+        pointerTarget: root,
+        reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+        // Room the scene keeps clear on the right while the evidence card is open.
+        getInsetRight: () => (selectedRef.current ? cardInset(window.innerWidth) : 0),
+        onContextLost: onFail,
+      },
+      () => cancelled,
+    )
       .then((scene) => {
         if (cancelled || !scene) {
           scene?.dispose();
