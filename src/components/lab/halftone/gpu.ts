@@ -13,7 +13,7 @@ type Uniforms = ReturnType<typeof makeUniforms>;
 const MAX_DPR = 1.5;
 
 export type Gpu = {
-  resize: () => boolean; // true when the size changed and the texture was rebuilt
+  resize: () => boolean; // true when the size changed and the drawing buffer was cleared
   draw: (params: HalftoneParams, offset: Push) => void;
   dispose: () => void;
 };
@@ -108,9 +108,15 @@ export function createGpu(
   const quad = makeQuad(three, uniforms);
   let texture: ThreeTypes.CanvasTexture | null = null;
   let sizeKey = "";
+  let textureKey = "";
 
   const rebuildTexture = () => {
     const size = renderer.getDrawingBufferSize(new three.Vector2());
+    // Distinct box or ratio keys can land on the same buffer size; the texture
+    // only depends on the buffer, so it is not painted and uploaded twice.
+    const key = `${size.x}x${size.y}`;
+    if (key === textureKey) return;
+    textureKey = key;
     const source = drawWordmark(Math.round(size.x), Math.round(size.y), lines, family);
     texture?.dispose();
     texture = makeTexture(three, source);

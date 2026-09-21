@@ -1,10 +1,11 @@
 "use client";
 
-import { useMotionValue, useReducedMotion } from "framer-motion";
+import { useMotionValue } from "framer-motion";
 import { useMemo, useRef } from "react";
 import type { CSSProperties } from "react";
 import CardTrack from "./CardTrack";
 import Readout from "./Readout";
+import { usePrefersReducedMotion } from "../usePrefersReducedMotion";
 import { useCardPitch, useSnapControls } from "./useSnap";
 import { useReadout, type FieldRefs, type ReadoutRefs } from "./useReadout";
 
@@ -36,7 +37,7 @@ function StepButtons({ onStep }: { onStep: (delta: number) => void }) {
 }
 
 export default function DragRow() {
-  const reduce = Boolean(useReducedMotion());
+  const reduce = usePrefersReducedMotion();
   const x = useMotionValue(0);
   const trackRef = useRef<HTMLUListElement>(null);
   const cardRefs = useRef<(HTMLLIElement | null)[]>([]);

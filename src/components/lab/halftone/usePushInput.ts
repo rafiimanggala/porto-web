@@ -21,13 +21,21 @@ function offsetFromCentre(e: PointerEvent<HTMLCanvasElement>): Push {
 // the plates toward that point. Release ends the push; the engine eases back.
 export function usePushInput(engineRef: RefObject<HalftoneEngine | null>) {
   const held = useRef<ReadonlySet<string>>(new Set());
+  const active = useRef<number | null>(null); // id of the pointer doing the push
 
-  const endPush = () => engineRef.current?.setPush(null);
+  const clearPush = () => engineRef.current?.setPush(null);
+  // A cancelled touch (the browser took the gesture to scroll) ends the push
+  // the same way a release does. Other pointers are ignored.
+  const endPointer = (e: PointerEvent<HTMLCanvasElement>) => {
+    if (active.current !== e.pointerId) return;
+    active.current = null;
+    clearPush();
+  };
 
   const applyKeys = (keys: ReadonlySet<string>) => {
     held.current = keys;
     if (keys.size === 0) {
-      endPush();
+      clearPush();
       return;
     }
     const sum = [...keys].reduce(
@@ -40,16 +48,19 @@ export function usePushInput(engineRef: RefObject<HalftoneEngine | null>) {
   return {
     onPointerDown: (e: PointerEvent<HTMLCanvasElement>) => {
       if (e.pointerType === "mouse" && e.button !== 0) return;
-      e.currentTarget.setPointerCapture(e.pointerId);
+      active.current = e.pointerId;
+      // Touch is captured implicitly; capturing it by hand would only pin a
+      // pointer the browser may want back for a scroll.
+      if (e.pointerType !== "touch") e.currentTarget.setPointerCapture(e.pointerId);
       engineRef.current?.setPush(offsetFromCentre(e));
     },
     onPointerMove: (e: PointerEvent<HTMLCanvasElement>) => {
-      if (!e.currentTarget.hasPointerCapture(e.pointerId)) return;
+      if (active.current !== e.pointerId) return;
       engineRef.current?.setPush(offsetFromCentre(e));
     },
-    onPointerUp: endPush,
-    onPointerCancel: endPush,
-    onLostPointerCapture: endPush,
+    onPointerUp: endPointer,
+    onPointerCancel: endPointer,
+    onLostPointerCapture: endPointer,
     onKeyDown: (e: KeyboardEvent<HTMLCanvasElement>) => {
       if (!isArrow(e.key)) return;
       e.preventDefault();

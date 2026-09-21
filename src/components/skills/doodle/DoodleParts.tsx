@@ -5,8 +5,8 @@ import type { Match } from "@/lib/doodle/types";
 import { WORDS } from "@/lib/doodle/words";
 
 const BUTTON_BASE =
-  "mono min-h-11 cursor-pointer rounded-full border px-4 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-40";
-const BUTTON = `${BUTTON_BASE} border-line text-fg hover:border-line-strong disabled:hover:border-line`;
+  "mono min-h-11 cursor-pointer rounded-full border px-4 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-40 aria-disabled:cursor-not-allowed aria-disabled:opacity-40";
+const BUTTON = `${BUTTON_BASE} border-line text-fg hover:border-line-strong disabled:hover:border-line aria-disabled:hover:border-line`;
 const BUTTON_PRIMARY = `${BUTTON_BASE} border-fg bg-fg text-bg hover:bg-fg/90`;
 
 export function timerText(phase: Phase, secondsLeft: number): string {
@@ -58,7 +58,7 @@ export function Prompt({
           {timerText(phase, secondsLeft)}
         </p>
       </div>
-      {word && <p className="mt-1 text-sm text-mute">{WORDS[word].hint}</p>}
+      {word && <p className="mt-1 text-sm text-dim">{WORDS[word].hint}</p>}
     </>
   );
 }
@@ -106,7 +106,7 @@ export function Pad({
         </p>
       )}
       {!hasInk && (
-        <p className="mono pointer-events-none absolute inset-0 grid place-items-center text-xs text-mute">
+        <p className="mono pointer-events-none absolute inset-0 grid place-items-center text-xs text-dim">
           {loading ? "Warming up the matcher" : "Draw here"}
         </p>
       )}
@@ -129,12 +129,25 @@ export function Controls({
   onSample: () => void;
   onNext: () => void;
 }) {
+  // aria-disabled, not disabled: a focused button that turns disabled drops
+  // keyboard focus to the document. The handlers above ignore the click.
+  const clearOff = locked || !hasInk;
   return (
     <div className="mt-4 flex flex-wrap gap-2">
-      <button type="button" className={BUTTON} onClick={onClear} disabled={locked || !hasInk}>
+      <button
+        type="button"
+        className={BUTTON}
+        onClick={clearOff ? undefined : onClear}
+        aria-disabled={clearOff}
+      >
         Clear
       </button>
-      <button type="button" className={BUTTON} onClick={onSample} disabled={locked}>
+      <button
+        type="button"
+        className={BUTTON}
+        onClick={locked ? undefined : onSample}
+        aria-disabled={locked}
+      >
         Try a sample sketch
       </button>
       <button

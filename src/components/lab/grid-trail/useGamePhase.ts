@@ -1,9 +1,9 @@
 import { useCallback, useState } from "react";
 import type { RefObject } from "react";
-import { useReducedMotion } from "framer-motion";
 import type { Phase } from "./GamePanel";
 import { clearBoard, type CellEls } from "./cells";
 import type { GameResult } from "./runGame";
+import { usePrefersReducedMotion } from "../usePrefersReducedMotion";
 
 // The state machine around the game: hidden, invite, playing, over. Cell-level
 // rendering stays in the DOM; this only holds what React has to know.
@@ -11,7 +11,7 @@ export function useGamePhase(
   gridRef: RefObject<HTMLDivElement | null>,
   cellRefs: RefObject<CellEls>,
 ) {
-  const reduce = Boolean(useReducedMotion());
+  const reduce = usePrefersReducedMotion();
   const [phase, setPhase] = useState<Phase>("hidden");
   const [runId, setRunId] = useState(0);
   const [score, setScore] = useState(0);
@@ -30,6 +30,8 @@ export function useGamePhase(
     clearBoard(cellRefs.current, gridRef.current);
     setResult(null);
     setPhase("hidden");
+    // The Close button unmounts with the panel, so hand focus back to the grid.
+    gridRef.current?.focus({ preventScroll: true });
   }, [cellRefs, gridRef]);
   const start = useCallback(() => {
     setScore(0);

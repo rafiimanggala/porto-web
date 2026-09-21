@@ -80,8 +80,9 @@ export const briefOptions: Record<SkillSlug, readonly BriefOption[]> = {
     },
     {
       id: "speech-to-text",
-      title: "Speech to text",
-      detail: "Audio transcribed with Whisper and fed into the rest of your workflow.",
+      title: "Transcription in a workflow",
+      detail:
+        "Source content transcribed as one step inside a larger automated workflow, with Whisper among the tools.",
     },
     {
       id: "traceable-outputs",
@@ -116,10 +117,10 @@ export const briefOptions: Record<SkillSlug, readonly BriefOption[]> = {
         "Default store emails replaced by Klaviyo flows mapped to real order and customer data.",
     },
     {
-      id: "inbox-triage",
-      title: "Inbound email triage",
+      id: "async-handoff",
+      title: "Long jobs handed off cleanly",
       detail:
-        "Incoming mail read, the issue fixed on a branch, and a reply drafted for you to review.",
+        "Async render jobs waited on, the finished result passed to the next step, and every stage logged back to a database.",
     },
     {
       id: "browser-tasks",
@@ -146,11 +147,6 @@ export const briefOptions: Record<SkillSlug, readonly BriefOption[]> = {
       detail: "Edits rendered through Creatomate from your own assets and brand.",
     },
     {
-      id: "captions",
-      title: "Captions and transcripts",
-      detail: "Speech transcribed with Whisper so captions are ready before publishing.",
-    },
-    {
       id: "script-and-voice",
       title: "Scripted and voiced videos",
       detail:
@@ -165,7 +161,7 @@ export const briefOptions: Record<SkillSlug, readonly BriefOption[]> = {
       id: "many-accounts",
       title: "Many accounts, one workflow",
       detail:
-        "The same workflow run across several client accounts, with sample campaigns to review first.",
+        "The same workflow run across several client accounts.",
     },
   ],
   "design-and-prototypes": [
@@ -230,7 +226,7 @@ export const briefOptions: Record<SkillSlug, readonly BriefOption[]> = {
       id: "login-and-session",
       title: "Login and session bugs",
       detail:
-        "Redirect loops and mid-session logouts traced through the access logs instead of guessed at.",
+        "A login redirect bug found by untangling the theme code, and mid-session logouts found by reading the access logs by timestamp.",
     },
     {
       id: "verified-in-browser",

@@ -56,14 +56,17 @@ export default function HalftonePanel() {
   return (
     <div data-testid="halftone" data-state={status}>
       <div className="relative aspect-square overflow-hidden rounded-2xl border border-line bg-surface-1 sm:aspect-[16/10]">
+        {/* pan-y: a vertical swipe scrolls the page, a horizontal drag pushes the
+            plates. The focus ring is drawn inside the box (negative offset)
+            because the wrapper clips overflow. */}
         <canvas
           ref={canvasRef}
           data-testid="halftone-canvas"
           role="img"
           tabIndex={status === "ready" ? 0 : -1}
           aria-label={CANVAS_LABEL}
-          className="absolute inset-0 block h-full w-full cursor-grab select-none active:cursor-grabbing"
-          style={{ touchAction: "none" }}
+          className="absolute inset-0 block h-full w-full cursor-grab select-none rounded-2xl active:cursor-grabbing focus-visible:[outline-offset:-3px]"
+          style={{ touchAction: "pan-y" }}
           {...input}
         />
         {status === "ready" ? null : <WordmarkFallback />}

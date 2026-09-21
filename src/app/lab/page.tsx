@@ -15,7 +15,7 @@ const experiments = [
     href: "/lab/halftone",
     name: "Wordmark halftone",
     line: "My name printed with two ink plates on a rotated dot screen, drawn by one fragment shader. Tune the dots, push the plates apart.",
-    cost: "WebGL and three.js, loaded on that page only. Works on touch, but the panel captures drags.",
+    cost: "WebGL through three.js, loaded when that page opens. Works on touch: swipe up or down to scroll, drag sideways to push.",
   },
   {
     href: "/lab/drag-row",

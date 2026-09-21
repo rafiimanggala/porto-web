@@ -65,6 +65,8 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     overflow-x: hidden;
+    /* viewport-fit=cover lets the page run under a phone notch in landscape. */
+    padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
   }
 
   ::selection {

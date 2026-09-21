@@ -23,6 +23,11 @@ const Cells = memo(function Cells({ refs }: { refs: RefObject<(HTMLDivElement | 
 });
 
 const TRAIL_HINT = "Move across the grid. Keyboard: focus it and use the arrow keys.";
+// Reduced motion turns the trail off, so the idle captions must not promise it.
+const STILL_HINT = "Motion is reduced, so the grid stays still. Use the Start button to play.";
+const GRID_LABEL =
+  "Interactive grid. Move the pointer across it to light cells, or focus it and use the arrow keys.";
+const STILL_GRID_LABEL = "Game grid. Use the Start button to play.";
 const CAPTIONS: Record<Phase, string> = {
   hidden: TRAIL_HINT,
   invite: TRAIL_HINT,
@@ -30,10 +35,11 @@ const CAPTIONS: Record<Phase, string> = {
   over: "Game over.",
 };
 
-function Caption({ phase, score }: { phase: Phase; score: number }) {
+function Caption({ phase, score, still }: { phase: Phase; score: number; still: boolean }) {
+  const idle = phase === "hidden" || phase === "invite";
   return (
     <p className={`${styles.caption} mono mt-4 max-w-[80ch] text-xs leading-relaxed text-dim`}>
-      {CAPTIONS[phase]}
+      {still && idle ? STILL_HINT : CAPTIONS[phase]}
       {phase === "playing" ? (
         <>
           {" "}
@@ -66,9 +72,9 @@ export default function GridTrail() {
       <div className={styles.stage}>
         <div
           ref={gridRef}
-          tabIndex={0}
+          tabIndex={g.reduce ? -1 : 0}
           role="group"
-          aria-label="Interactive grid. Move the pointer across it to light cells, or focus it and use the arrow keys."
+          aria-label={g.reduce ? STILL_GRID_LABEL : GRID_LABEL}
           data-testid="grid-trail"
           data-mode={inGame ? "game" : "trail"}
           className={styles.grid}
@@ -84,7 +90,7 @@ export default function GridTrail() {
         />
       </div>
 
-      <Caption phase={g.shown} score={g.score} />
+      <Caption phase={g.shown} score={g.score} still={g.reduce} />
 
       <p className={`${styles.note} t-body max-w-[58ch] text-dim`} data-testid="grid-trail-note">
         This one is desktop only. It needs a mouse or a keyboard and a wide screen, so on this device

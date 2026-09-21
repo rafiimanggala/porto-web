@@ -11,7 +11,7 @@ export default function MatchPanel({ matches }: { matches: readonly Match[] | nu
   return (
     <div data-doodle-panel className="flex h-full flex-col">
       <h4 className="eyebrow">The matcher sees</h4>
-      <div className="mono mt-4 flex justify-between text-[10px] uppercase tracking-wider text-mute">
+      <div className="mono mt-4 flex justify-between text-[10px] uppercase tracking-wider text-dim">
         <span>Shape</span>
         <span>Match</span>
       </div>
@@ -42,7 +42,7 @@ export default function MatchPanel({ matches }: { matches: readonly Match[] | nu
         <p className="text-sm text-fg/90">
           A tiny matcher running in your browser. No API, nothing leaves this page.
         </p>
-        <p className="mt-2 text-xs leading-relaxed text-mute">
+        <p className="mt-2 text-xs leading-relaxed text-dim">
           Match is a share among the shapes it knows, not a certainty. It compares your drawing
           with shapes it drew itself when this card woke up.
         </p>

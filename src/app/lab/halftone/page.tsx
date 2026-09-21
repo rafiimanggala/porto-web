@@ -23,7 +23,7 @@ export default function HalftonePage() {
         eyebrow="Lab"
         title="Wordmark halftone"
         lead="A print-shop trick in a shader: two ink plates on a rotated dot screen, slightly out of register. Nothing moves until you touch it."
-        cost="WebGL and three.js, both loaded on this page only. On touch, a drag on the panel is captured by the panel, so scroll from the margin or the controls."
+        cost="WebGL through three.js, loaded when this page opens. On touch, swipe up or down to scroll past the panel, and drag sideways on it to push the plates."
       />
 
       <section aria-label="Halftone panel" className="mt-12">

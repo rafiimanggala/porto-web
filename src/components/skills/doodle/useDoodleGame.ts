@@ -55,6 +55,7 @@ export function useDoodleGame(
   const pad = useDoodleCanvas({ canvasRef, locked, reduce, onInk });
 
   useRoundTimer(round.phase === "running", round.round, setSecondsLeft, () => {
+    pad.freeze();
     live.cancel();
     settle.current = false;
     const final = matchStrokes(model, pad.getStrokes());

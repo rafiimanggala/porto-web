@@ -63,6 +63,9 @@ export function useHalftoneEngine(
         if (!engine) return;
         if (cancelled) return engine.dispose();
         engineRef.current = engine;
+        // The engine booted from a snapshot taken before the async imports; a
+        // params change that landed while it loaded would otherwise be dropped.
+        engine.setParams(paramsRef.current);
         setStatus((current) => (current === "error" ? current : "ready"));
       })
       .catch((err: unknown) => {

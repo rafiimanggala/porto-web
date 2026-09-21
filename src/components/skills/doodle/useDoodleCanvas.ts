@@ -75,9 +75,22 @@ export function useDoodleCanvas({ canvasRef, locked, reduce, onInk }: Options) {
       onPointerDown: (e: PointerEv) => {
         if (!locked) begin(pad, e);
       },
-      onPointerMove: (e: PointerEv) => extend(pad, e),
+      onPointerMove: (e: PointerEv) => {
+        if (!locked) extend(pad, e);
+      },
       onPointerUp: (e: PointerEv) => finish(pad, e),
       onPointerCancel: (e: PointerEv) => finish(pad, e),
+    },
+    // Time is up: stop any sample playback and drop the held stroke so the
+    // canvas stays exactly what the final matches were computed from.
+    freeze: () => {
+      stopPlayback();
+      const canvas = canvasRef.current;
+      const held = pointer.current;
+      pointer.current = null;
+      if (canvas && held !== null && canvas.hasPointerCapture(held)) {
+        canvas.releasePointerCapture(held);
+      }
     },
     clear: () => {
       stopPlayback();

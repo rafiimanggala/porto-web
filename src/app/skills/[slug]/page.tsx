@@ -165,8 +165,8 @@ export default async function SkillPage({
         {demo ? (
           <Section n={pad(demoN)} kicker="Demo" title="Try it.">
             <Lead>
-              A small game that runs in your browser. It only starts when you
-              press play.
+              A small game that runs in your browser. The round starts on your
+              first stroke.
             </Lead>
             <SkillDemo slug={slug} />
           </Section>

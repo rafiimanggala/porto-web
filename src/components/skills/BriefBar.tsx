@@ -145,7 +145,7 @@ export default function BriefBar() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: "100%", opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
-            className="fixed inset-x-0 bottom-0 z-50 border-t border-line-strong bg-surface-1/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl"
+            className="fixed inset-x-0 bottom-0 z-50 border-t border-line-strong bg-surface-1/95 pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] backdrop-blur-xl"
           >
             <div className="mx-auto flex w-full max-w-[860px] flex-col gap-3 px-6 py-3 sm:flex-row sm:items-center sm:gap-5">
               <div className="flex min-w-0 flex-1 items-center gap-4">
