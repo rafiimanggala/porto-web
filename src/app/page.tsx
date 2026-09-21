@@ -3,7 +3,6 @@ import Nav from "@/components/Nav";
 import FaqAccordion from "@/components/FaqAccordion";
 import Contact from "@/components/Contact";
 import FooterLinks from "@/components/FooterLinks";
-import AgentThreads from "@/components/visuals/AgentThreads";
 import ServiceOrbit from "@/components/orbit/ServiceOrbit";
 import Reveal from "@/components/ui/Reveal";
 import LineMask from "@/components/ui/LineMask";
@@ -19,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main className="relative">
+    <main className="theme-cream relative min-h-screen">
       <Nav variant="home" />
 
       <section className="mx-auto w-full max-w-[1120px] px-6 pt-20 pb-16 text-center lg:px-8 lg:pt-28 lg:pb-20">
@@ -71,11 +70,6 @@ export default function Home() {
           </div>
         </Reveal>
 
-        <Reveal delay={0.2}>
-          <div className="mx-auto mt-[88px] max-w-[740px] text-left">
-            <AgentThreads />
-          </div>
-        </Reveal>
       </section>
 
       <section

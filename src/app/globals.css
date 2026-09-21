@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
-@theme inline {
+/* Not "inline": utilities must read var(--color-*) so a wrapper class can swap the
+   whole palette (.theme-cream below) without touching any component. */
+@theme {
   /* Surface stack: never pure black, depth from layered light */
   --color-bg: #0a0a0b;
   --color-surface-1: #0f0f12;
@@ -20,6 +22,12 @@
      ./seismic-dna.json (their shadcn root tokens stay fully chromaless;
      the accent never becomes the theme's default). */
   --color-accent: #ff6a12;
+
+  /* Pastel blocks, used as flat fills (chips, nodes, cards) in the cream theme. */
+  --color-sun: #ffe375;
+  --color-sky: #a6e8fa;
+  --color-rose: #ffa9a9;
+  --color-mint: #9cf0cb;
 
   /* Fonts (wired to next/font in layout.tsx) */
   --font-display: var(--font-space), ui-sans-serif, system-ui, sans-serif;
@@ -46,6 +54,52 @@
   --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
   --ease-in-out-quint: cubic-bezier(0.86, 0, 0.07, 1);
 }
+
+/* Home theme: warm cream, violet ink, pastel blocks, big rounded display type
+   (direction taken from the B3 reference). Scoped by a wrapper class, so the other
+   pages stay dark until they are redone. Promote by moving these onto :root. */
+.theme-cream {
+  color-scheme: light;
+  --color-bg: #fbefdf;
+  --color-surface-1: #fff8ee;
+  --color-surface-2: #ffffff;
+  --color-surface-3: #f5e3cc;
+  --color-line: rgba(36, 27, 75, 0.12);
+  --color-line-strong: rgba(36, 27, 75, 0.24);
+  --color-fg: #241b4b;
+  --color-dim: #5b5382;
+  --color-mute: #6f6893;
+  --color-accent: #6448fc;
+  --font-display: var(--font-titan), ui-rounded, system-ui, sans-serif;
+  --font-mono: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
+/* Dark island inside the cream theme (product mockups, previews). */
+.theme-dark {
+  color-scheme: dark;
+  --color-bg: #0a0a0b;
+  --color-surface-1: #0f0f12;
+  --color-surface-2: #16161a;
+  --color-surface-3: #1e1e24;
+  --color-line: rgba(255, 255, 255, 0.08);
+  --color-line-strong: rgba(255, 255, 255, 0.13);
+  --color-fg: #ededef;
+  --color-dim: #9a9aa4;
+  --color-mute: #74747f;
+  --color-accent: #ff6a12;
+  --font-mono: var(--font-jb), ui-monospace, "SF Mono", monospace;
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
+/* Overscroll and short pages show the body, so match it. */
+html:has(.theme-cream) body { background: #fbefdf; }
+.theme-cream .grid-backdrop {
+  background-image:
+    linear-gradient(rgba(100, 72, 252, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 72, 252, 0.07) 1px, transparent 1px);
+}
+.theme-cream ::selection { background: color-mix(in oklab, var(--color-accent) 28%, transparent); color: var(--color-fg); }
 
 @layer base {
   * {

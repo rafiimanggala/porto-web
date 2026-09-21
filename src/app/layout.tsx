@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import { Space_Grotesk, Inter, JetBrains_Mono, Titan_One } from "next/font/google";
 import "./globals.css";
 import SiteChrome from "@/components/SiteChrome";
 import PersonJsonLd from "@/components/seo/PersonJsonLd";
@@ -13,6 +13,14 @@ const space = Space_Grotesk({
 
 const inter = Inter({
   variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+// Giant rounded display face for the cream home theme (--font-display there).
+const titan = Titan_One({
+  weight: "400",
+  variable: "--font-titan",
   subsets: ["latin"],
   display: "swap",
 });
@@ -49,7 +57,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${space.variable} ${inter.variable} ${jb.variable}`}
+      className={`${space.variable} ${inter.variable} ${jb.variable} ${titan.variable}`}
     >
       <body>
         {children}
