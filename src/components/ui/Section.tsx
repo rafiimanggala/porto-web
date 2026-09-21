@@ -2,6 +2,10 @@ import type { ReactNode } from "react";
 import Reveal from "./Reveal";
 import Scramble from "./Scramble";
 
+// Heading helper shared by the dark pages and the cream home.
+// Dark: terminal eyebrow ("// 05 · FAQ") + hairline + Space Grotesk title.
+// Cream: a pastel highlighter chip (no numbering) + chunky violet display title.
+// The cream look is scoped with [.theme-cream_&] so the dark pages do not change.
 export default function Section({
   id,
   index,
@@ -20,19 +24,24 @@ export default function Section({
   return (
     <section
       id={id}
-      className="mx-auto w-full max-w-[1120px] scroll-mt-24 px-6 py-[clamp(5rem,3rem+9vw,11rem)] lg:px-8"
+      className="mx-auto w-full max-w-[1120px] scroll-mt-24 px-6 py-[clamp(5rem,3rem+9vw,11rem)] lg:px-8 [.theme-cream_&]:py-[clamp(4rem,2.5rem+6vw,7.5rem)]"
     >
       <Reveal>
-        <div className="mb-4 flex items-center gap-3">
+        <div className="mb-4 flex items-center gap-3 [.theme-cream_&]:hidden">
           <Scramble text={`// ${index} · ${label}`} className="eyebrow" />
           <span className="hairline flex-1" />
         </div>
-        <h2 className="t-h2 max-w-3xl text-fg">{title}</h2>
+        <span className="mb-6 hidden w-fit rounded-full bg-sun px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-fg [.theme-cream_&]:inline-flex">
+          {label}
+        </span>
+        <h2 className="t-h2 max-w-3xl text-fg [.theme-cream_&]:max-w-4xl [.theme-cream_&]:text-[clamp(3rem,2.2rem+2.4vw,4rem)] [.theme-cream_&]:font-normal [.theme-cream_&]:leading-[1.02] [.theme-cream_&]:tracking-[-0.01em] [.theme-cream_&]:text-accent">
+          {title}
+        </h2>
         {intro && (
           <p className="t-body mt-5 max-w-2xl text-balance text-dim">{intro}</p>
         )}
       </Reveal>
-      <div className="mt-12">{children}</div>
+      <div className="mt-12 [.theme-cream_&]:mt-10">{children}</div>
     </section>
   );
 }

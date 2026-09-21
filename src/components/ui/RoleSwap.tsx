@@ -32,9 +32,14 @@ export default function RoleSwap({ className = "" }: { className?: string }) {
   return (
     <span className={`relative inline-flex h-5 items-center overflow-hidden ${className}`}>
       <span className="sr-only">{ROLES.join(", ")}</span>
-      {/* Widest role reserves the width so the nav never shifts while it swaps. */}
-      <span aria-hidden className="invisible whitespace-nowrap">
-        {ROLES.reduce((a, b) => (b.length > a.length ? b : a))}
+      {/* Every role is stacked invisibly in one grid cell, so the widest by real
+          pixels (not by letter count) reserves the width and nothing gets clipped. */}
+      <span aria-hidden className="invisible inline-grid whitespace-nowrap">
+        {ROLES.map((role) => (
+          <span key={role} className="col-start-1 row-start-1">
+            {role}
+          </span>
+        ))}
       </span>
       <AnimatePresence mode="wait" initial={false}>
         <motion.span

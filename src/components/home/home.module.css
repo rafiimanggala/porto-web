@@ -1,0 +1,55 @@
+/* Home hero styles that Tailwind utilities cannot express cleanly. */
+
+/* One gentle entrance: opacity and translateY only, staggered by --i. `backwards`
+   fill means the server-rendered end state is what shows once it has played (or if
+   it never does). */
+.rise {
+  animation: rise 400ms cubic-bezier(0.19, 1, 0.22, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 80ms);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise {
+    animation: none;
+  }
+}
+
+/* Giant Titan One wordmark. The extrusion (text-shadow) is set inline from
+   extrusion.ts; --dx and --dy are its per-layer step. */
+.wordmark {
+  --dx: 0.0022em;
+  --dy: 0.0032em;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-synthesis: none;
+  font-size: clamp(6.5rem, 31vw, 28rem);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  color: var(--color-accent);
+  text-align: center;
+  white-space: nowrap;
+  /* Keep the whole sign (face plus extrusion) centred: back off half the extrusion. */
+  position: relative;
+  left: calc(var(--dx) * -15);
+}
+
+/* On phones the sign is sized to the width instead (the word is about 2.7em wide with
+   its extrusion), so it keeps a 16px gutter even at 320px. */
+@media (max-width: 639px) {
+  .wordmark {
+    font-size: calc((100vw - 2rem) / 2.72);
+  }
+}
+
+/* The one warm wash. It returns to the page cream at the bottom so the next section
+   starts without a seam. */
+.wash {
+  background: linear-gradient(180deg, #fbefdf 0%, #f6e2ca 62%, #fbefdf 100%);
+}

@@ -8,7 +8,7 @@
 
 import type * as ThreeNS from "three";
 import { buildOrbit, type Three } from "./orbitBuild";
-import { ACCENT, EXTENT_X, EXTENT_Y, FOV, INK, RINGS } from "./orbitConfig";
+import { EXTENT_X, EXTENT_Y, FOV, NODE_RADIUS, RINGS, VIOLET, nodeScale, serviceColor } from "./orbitConfig";
 import type { Ctx, OrbitSceneOptions } from "./orbitCtx";
 import { clamp, depthOf, projectSpots, writeButtons } from "./orbitLabels";
 
@@ -70,7 +70,7 @@ function stepMotion(c: Ctx, dt: number): void {
   parts.core.rotation.y += 0.14 * dt;
   parts.core.rotation.x += 0.05 * dt;
   parts.coreInner.rotation.y -= 0.32 * dt;
-  parts.glow.material.opacity = 0.44 + 0.08 * Math.sin(c.time * 1.4);
+  parts.glow.material.opacity = 0.5 + 0.08 * Math.sin(c.time * 1.4);
   parts.spins.forEach((spin, i) => {
     spin.rotation.z += RINGS[i].spin * dt;
   });
@@ -88,10 +88,10 @@ function stepNodes(c: Ctx, dt: number): void {
     c.sel[i] = approach(c.sel[i], c.selected === i ? 1 : 0, k);
     c.hov[i] = approach(c.hov[i], c.hovered === i ? 1 : 0, k);
     c.dim[i] = approach(c.dim[i], c.selected >= 0 && c.selected !== i ? 1 : 0, k);
-    const scale = 1 + c.hov[i] * 0.5 + c.sel[i] * 0.7;
+    const scale = nodeScale(c.hov[i], c.sel[i]);
     node.mesh.scale.setScalar(scale);
-    node.mesh.material.color.copy(c.ink).lerp(c.accent, c.sel[i]);
-    node.halo.material.color.copy(node.mesh.material.color);
+    // Flat pastel at rest, violet when selected.
+    node.mesh.material.color.copy(c.pastel[i]).lerp(c.violet, c.sel[i]);
     // Pull the selected node toward the camera: world +z, expressed in the
     // ring's local frame because the ring is tilted and spinning.
     node.mesh.position.copy(node.base);
@@ -102,12 +102,16 @@ function stepNodes(c: Ctx, dt: number): void {
     }
     node.mesh.getWorldPosition(tmp.v);
     node.halo.position.copy(tmp.v);
-    node.halo.scale.setScalar(scale * (1 + c.sel[i] * 0.2));
-    // Depth and dim read through the dot and its halo (the labels stay legible).
+    node.halo.scale.setScalar(scale);
+    // The white dot sits just in front of the sphere's near surface.
+    node.dot.position.set(tmp.v.x, tmp.v.y, tmp.v.z + NODE_RADIUS * scale * 1.02);
+    node.dot.scale.setScalar(scale);
+    // Dimmed nodes stay at 60%: still readable next to the selected one.
+    const dimmed = 1 - c.dim[i] * 0.4;
     const depth = depthOf(tmp.v.z);
-    node.mesh.material.opacity = (0.55 + 0.45 * depth) * (1 - c.dim[i] * 0.7);
-    node.halo.material.opacity =
-      0.1 + 0.12 * depth + c.hov[i] * 0.25 + c.sel[i] * 0.45 - c.dim[i] * 0.1;
+    node.mesh.material.opacity = dimmed;
+    node.halo.material.opacity = (0.6 + 0.4 * depth) * dimmed;
+    node.dot.material.opacity = c.sel[i];
   });
 }
 
@@ -171,7 +175,8 @@ function createContext(
     selected: -1, hovered: -1,
     pointer: { tx: 0, ty: 0, x: 0, y: 0 },
     sel: zeros(), hov: zeros(), dim: zeros(),
-    ink: new THREE.Color(INK), accent: new THREE.Color(ACCENT),
+    violet: new THREE.Color(VIOLET),
+    pastel: Array.from({ length: count }, (_, i) => new THREE.Color(serviceColor(i).hex)),
     tmp: { v: new THREE.Vector3(), f: new THREE.Vector3(), q: new THREE.Quaternion() },
   };
 }

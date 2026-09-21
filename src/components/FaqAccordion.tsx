@@ -5,7 +5,8 @@ import Section from "./ui/Section";
 
 // Accordion (APG, non-exclusive): each trigger toggles its own panel
 // independently. aria-expanded on the trigger, aria-controls -> panel id,
-// panel is role="region" aria-labelledby the trigger.
+// panel is role="region" aria-labelledby the trigger. Keyboard is the native
+// button contract (Tab to reach, Enter or Space to toggle).
 const FAQS = [
   {
     q: "Are you available for freelance work?",
@@ -21,16 +22,47 @@ const FAQS = [
   },
 ];
 
+// Pastel number pills, in order: sun, sky, rose. Full class names so Tailwind
+// can see them.
+const PILL_TONES = ["bg-sun", "bg-sky", "bg-rose"];
+
+// Plus that becomes a minus: the vertical bar collapses when open.
+function Toggle({ open }: { open: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-surface-2 sm:h-11 sm:w-11"
+    >
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round">
+        <path d="M5 12h14" />
+        <path
+          d="M12 5v14"
+          style={{
+            transformOrigin: "center",
+            transform: open ? "scaleY(0)" : "scaleY(1)",
+          }}
+          className="transition-transform duration-200 motion-reduce:transition-none"
+        />
+      </svg>
+    </span>
+  );
+}
+
 export default function FaqAccordion({ index }: { index: string }) {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
     <Section id="faq" index={index} label="FAQ" title="Before you reach out">
-      <div className="divide-y divide-line border-y border-line">
+      <div className="flex flex-col gap-3 sm:gap-4">
         {FAQS.map((item, i) => {
           const isOpen = open === i;
           return (
-            <div key={item.q}>
+            <div
+              key={item.q}
+              className={`rounded-3xl border bg-surface-2 transition-colors duration-200 motion-reduce:transition-none ${
+                isOpen ? "border-accent" : "border-line hover:border-line-strong"
+              }`}
+            >
               <h3>
                 <button
                   type="button"
@@ -38,22 +70,18 @@ export default function FaqAccordion({ index }: { index: string }) {
                   aria-controls={`faq-panel-${i}`}
                   id={`faq-trigger-${i}`}
                   onClick={() => setOpen(isOpen ? null : i)}
-                  className="flex w-full cursor-pointer items-center justify-between gap-4 py-5 text-left"
+                  className="flex min-h-[72px] w-full cursor-pointer items-center gap-3 rounded-3xl p-4 text-left focus-visible:outline-offset-[-4px] sm:gap-4 sm:p-5"
                 >
-                  <span className="t-h3 text-base text-fg sm:text-lg">{item.q}</span>
-                  <svg
+                  <span
                     aria-hidden
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    className={`shrink-0 text-mute transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                    className={`flex h-9 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold tabular-nums text-fg sm:w-12 ${PILL_TONES[i % PILL_TONES.length]}`}
                   >
-                    <path d="M6 9l6 6 6-6" />
-                  </svg>
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="flex-1 text-base font-semibold leading-snug tracking-[-0.01em] text-fg sm:text-lg">
+                    {item.q}
+                  </span>
+                  <Toggle open={isOpen} />
                 </button>
               </h3>
               <div
@@ -61,7 +89,7 @@ export default function FaqAccordion({ index }: { index: string }) {
                 role="region"
                 aria-labelledby={`faq-trigger-${i}`}
                 hidden={!isOpen}
-                className="pb-5"
+                className="px-4 pb-6 pl-[4.25rem] sm:px-5 sm:pb-7 sm:pl-[5.25rem] sm:pr-20"
               >
                 <p className="t-body max-w-2xl text-dim">{item.a}</p>
               </div>

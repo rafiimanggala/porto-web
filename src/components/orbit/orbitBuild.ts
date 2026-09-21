@@ -4,20 +4,34 @@
 // server or first-load bundle.
 
 import type * as ThreeNS from "three";
-import { ACCENT, CORE_RADIUS, INK, LINE, RINGS, nodeSlots } from "./orbitConfig";
+import {
+  CORE_RADIUS,
+  CORE_SOLID_RADIUS,
+  INK,
+  NODE_OUTLINE,
+  NODE_RADIUS,
+  RINGS,
+  VIOLET,
+  VIOLET_SOFT,
+  nodeSlots,
+} from "./orbitConfig";
 
 export type Three = typeof ThreeNS;
 
 export type NodePart = {
   mesh: ThreeNS.Mesh<ThreeNS.SphereGeometry, ThreeNS.MeshBasicMaterial>;
+  // Thin ink outline hugging the sphere (`halo` keeps its old name: the label
+  // code reads the node's world position from it).
   halo: ThreeNS.Mesh<ThreeNS.RingGeometry, ThreeNS.MeshBasicMaterial>;
+  // White dot that fades in on the selected node, just in front of the sphere.
+  dot: ThreeNS.Mesh<ThreeNS.CircleGeometry, ThreeNS.MeshBasicMaterial>;
   base: ThreeNS.Vector3;
 };
 
 export type OrbitParts = {
   root: ThreeNS.Group;
-  // Halos live outside `root` so they can be billboarded: each frame the scene
-  // copies the node's world position onto its halo and leaves it facing camera.
+  // Outlines and dots live outside `root` so they can be billboarded: each
+  // frame the scene copies the node's world position onto them.
   overlay: ThreeNS.Group;
   core: ThreeNS.Group;
   coreInner: ThreeNS.LineSegments;
@@ -48,6 +62,8 @@ function circlePoints(radius: number, segments: number): Float32Array {
   return out;
 }
 
+// Soft ring: clear in the middle (the solid sphere covers it), brightest just
+// outside the sphere's edge, fading to nothing at the sprite's rim.
 function glowTexture(THREE: Three): ThreeNS.CanvasTexture {
   const canvas = document.createElement("canvas");
   canvas.width = 128;
@@ -55,8 +71,9 @@ function glowTexture(THREE: Three): ThreeNS.CanvasTexture {
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("orbit: 2d canvas unavailable for glow texture");
   const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
-  grad.addColorStop(0, "rgba(255,255,255,1)");
-  grad.addColorStop(0.35, "rgba(255,255,255,0.35)");
+  grad.addColorStop(0, "rgba(255,255,255,0.9)");
+  grad.addColorStop(0.32, "rgba(255,255,255,0.7)");
+  grad.addColorStop(0.5, "rgba(255,255,255,0.28)");
   grad.addColorStop(1, "rgba(255,255,255,0)");
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 128, 128);
@@ -81,35 +98,35 @@ function makeKit(THREE: Three): { kit: Kit; dispose: () => void } {
   return { kit: { THREE, track }, dispose: () => owned.forEach((x) => x.dispose()) };
 }
 
-// Core: wireframe icosahedron (edges only), a smaller counter-rotating one, a
-// solid accent sphere and an additive glow. The only accent at rest.
+// Core: a solid violet sphere, wrapped by an ink wireframe icosahedron and a
+// smaller counter-rotating violet one, over a soft lighter-violet glow ring.
+// Flat basic materials only, no lighting.
 function buildCore({ THREE, track }: Kit) {
   const core = new THREE.Group();
   const outer = new THREE.LineSegments(
     track(new THREE.EdgesGeometry(track(new THREE.IcosahedronGeometry(CORE_RADIUS, 1)))),
-    track(new THREE.LineBasicMaterial({ color: INK, transparent: true, opacity: 0.5 })),
+    track(new THREE.LineBasicMaterial({ color: INK, transparent: true, opacity: 0.35 })),
   );
   const coreInner = new THREE.LineSegments(
-    track(new THREE.EdgesGeometry(track(new THREE.IcosahedronGeometry(0.58, 0)))),
-    track(new THREE.LineBasicMaterial({ color: INK, transparent: true, opacity: 0.32 })),
+    track(new THREE.EdgesGeometry(track(new THREE.IcosahedronGeometry(0.62, 0)))),
+    track(new THREE.LineBasicMaterial({ color: VIOLET, transparent: true, opacity: 0.35 })),
   );
   const sphere = new THREE.Mesh(
-    track(new THREE.SphereGeometry(0.24, 24, 16)),
-    track(new THREE.MeshBasicMaterial({ color: ACCENT })),
+    track(new THREE.SphereGeometry(CORE_SOLID_RADIUS, 32, 20)),
+    track(new THREE.MeshBasicMaterial({ color: VIOLET })),
   );
   const glow = new THREE.Sprite(
     track(
       new THREE.SpriteMaterial({
         map: track(glowTexture(THREE)),
-        color: ACCENT,
+        color: VIOLET_SOFT,
         transparent: true,
         opacity: 0.5,
         depthWrite: false,
-        blending: THREE.AdditiveBlending,
       }),
     ),
   );
-  glow.scale.setScalar(2.3);
+  glow.scale.setScalar(2.5);
   core.add(outer, coreInner, sphere, glow);
   return { core, coreInner, glow };
 }
@@ -123,7 +140,7 @@ function buildRings({ THREE, track }: Kit, root: ThreeNS.Group): ThreeNS.Group[]
     const geo = track(new THREE.BufferGeometry());
     geo.setAttribute("position", new THREE.BufferAttribute(circlePoints(spec.radius, 160), 3));
     const material = track(
-      new THREE.LineBasicMaterial({ color: LINE, transparent: true, opacity: spec.faint, depthWrite: false }),
+      new THREE.LineBasicMaterial({ color: VIOLET, transparent: true, opacity: spec.faint, depthWrite: false }),
     );
     const spin = new THREE.Group();
     tilt.add(new THREE.LineLoop(geo, material), spin);
@@ -132,15 +149,17 @@ function buildRings({ THREE, track }: Kit, root: ThreeNS.Group): ThreeNS.Group[]
   });
 }
 
-// Nodes: small solid spheres plus a faint billboard ring in `overlay`.
+// Nodes: flat spheres (colour set per frame from the pastel palette) with an
+// ink outline ring and a white selection dot, both in `overlay`.
 function buildNodes(
   { THREE, track }: Kit,
   spins: ThreeNS.Group[],
   overlay: ThreeNS.Group,
   count: number,
 ): NodePart[] {
-  const nodeGeo = track(new THREE.SphereGeometry(0.075, 20, 14));
-  const haloGeo = track(new THREE.RingGeometry(0.14, 0.152, 48));
+  const nodeGeo = track(new THREE.SphereGeometry(NODE_RADIUS, 24, 16));
+  const haloGeo = track(new THREE.RingGeometry(NODE_RADIUS, NODE_RADIUS + NODE_OUTLINE, 48));
+  const dotGeo = track(new THREE.CircleGeometry(NODE_RADIUS * 0.4, 24));
   return nodeSlots(count).map((slot) => {
     const r = RINGS[slot.ring].radius;
     const mesh = new THREE.Mesh(nodeGeo, track(new THREE.MeshBasicMaterial({ color: INK, transparent: true })));
@@ -153,14 +172,18 @@ function buildNodes(
         new THREE.MeshBasicMaterial({
           color: INK,
           transparent: true,
-          opacity: 0.2,
+          opacity: 0.9,
           side: THREE.DoubleSide,
           depthWrite: false,
         }),
       ),
     );
-    overlay.add(halo);
-    return { mesh, halo, base };
+    const dot = new THREE.Mesh(
+      dotGeo,
+      track(new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false })),
+    );
+    overlay.add(halo, dot);
+    return { mesh, halo, dot, base };
   });
 }
 
@@ -181,11 +204,11 @@ function buildDust({ THREE, track }: Kit): ThreeNS.Points {
   geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
   const material = track(
     new THREE.PointsMaterial({
-      color: LINE,
-      size: 0.035,
+      color: VIOLET,
+      size: 0.03,
       sizeAttenuation: true,
       transparent: true,
-      opacity: 0.35,
+      opacity: 0.4,
       depthWrite: false,
     }),
   );

@@ -87,6 +87,7 @@ export default function OrbitStage({ ready, selected, onSelect, onReadyChange, o
           <OrbitNode
             key={s.slug}
             skill={s}
+            index={i}
             pressed={selected === s.slug}
             tabStop={active === i}
             controls={selected === s.slug ? CARD_ID : undefined}
@@ -106,7 +107,13 @@ export default function OrbitStage({ ready, selected, onSelect, onReadyChange, o
       <div className="pointer-events-none absolute inset-y-0 right-0 z-20 flex items-center">
         <AnimatePresence mode="wait">
           {current && (
-            <OrbitCard key={current.slug} skill={current} cardId={CARD_ID} onClose={closeCard} />
+            <OrbitCard
+              key={current.slug}
+              skill={current}
+              index={skills.indexOf(current)}
+              cardId={CARD_ID}
+              onClose={closeCard}
+            />
           )}
         </AnimatePresence>
       </div>

@@ -5,11 +5,13 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import Arrow from "@/components/ui/Arrow";
 import { skills, type Skill } from "@/data/skills";
+import { nodeStyle } from "./orbitStyle";
 
 // Numbered accordion (APG accordion contract): one panel open at a time,
 // trigger is a button in a heading with aria-expanded / aria-controls, panel
 // is a labelled region. This is the SSR output and the mobile, coarse-pointer,
-// no-WebGL and context-lost fallback for ServiceOrbit.
+// no-WebGL and context-lost fallback for ServiceOrbit. Each row is a flat
+// card whose number pill carries the same pastel as the orbit's node.
 //
 // All seven panels stay in the DOM so the services, evidence and links exist
 // as real text before any script runs. Closed panels collapse to height 0 and
@@ -29,17 +31,17 @@ function Panel({ skill, open, reduce }: { skill: Skill; open: boolean; reduce: b
       transition={{ duration: reduce ? 0 : 0.34, ease: [0.19, 1, 0.22, 1] }}
       style={{ overflow: "hidden" }}
     >
-      <div className="pb-6 pl-9 pr-1">
+      <div className="px-5 pb-6 pt-1">
         <p className="text-[15px] leading-relaxed text-dim">{skill.value}</p>
-        <p className="mono mt-4 text-[12px] leading-relaxed text-fg">
-          <span className="text-mute">Evidence: </span>
+        <p className="mt-4 text-[13px] font-medium leading-relaxed text-fg">
+          <span className="font-normal text-mute">Evidence: </span>
           {skill.evidence}
         </p>
         <ul aria-label="Tools" className="mt-4 flex flex-wrap gap-1.5">
           {skill.tools.map((tool) => (
             <li
               key={tool}
-              className="mono rounded border border-line px-2 py-0.5 text-[11px] text-dim"
+              className="rounded-full border-2 border-[var(--node)] px-2.5 py-0.5 text-[12px] font-medium text-fg"
             >
               {tool}
             </li>
@@ -48,7 +50,7 @@ function Panel({ skill, open, reduce }: { skill: Skill; open: boolean; reduce: b
         <Link
           href={`/skills/${skill.slug}`}
           data-unit={`skill:${skill.slug}`}
-          className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-full border border-line-strong px-5 text-sm font-medium text-fg transition-colors hover:border-accent hover:text-accent"
+          className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-6 text-sm font-semibold text-white transition-[filter] hover:brightness-110"
         >
           Open case
           <Arrow />
@@ -60,6 +62,7 @@ function Panel({ skill, open, reduce }: { skill: Skill; open: boolean; reduce: b
 
 function Row({
   skill,
+  index,
   isOpen,
   reduce,
   buttonRef,
@@ -67,6 +70,7 @@ function Row({
   onKeyDown,
 }: {
   skill: Skill;
+  index: number;
   isOpen: boolean;
   reduce: boolean;
   buttonRef: Ref<HTMLButtonElement>;
@@ -74,7 +78,10 @@ function Row({
   onKeyDown: (e: KeyboardEvent) => void;
 }) {
   return (
-    <li className="border-b border-line">
+    <li
+      style={nodeStyle(index)}
+      className={`rounded-3xl border-2 bg-surface-2 transition-colors duration-200 ${isOpen ? "border-[var(--node)]" : "border-line"}`}
+    >
       <h3>
         <button
           ref={buttonRef}
@@ -85,27 +92,26 @@ function Row({
           data-unit={`acc:${skill.slug}`}
           onClick={onToggle}
           onKeyDown={onKeyDown}
-          className="flex min-h-16 w-full cursor-pointer items-center gap-4 py-4 text-left"
+          className="flex min-h-[72px] w-full cursor-pointer items-center gap-3 rounded-3xl px-4 py-3 text-left"
         >
           <span
             aria-hidden
-            className={`mono nums w-5 shrink-0 text-[11px] transition-colors duration-200 ${isOpen ? "text-accent" : "text-mute"}`}
+            className="nums inline-flex h-9 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--node)] text-[13px] font-semibold text-fg"
           >
             {pad(skill.n)}
           </span>
-          <span className="flex-1 font-[family-name:var(--font-display)] text-lg font-semibold leading-tight tracking-[-0.02em] text-fg">
-            {skill.title}
-          </span>
+          <span className="flex-1 font-display text-[22px] leading-[1.1] text-fg">{skill.title}</span>
           <svg
             aria-hidden
-            width="16"
-            height="16"
+            width="20"
+            height="20"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth="2"
+            strokeWidth="2.5"
             strokeLinecap="round"
-            className={`shrink-0 text-mute transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+            strokeLinejoin="round"
+            className={`shrink-0 text-accent transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
           >
             <path d="M6 9l6 6 6-6" />
           </svg>
@@ -139,11 +145,12 @@ export default function ServiceAccordion() {
   };
 
   return (
-    <ol data-open={open || "none"} className="border-t border-line">
+    <ol data-open={open || "none"} className="flex flex-col gap-3">
       {skills.map((skill, i) => (
         <Row
           key={skill.slug}
           skill={skill}
+          index={i}
           isOpen={open === skill.slug}
           reduce={reduce}
           buttonRef={(el) => {

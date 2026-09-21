@@ -1,22 +1,27 @@
 // Node labels are DOM. Every frame each node is projected to screen space,
 // labels claim non-overlapping room, and each <button> is moved by transform.
 
-import { CARD_GAP, CORE_RADIUS } from "./orbitConfig";
+import { CARD_GAP, CORE_RADIUS, NODE_RADIUS, nodeScale } from "./orbitConfig";
 import type { Ctx } from "./orbitCtx";
 
 export const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 // 0 at the far side of the orbit, 1 at the near side, from world z.
 export const depthOf = (z: number) => clamp((z + 3.2) / 6.4, 0, 1);
-// Resting label opacity. Floored so 13px text keeps about 4.5:1 on the page
-// background even for a far-side, dimmed label. Depth and dim are carried by
-// the node dot and halo, not by the text.
-const labelOpacity = (depth: number, dim: number) => (0.6 + 0.4 * depth) * (1 - dim * 0.15);
 
 type Side = "left" | "right";
 
 // `keep` marks the node whose label must always show: selected, hovered or
-// focused (focus is forwarded as hover).
-export type Spot = { x: number; y: number; depth: number; pri: number; side: Side; keep: boolean };
+// focused (focus is forwarded as hover). `r` is the node's on-screen radius in
+// px, so its chip sits a fixed gap off the sphere's edge at any node size.
+export type Spot = {
+  x: number;
+  y: number;
+  r: number;
+  depth: number;
+  pri: number;
+  side: Side;
+  keep: boolean;
+};
 
 // Screen position of every node. Reads world position back from the halo
 // (already synced in stepNodes) and projects with the live camera, view
@@ -26,11 +31,17 @@ export function projectSpots(c: Ctx): Spot[] {
   return c.parts.nodes.map((node, i) => {
     const v = c.tmp.v.copy(node.halo.position);
     const depth = depthOf(v.z);
+    // One node radius to the side, through the same camera: the on-screen size.
+    const edge = c.tmp.f.copy(v);
+    edge.x += NODE_RADIUS * nodeScale(c.hov[i], c.sel[i]);
     v.project(c.camera);
+    edge.project(c.camera);
+    const r = Math.abs(edge.x - v.x) * 0.5 * c.w;
     const x = (v.x * 0.5 + 0.5) * c.w;
     return {
       x,
       y: (-v.y * 0.5 + 0.5) * c.h,
+      r,
       depth,
       pri: depth + c.sel[i] * 10 + c.hov[i] * 10,
       side: x > cx ? "right" : "left",
@@ -39,9 +50,11 @@ export function projectSpots(c: Ctx): Spot[] {
   });
 }
 
-const LABEL_GAP = 18;
-const LABEL_H = 16;
-const DOT = 13;
+// Chip height (13px text, 6px padding), the air between a node's edge and its
+// chip, and the least a node counts for as an obstacle to other labels.
+const LABEL_H = 28;
+const LABEL_PAD = 8;
+const DOT_MIN = 10;
 // Keep-out margins, in px: from the stage's own left and right edge, from the
 // evidence card, and from the wireframe core's outline.
 const EDGE_PAD = 8;
@@ -59,11 +72,18 @@ function hitsCircle(b: Box, k: Circle): boolean {
 }
 
 function labelBox(s: Spot, side: Side, width: number): Box {
-  const x0 = side === "right" ? s.x + LABEL_GAP : s.x - LABEL_GAP - width;
+  const gap = labelOffset(s);
+  const x0 = side === "right" ? s.x + gap : s.x - gap - width;
   return { x0, x1: x0 + width, y0: s.y - LABEL_H / 2, y1: s.y + LABEL_H / 2 };
 }
 
-const dotBox = (s: Spot): Box => ({ x0: s.x - DOT, x1: s.x + DOT, y0: s.y - DOT, y1: s.y + DOT });
+// Distance from the node's centre to the near end of its chip.
+const labelOffset = (s: Spot) => s.r + LABEL_PAD;
+
+function dotBox(s: Spot): Box {
+  const half = Math.max(s.r, DOT_MIN) + 3;
+  return { x0: s.x - half, x1: s.x + half, y0: s.y - half, y1: s.y + half };
+}
 
 // Screen circle of the wireframe core: the origin and a point one core radius
 // to its right, both through the live camera. The margin also absorbs the
@@ -128,7 +148,7 @@ function placeLabels(c: Ctx, spots: Spot[]): Placement[] {
 }
 
 // Move each button to its node with a transform, and write the label opacity
-// as a CSS variable. Nothing here goes through React.
+// (--lo) and chip offset (--off) as CSS variables. Nothing here goes through React.
 export function writeButtons(c: Ctx, spots: Spot[]): void {
   const placed = placeLabels(c, spots);
   spots.forEach((spot, i) => {
@@ -137,8 +157,10 @@ export function writeButtons(c: Ctx, spots: Spot[]): void {
     const half = c.half[i] ?? 22;
     btn.style.transform = `translate3d(${(spot.x - half).toFixed(1)}px, ${(spot.y - half).toFixed(1)}px, 0)`;
     btn.style.zIndex = String(Math.round(spot.depth * 10));
-    const lo = Math.max(labelOpacity(spot.depth, c.dim[i]), c.hov[i], c.sel[i]);
-    btn.style.setProperty("--lo", placed[i].hidden ? "0" : lo.toFixed(2));
+    // A shown chip is always fully opaque (its ink-on-pastel contrast holds);
+    // a chip with no clear room is hidden outright.
+    btn.style.setProperty("--lo", placed[i].hidden ? "0" : "1");
+    btn.style.setProperty("--off", `${labelOffset(spot).toFixed(1)}px`);
     if (c.side[i] !== placed[i].side) {
       c.side[i] = placed[i].side;
       btn.dataset.side = placed[i].side;
