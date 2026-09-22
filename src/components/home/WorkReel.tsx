@@ -217,7 +217,7 @@ function StackCard({ item, index }: { item: WorkReelItem; index: number }) {
           flex-centering it here is what keeps that gap even on both sides,
           matching how the viens-la reference frames its own project card
           instead of running it edge to edge. */}
-      <div className={`sticky top-0 ${STAGE_H} flex items-center justify-center bg-bg`}>
+      <div className={`sticky top-0 ${STAGE_H} flex items-center justify-center bg-bg px-[3vw] sm:px-[6vw] lg:px-[10vw]`}>
         <Link
           href={`/work/${item.slug}`}
           data-unit={`work:${item.slug}`}
