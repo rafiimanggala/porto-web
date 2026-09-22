@@ -72,16 +72,9 @@ const CONTAIN_SLUGS = new Set([
 function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
   const captionTone = PILL_TONES[(index + 1) % PILL_TONES.length];
   return (
-    // Card at 76svh, centered inside its 100svh stage by the stage's own
-    // flex centering (see StackCard) -- measured off the viens-la reference
-    // itself: their project card sits inset with a real, roughly even gap of
-    // page background above and below it (~10% of viewport height each
-    // side), not edge to edge. An earlier version filled the full 100svh to
-    // dodge the floating Dock, but that read as a different, flatter layout
-    // than the reference and wasn't what was being asked for -- the actual
-    // fix for the Dock was centering both sides evenly (a symmetric gap
-    // reads as deliberate framing) rather than removing the gap outright.
-    <div className="relative h-[76svh] w-full">
+    // Fills its wrapper exactly -- see StackCard's padded wrapper div for
+    // where the visible margin around this card actually comes from now.
+    <div className="relative h-full w-full">
       <Image
         src={item.image.src}
         alt={item.image.alt}
@@ -128,8 +121,8 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
 function ContainCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
   const captionTone = PILL_TONES[(index + 1) % PILL_TONES.length];
   return (
-    // 76svh, centered in its stage -- same reasoning as CoverCard above.
-    <div className="flex h-[76svh] w-full flex-col">
+    // Fills its wrapper exactly -- same reasoning as CoverCard above.
+    <div className="flex h-full w-full flex-col">
       {/* Fixed height, not flex-1: these strips are ~7:1 (700x103/700x187), so
           object-contain already centers the raster inside its box, but a box
           that swallows every leftover pixel of the card leaves a huge dead
@@ -226,31 +219,41 @@ function StackCard({ item, index }: { item: WorkReelItem; index: number }) {
 
   return (
     <li className={`relative ${TRACK_H} ${index === 0 ? "" : REVEAL_PULL}`} style={{ zIndex: index + 1 }}>
-      {/* No horizontal padding here: an earlier px-1 left a permanent sliver
-          of the stage's own bg-bg (a dark green) running down both edges of
-          every card, full height. The vertical gap above/below the card is
-          real on purpose now (see CoverCard/ContainCard's 76svh height) --
-          flex-centering it here is what keeps that gap even on both sides,
-          matching how the viens-la reference frames its own project card
-          instead of running it edge to edge. */}
-      <div className={`sticky top-0 ${STAGE_H} flex items-center justify-center bg-bg px-[3vw] sm:px-[6vw] lg:px-[10vw]`}>
-        <Link
-          href={`/work/${item.slug}`}
-          data-unit={`work:${item.slug}`}
-          className="group relative block w-full cursor-none overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
-          onMouseMove={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            setCursor({ x: e.clientX - rect.left, y: e.clientY - rect.top, visible: true });
-          }}
-          onMouseLeave={() => setCursor((c) => ({ ...c, visible: false }))}
-        >
-          {contain ? (
-            <ContainCard item={item} tone={tone} index={index} />
-          ) : (
-            <CoverCard item={item} tone={tone} index={index} />
-          )}
-          <CardCursor x={cursor.x} y={cursor.y} visible={cursor.visible} />
-        </Link>
+      {/* The sticky stage itself stays exactly one viewport, edge to edge, no
+          padding -- that's what the cover mechanic above depends on: whichever
+          stage is on top must blank out 100% of the one under it with zero
+          gaps, or a sliver of whatever's behind shows through. An earlier
+          version put the visible margin here as padding/flex-centering on
+          THIS element, which shrank the card to less than the stage -- during
+          the transition, the incoming stage's own top margin and the outgoing
+          card's own bottom margin both exposed bg-bg at once, summing into a
+          visible hole between the two cards (caught live: a mid-scroll
+          screenshot showed the cards as two disconnected floating boxes, not
+          a clean cover). Moving the margin one level down, as padding inside
+          this always-full-stage wrapper, keeps the outer covering rectangle
+          exactly stage-sized at every scroll position while still framing the
+          card with real bg-bg space on all sides in the resting view -- the
+          margin is cosmetic padding now, not a gap between separate elements. */}
+      <div className={`sticky top-0 ${STAGE_H} bg-bg`}>
+        <div className="h-[100svh] w-full bg-bg px-[3vw] py-[12vh] sm:px-[6vw] lg:px-[10vw]">
+          <Link
+            href={`/work/${item.slug}`}
+            data-unit={`work:${item.slug}`}
+            className="group relative block h-full w-full cursor-none overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
+            onMouseMove={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              setCursor({ x: e.clientX - rect.left, y: e.clientY - rect.top, visible: true });
+            }}
+            onMouseLeave={() => setCursor((c) => ({ ...c, visible: false }))}
+          >
+            {contain ? (
+              <ContainCard item={item} tone={tone} index={index} />
+            ) : (
+              <CoverCard item={item} tone={tone} index={index} />
+            )}
+            <CardCursor x={cursor.x} y={cursor.y} visible={cursor.visible} />
+          </Link>
+        </div>
       </div>
     </li>
   );
