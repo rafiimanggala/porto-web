@@ -1,0 +1,12 @@
+/* Forces every word to full opacity under reduced motion via a plain CSS
+   media query instead of a JS branch. A JS-computed reduce flag differs
+   between the server (no matchMedia, always "false") and the client (reads
+   the real OS setting), which produced a hydration mismatch on the inline
+   opacity style -- confirmed in testing. CSS media queries resolve the same
+   way regardless of SSR, so this can't mismatch. !important is required to
+   beat the scroll-linked inline style framer-motion sets on the same element. */
+@media (prefers-reduced-motion: reduce) {
+  .word {
+    opacity: 1 !important;
+  }
+}

@@ -1,5 +1,9 @@
+import ScrollHighlightText from "@/components/ui/ScrollHighlightText";
+
 // Heading block of the #directory section. The id is what the section's
-// aria-labelledby points at.
+// aria-labelledby points at. The intro line brightens word by word as it
+// scrolls into view, coming right after the long WorkReel stack, where a
+// scroll-linked reveal actually has room to play out.
 export default function DirectoryHead() {
   return (
     <header>
@@ -12,10 +16,10 @@ export default function DirectoryHead() {
       >
         What do you need built?
       </h2>
-      <p className="mt-6 max-w-[46ch] text-base leading-relaxed text-dim sm:text-lg">
-        Seven things I get hired for. Press a node for the case study, the numbers, and the
-        stack behind it.
-      </p>
+      <ScrollHighlightText
+        text="Seven things I get hired for. Press a node for the case study, the numbers, and the stack behind it."
+        className="mt-6 max-w-[46ch] text-base leading-relaxed text-dim sm:text-lg"
+      />
     </header>
   );
 }

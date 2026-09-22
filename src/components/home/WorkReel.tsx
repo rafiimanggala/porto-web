@@ -2,18 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
 import { workReel, type WorkReelItem } from "@/data/workReel";
-import Reveal from "@/components/ui/Reveal";
-import { useActiveRow } from "./useActiveRow";
-import { useWorkReelSticky } from "./useWorkReelSticky";
-
-// Row DOM ids the sticky panel watches.
-const ROW_IDS = workReel.map((item) => `work-row-${item.slug}`);
-
-function rowId(slug: string): string {
-  return `work-row-${slug}`;
-}
 
 // Header block, same language as DirectoryHead.tsx: a sun pastel label chip,
 // a Titan One heading in the accent color, and a dim one-line intro.
@@ -30,101 +19,114 @@ function WorkHead() {
         What I actually shipped.
       </h2>
       <p className="mt-6 max-w-[46ch] text-base leading-relaxed text-dim sm:text-lg">
-        Seven builds. Scroll and watch the picture change, or press a title for the full case
-        study.
+        Seven builds, stacked. Keep scrolling and each one covers the last.
       </p>
     </header>
   );
 }
 
-// The image card. Every source image here has a different real aspect ratio,
-// and two of them (education-saas, health-platform) are pre-cropped thin
-// strips -- object-contain on a padded surface card keeps all 7 uncropped and
-// consistent, instead of object-cover mangling the strips.
-function WorkFrame({ item, priority }: { item: WorkReelItem; priority?: boolean }) {
+// Pastel index chip cycle, same tones the FAQ and orbit number pills use.
+const PILL_TONES = ["bg-sun", "bg-sky", "bg-rose", "bg-mint"] as const;
+
+// education-saas and health-platform are pre-cropped thin strips, not full
+// screenshots -- a full-bleed cover crop would mangle them further, so those
+// two render on a padded surface zone with object-contain instead of the
+// full-bleed photo treatment every other card gets.
+const CONTAIN_SLUGS = new Set(["education-saas", "health-platform"]);
+
+// Full-bleed variant: photo fills the whole card, title/blurb/link sit on a
+// dark gradient over the image, same layout the viens-la.com reference uses
+// for its project cards.
+function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
   return (
-    <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-line bg-surface-1 p-6 sm:p-8">
+    <div className="relative aspect-[4/3] w-full sm:aspect-[16/10]">
       <Image
         src={item.image.src}
         alt={item.image.alt}
         fill
-        sizes="(min-width: 1024px) 38vw, 90vw"
-        className="object-contain"
-        priority={priority}
+        sizes="(min-width: 640px) 90vw, 100vw"
+        className="object-cover"
+        priority={index === 0}
       />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
+      <span
+        className={`nums absolute top-6 left-6 inline-flex h-9 w-11 items-center justify-center rounded-full text-[13px] font-semibold text-pastel-ink sm:top-8 sm:left-8 ${tone}`}
+      >
+        {String(index + 1).padStart(2, "0")}
+      </span>
+      <div className="absolute inset-x-6 bottom-6 sm:inset-x-8 sm:bottom-8">
+        <h3 className="font-display text-2xl leading-[1.05] text-white sm:text-4xl">{item.title}</h3>
+        <p className="mt-3 max-w-[48ch] text-sm leading-relaxed text-white/80 sm:text-base">{item.blurb}</p>
+        <span className="mono mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-sun">
+          View case study <span aria-hidden="true">&rarr;</span>
+        </span>
+      </div>
     </div>
   );
 }
 
-// One row: index, title, blurb, all wrapped in a real link to the case study
-// so it works without JS. showFrame renders the row's own image inline right
-// below it (mobile / no hover / reduced motion path) instead of relying on
-// the sticky panel.
-function WorkRow({
-  item,
-  index,
-  showFrame,
-}: {
-  item: WorkReelItem;
-  index: number;
-  showFrame: boolean;
-}) {
+// Two-zone variant for the pre-cropped strip images: the strip sits framed
+// and uncropped on its own surface, copy sits below on a solid surface, no
+// gradient-over-photo trick needed since there's no full photo to gradient.
+function ContainCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
   return (
-    <li id={rowId(item.slug)} className="scroll-mt-24 border-b border-line py-8 first:pt-0 last:border-b-0 lg:py-10">
-      <Link href={`/work/${item.slug}`} data-unit={`work:${item.slug}`} className="group block">
-        <div className="flex items-baseline gap-4">
-          <span className="mono text-sm text-mute">{String(index + 1).padStart(2, "0")}</span>
-          <h3 className="font-display text-2xl leading-tight text-fg transition-colors group-hover:text-accent sm:text-3xl">
-            {item.title}
-          </h3>
-        </div>
-        <p className="mt-3 max-w-[52ch] pl-[2.4rem] text-sm leading-relaxed text-dim sm:text-base">
-          {item.blurb}
-        </p>
-        <span className="mono mt-4 inline-block pl-[2.4rem] text-xs text-accent">
+    <div className="flex aspect-[4/3] w-full flex-col sm:aspect-[16/10]">
+      <div className="relative flex-1 bg-surface-1 p-10 sm:p-14">
+        <Image src={item.image.src} alt={item.image.alt} fill sizes="90vw" className="object-contain p-10 sm:p-14" />
+        <span
+          className={`nums absolute top-6 left-6 inline-flex h-9 w-11 items-center justify-center rounded-full text-[13px] font-semibold text-pastel-ink sm:top-8 sm:left-8 ${tone}`}
+        >
+          {String(index + 1).padStart(2, "0")}
+        </span>
+      </div>
+      <div className="bg-surface-2 p-6 sm:p-8">
+        <h3 className="font-display text-2xl leading-[1.05] text-fg sm:text-4xl">{item.title}</h3>
+        <p className="mt-3 max-w-[48ch] text-sm leading-relaxed text-dim sm:text-base">{item.blurb}</p>
+        <span className="mono mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-accent">
           View case study <span aria-hidden="true">&rarr;</span>
         </span>
-      </Link>
-      {showFrame && (
-        <Reveal className="mt-6 pl-0 sm:pl-[2.4rem]">
-          <WorkFrame item={item} />
-        </Reveal>
-      )}
+      </div>
+    </div>
+  );
+}
+
+// One card in the stack. The outer <li> is a tall track (the scroll distance
+// the card dwells for); the inner div is the actual sticky element, so it
+// pins at the same top offset every card uses, holds there while the track
+// scrolls past, then the next card's track begins and its own sticky div
+// naturally overlaps this one -- later siblings paint over earlier ones by
+// DOM order, no JS and no z-index math needed beyond a belt-and-braces value.
+// Native document scroll only: no scroll-jacking, no wheel interception.
+function StackCard({ item, index }: { item: WorkReelItem; index: number }) {
+  const tone = PILL_TONES[index % PILL_TONES.length];
+  const contain = CONTAIN_SLUGS.has(item.slug);
+
+  return (
+    <li className="relative" style={{ zIndex: index + 1 }}>
+      <div className="min-h-[108vh] py-3 sm:min-h-[122vh] sm:py-5">
+        <div className="sticky top-20 sm:top-24">
+          <Link
+            href={`/work/${item.slug}`}
+            data-unit={`work:${item.slug}`}
+            className="block overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
+          >
+            {contain ? (
+              <ContainCard item={item} tone={tone} index={index} />
+            ) : (
+              <CoverCard item={item} tone={tone} index={index} />
+            )}
+          </Link>
+        </div>
+      </div>
     </li>
   );
 }
 
-// Desktop sticky-swap panel: crossfades to whichever row is currently most
-// in view. Native document scroll only -- position: sticky, no scroll-jacking,
-// no virtual scroll, no wheel-event interception.
-function StickyPanel({ activeItem }: { activeItem: WorkReelItem }) {
-  return (
-    <div className="sticky top-24">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeItem.slug}
-          initial={{ opacity: 0, scale: 0.97 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.97 }}
-          transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
-        >
-          <WorkFrame item={activeItem} priority />
-        </motion.div>
-      </AnimatePresence>
-    </div>
-  );
-}
-
-// Portfolio work, scroll-revealed like the B3 reference: a plain row list on
-// the left, a sticky image on the right that swaps as the active row changes.
-// Below lg, without a fine pointer, or under reduced motion, each row shows
-// its own image inline instead -- no sticky panel, no JS dependency to reach
-// the work.
+// Portfolio work, scroll-revealed like the B3 reference: real project cards
+// that stack as you scroll, each new one covering the last. Works the same
+// way on mobile and desktop -- sticky positioning needs no capability gate,
+// unlike the pointer-hover interactions elsewhere on the page.
 export default function WorkReel() {
-  const sticky = useWorkReelSticky();
-  const activeRowId = useActiveRow(ROW_IDS);
-  const activeItem = workReel.find((item) => rowId(item.slug) === activeRowId) ?? workReel[0];
-
   return (
     <section
       id="work"
@@ -132,14 +134,11 @@ export default function WorkReel() {
       className="mx-auto w-full max-w-[1120px] scroll-mt-4 px-6 pt-16 pb-24 sm:pt-24 lg:px-8 lg:pb-32"
     >
       <WorkHead />
-      <div className={sticky ? "mt-10 grid grid-cols-2 items-start gap-16" : "mt-10"}>
-        <ol className="list-none pl-0">
-          {workReel.map((item, i) => (
-            <WorkRow key={item.slug} item={item} index={i} showFrame={!sticky} />
-          ))}
-        </ol>
-        {sticky && <StickyPanel activeItem={activeItem} />}
-      </div>
+      <ol className="relative mt-10 list-none pl-0 sm:mt-16">
+        {workReel.map((item, i) => (
+          <StackCard key={item.slug} item={item} index={i} />
+        ))}
+      </ol>
     </section>
   );
 }
