@@ -57,8 +57,8 @@ export const workReel: WorkReelItem[] = [
     caption: "Live in production for real schools",
     image: {
       src: "/work/education-saas/quiz-engine-thumb.webp",
-      width: 700,
-      height: 187,
+      width: 638,
+      height: 143,
       alt: "A strip of the quiz engine interface from the curriculum-aligned learning platform.",
     },
   },
