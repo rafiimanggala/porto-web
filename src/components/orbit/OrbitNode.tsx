@@ -52,7 +52,7 @@ export default function OrbitNode({
       <span
         data-label
         style={{ opacity: "var(--lo, 1)" }}
-        className="pointer-events-none absolute left-[calc(50%+var(--off,24px))] top-1/2 flex w-max -translate-y-1/2 items-baseline gap-1.5 whitespace-nowrap rounded-full bg-[var(--node)] px-3 py-1.5 text-left shadow-[inset_0_0_0_1px_rgba(36,27,75,0.14)] transition-[opacity,background-color] duration-200 group-aria-pressed/n:bg-accent group-aria-pressed/n:shadow-none group-data-[side=left]/n:right-[calc(50%+var(--off,24px))] group-data-[side=left]/n:left-auto group-data-[side=left]/n:flex-row-reverse group-data-[side=left]/n:text-right"
+        className="pointer-events-none absolute left-[calc(50%+var(--off,24px))] top-1/2 flex w-max -translate-y-1/2 items-baseline gap-1.5 whitespace-nowrap rounded-full bg-[var(--node)] px-3 py-1.5 text-left shadow-[inset_0_0_0_1px_rgba(21,32,18,0.14)] transition-[opacity,background-color] duration-200 group-aria-pressed/n:bg-accent group-aria-pressed/n:shadow-none group-data-[side=left]/n:right-[calc(50%+var(--off,24px))] group-data-[side=left]/n:left-auto group-data-[side=left]/n:flex-row-reverse group-data-[side=left]/n:text-right"
       >
         <span
           aria-hidden

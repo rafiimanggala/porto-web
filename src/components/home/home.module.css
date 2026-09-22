@@ -48,9 +48,9 @@
   }
 }
 
-/* The one wash: a soft lavender glow around the wordmark, tied to the theme's own
-   bg token so it never drifts from it again. Returns to the page bg at the bottom
-   so the next section starts without a seam. */
+/* The one wash: a soft light-green glow around the wordmark, tied to the theme's
+   own bg token so it never drifts from it again. Returns to the page bg at the
+   bottom so the next section starts without a seam. */
 .wash {
-  background: linear-gradient(180deg, var(--color-bg) 0%, #eae4fb 62%, var(--color-bg) 100%);
+  background: linear-gradient(180deg, var(--color-bg) 0%, #dcecd2 62%, var(--color-bg) 100%);
 }

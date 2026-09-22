@@ -55,22 +55,24 @@
   --ease-in-out-quint: cubic-bezier(0.86, 0, 0.07, 1);
 }
 
-/* Home theme: near-white, violet ink, pastel blocks, big rounded display type
-   (direction taken from the B3 reference, background swapped off cream to a cool
-   off-white). Scoped by a wrapper class, so the other pages stay dark until they
-   are redone. Promote by moving these onto :root. */
+/* Home theme: near-white, Porsche green ink, pastel blocks, big rounded display
+   type (direction taken from the B3 reference; accent swapped off violet to a
+   light Porsche-style green, with a dark green for the wordmark's own depth
+   shadow and orange left as-is, already the dark pages' accent below). Scoped
+   by a wrapper class, so the other pages stay dark until they are redone.
+   Promote by moving these onto :root. */
 .theme-light {
   color-scheme: light;
-  --color-bg: #f6f5fb;
+  --color-bg: #f6f7f4;
   --color-surface-1: #ffffff;
   --color-surface-2: #ffffff;
-  --color-surface-3: #ece9f8;
-  --color-line: rgba(36, 27, 75, 0.1);
-  --color-line-strong: rgba(36, 27, 75, 0.2);
-  --color-fg: #241b4b;
-  --color-dim: #5b5382;
-  --color-mute: #6f6893;
-  --color-accent: #6448fc;
+  --color-surface-3: #e7ede2;
+  --color-line: rgba(21, 32, 18, 0.1);
+  --color-line-strong: rgba(21, 32, 18, 0.2);
+  --color-fg: #152012;
+  --color-dim: #48564a;
+  --color-mute: #5e6f5f;
+  --color-accent: #5fa82d;
   --font-display: var(--font-titan), ui-rounded, system-ui, sans-serif;
   --font-mono: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   background: var(--color-bg);
@@ -94,11 +96,11 @@
   color: var(--color-fg);
 }
 /* Overscroll and short pages show the body, so match it. */
-html:has(.theme-light) body { background: #f6f5fb; }
+html:has(.theme-light) body { background: #f6f7f4; }
 .theme-light .grid-backdrop {
   background-image:
-    linear-gradient(rgba(100, 72, 252, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(100, 72, 252, 0.07) 1px, transparent 1px);
+    linear-gradient(rgba(95, 168, 45, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(95, 168, 45, 0.08) 1px, transparent 1px);
 }
 .theme-light ::selection { background: color-mix(in oklab, var(--color-accent) 28%, transparent); color: var(--color-fg); }
 

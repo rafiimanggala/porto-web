@@ -43,7 +43,7 @@ export type Ctx = {
   sel: number[];
   hov: number[];
   dim: number[];
-  violet: ThreeNS.Color;
+  green: ThreeNS.Color;
   // One flat pastel per node, in skill order.
   pastel: ThreeNS.Color[];
   tmp: { v: ThreeNS.Vector3; f: ThreeNS.Vector3; q: ThreeNS.Quaternion };

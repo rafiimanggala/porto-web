@@ -61,7 +61,7 @@ export default function Hero() {
           <a
             href="#directory"
             data-unit="cta:work"
-            className={`${BUTTON} bg-accent text-white hover:bg-[#4c33d6]`}
+            className={`${BUTTON} bg-accent text-white hover:bg-[#3f7a1e]`}
           >
             See what I build
           </a>
