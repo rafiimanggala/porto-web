@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { workReel, type WorkReelItem } from "@/data/workReel";
@@ -217,6 +217,62 @@ function StackCard({ item, index }: { item: WorkReelItem; index: number }) {
   const contain = CONTAIN_SLUGS.has(item.slug);
   const [cursor, setCursor] = useState({ x: 0, y: 0, visible: false });
 
+  // Every card after the first stays invisible until its own sticky stage has
+  // actually locked to top:0 -- see the scroll-driven check below for why.
+  // Card 0 has nothing to hide behind, so it's just always on.
+  const [locked, setLocked] = useState(index === 0);
+  const stageRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (index === 0) return;
+    const el = stageRef.current;
+    if (!el) return;
+    // position:sticky only controls WHERE a box sits, not WHEN it's allowed
+    // to paint -- a not-yet-locked card is still a normal, fully painted box
+    // at its natural (pre-lock) scroll position, and because every later
+    // card carries a permanently higher z-index (see the li below), the
+    // moment any sliver of that box scrolls into the viewport it paints over
+    // the current card's own bg-bg frame, well before the intended snap-cover
+    // moment -- reads as a green gap with the next card's edge poking through
+    // it (caught live via a mid-scroll screenshot + getBoundingClientRect
+    // sampling, not just DOM math). A pull tall enough to avoid the OLD
+    // "neither card locked" gap (see TRACK_H/REVEAL_PULL comment) does
+    // nothing for this -- it's a completely different failure mode: too much
+    // paint, not too little layout.
+    // First attempt was a 0-size sentinel + IntersectionObserver with
+    // `rootMargin: "0px 0px -100% 0px"` (collapses the root to a 1px line at
+    // the viewport's top edge) -- edge-triggered, so it only fires while the
+    // sentinel is caught crossing that line at the moment the browser happens
+    // to check. A single instant `scrollTo` jump (or, live, a fast momentum
+    // flick) can carry a 1px target straight past a 1px line between two
+    // observations with zero overlap ever recorded, so it never fires at all
+    // -- worse than the bug it was fixing (verified: forced an instant jump
+    // past the lock point, `visibility` stayed "hidden" indefinitely).
+    // Fix: level-triggered instead of edge-triggered. Read this stage's own
+    // `getBoundingClientRect().top` directly on every scroll frame -- since
+    // it's the actual sticky element, that rect always reflects its current
+    // locked/unlocked position, however far or fast the scroll jumped to get
+    // there, so there's no crossing to miss. rAF-throttled so it costs at
+    // most one layout read per frame regardless of scroll event frequency.
+    let raf = 0;
+    const check = () => {
+      raf = 0;
+      setLocked(el.getBoundingClientRect().top <= 0.5);
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(check);
+    };
+    check();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [index]);
+
   return (
     <li className={`relative ${TRACK_H} ${index === 0 ? "" : REVEAL_PULL}`} style={{ zIndex: index + 1 }}>
       {/* The sticky stage itself stays exactly one viewport, edge to edge, no
@@ -233,8 +289,16 @@ function StackCard({ item, index }: { item: WorkReelItem; index: number }) {
           this always-full-stage wrapper, keeps the outer covering rectangle
           exactly stage-sized at every scroll position while still framing the
           card with real bg-bg space on all sides in the resting view -- the
-          margin is cosmetic padding now, not a gap between separate elements. */}
-      <div className={`sticky top-0 ${STAGE_H} bg-bg`}>
+          margin is cosmetic padding now, not a gap between separate elements.
+          `visibility` (not opacity/display) hides it pre-lock: keeps its
+          layout box intact for the sticky math above, drops it from the a11y
+          tree and tab order while hidden (it wasn't reachable as a real card
+          yet anyway), and costs nothing extra to paint. */}
+      <div
+        ref={stageRef}
+        className={`sticky top-0 ${STAGE_H} bg-bg`}
+        style={{ visibility: locked ? "visible" : "hidden" }}
+      >
         <div className="h-[100svh] w-full bg-bg px-[3vw] py-[12vh] sm:px-[6vw] lg:px-[10vw]">
           <Link
             href={`/work/${item.slug}`}
