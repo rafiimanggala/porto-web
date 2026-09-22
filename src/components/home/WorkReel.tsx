@@ -90,33 +90,44 @@ function ContainCard({ item, tone, index }: { item: WorkReelItem; tone: string; 
   );
 }
 
-// One card in the stack. The outer <li> is a tall track (the scroll distance
-// the card dwells for); the inner div is the actual sticky element, so it
-// pins at the same top offset every card uses, holds there while the track
-// scrolls past, then the next card's track begins and its own sticky div
-// naturally overlaps this one -- later siblings paint over earlier ones by
-// DOM order, no JS and no z-index math needed beyond a belt-and-braces value.
-// Native document scroll only: no scroll-jacking, no wheel interception.
+// One card in the stack. The sticky element is a full-viewport, opaque stage
+// (bg-bg, min-h-screen) -- not just the card itself -- so once it locks to
+// top:0 it blanks out whatever card is still underneath, edge to edge, not
+// just where the rounded card art sits. Every track after the first pulls up
+// with a negative margin into the previous track's tail: that overlap is
+// what lets this card start rising into view WHILE the previous one is still
+// fully stuck, so there's a real window where both render at once (old one
+// static, new one sliding up over it) instead of the two swapping the instant
+// the old one would otherwise start exiting -- a plain min-h track with no
+// overlap produces an exact hand-off with zero visible covering, which is
+// what earlier measurement caught as a "gap" against the viens-la.com
+// reference. Native document scroll only: no scroll-jacking, no wheel
+// interception, just position: sticky and negative margin.
+const STAGE_H = "min-h-[100svh]";
+const TRACK_H = "min-h-[150vh] sm:min-h-[180vh]";
+const REVEAL_PULL = "-mt-[35vh] sm:-mt-[60vh]";
+
 function StackCard({ item, index }: { item: WorkReelItem; index: number }) {
   const tone = PILL_TONES[index % PILL_TONES.length];
   const contain = CONTAIN_SLUGS.has(item.slug);
 
   return (
-    <li className="relative" style={{ zIndex: index + 1 }}>
-      <div className="min-h-[108vh] py-3 sm:min-h-[122vh] sm:py-5">
-        <div className="sticky top-20 sm:top-24">
-          <Link
-            href={`/work/${item.slug}`}
-            data-unit={`work:${item.slug}`}
-            className="block overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
-          >
-            {contain ? (
-              <ContainCard item={item} tone={tone} index={index} />
-            ) : (
-              <CoverCard item={item} tone={tone} index={index} />
-            )}
-          </Link>
-        </div>
+    <li
+      className={`relative ${TRACK_H} ${index === 0 ? "" : REVEAL_PULL}`}
+      style={{ zIndex: index + 1 }}
+    >
+      <div className={`sticky top-0 flex ${STAGE_H} items-center bg-bg px-1 py-6 sm:py-10`}>
+        <Link
+          href={`/work/${item.slug}`}
+          data-unit={`work:${item.slug}`}
+          className="block w-full overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
+        >
+          {contain ? (
+            <ContainCard item={item} tone={tone} index={index} />
+          ) : (
+            <CoverCard item={item} tone={tone} index={index} />
+          )}
+        </Link>
       </div>
     </li>
   );

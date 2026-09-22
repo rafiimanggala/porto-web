@@ -117,6 +117,15 @@ html:has(.theme-green) body { background: #23473a; }
 
   html {
     scroll-behavior: smooth;
+    /* Lives on html, not body: overflow-x here alone still forces overflow-y
+       to auto (CSS spec, the two must match), but html IS the document's
+       real scrolling element in standard mode, so that auto changes nothing
+       observable. The same rule on body used to turn body into a SEPARATE
+       scroll container distinct from the viewport, which silently breaks
+       position: sticky on any descendant (its containing block becomes body,
+       which never actually scrolls, so it never engages) -- exactly what was
+       stopping WorkReel's stacking cards from covering each other. */
+    overflow-x: hidden;
   }
 
   body {
@@ -127,7 +136,6 @@ html:has(.theme-green) body { background: #23473a; }
     letter-spacing: -0.011em;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    overflow-x: hidden;
     /* viewport-fit=cover lets the page run under a phone notch in landscape. */
     padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
   }
