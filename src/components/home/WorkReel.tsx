@@ -52,20 +52,20 @@ function FactPill({ text, tone }: { text: string; tone: string }) {
   );
 }
 
-// Two different reasons a card needs the padded contain treatment instead of
-// the full-bleed cover photo every other card gets:
-// - education-saas, health-platform: pre-cropped thin strips, not full
-//   screenshots -- a full-bleed cover crop would mangle them further.
-// - made-to-measure-shopify, spotter-eld, streak: real product screenshots
-//   with a white or cream UI background. CoverCard overlays the title in
-//   white on a dark gradient meant for moody photography -- against a light
-//   screenshot that gradient barely darkens the lower third, so the title
-//   read as white-on-white, nearly illegible (caught live: "SPOTTER ELD" and
-//   "STREAK" were both unreadable against their own screenshots). Cropping
-//   the sidebar icons on made-to-measure-shopify's raw storefront screenshot
-//   this way also left a UI icon peeking outside the card's rounded corner.
-//   ContainCard sidesteps all of it: the title sits on its own solid
-//   surface-2 zone below the image, never on top of it.
+// Rafii's call (23 Sep): every card should read as one family, card 1 and 2's
+// full-bleed treatment, not a split between that and a separate boxed-strip
+// +solid-copy-zone layout. Two of these five were pre-cropped thin strips
+// (education-saas, health-platform, ~7:1) and three were real product
+// screenshots on a white/cream UI background (made-to-measure-shopify,
+// spotter-eld, streak) -- neither survives a hard `object-cover` crop:
+// cropping a thin strip either blows it up illegibly or throws away most of
+// it, and cropping a screenshot cuts through real UI chrome (caught live:
+// made-to-measure-shopify's raw storefront crop left a sidebar icon peeking
+// outside the rounded corner). CONTAIN_SLUGS still marks them, just for a
+// narrower reason now: they render with `object-contain` on a solid backdrop
+// instead of `object-cover`, so nothing gets cropped or stretched, while
+// everything else about the card (full-bleed shape, gradient title overlay,
+// no separate copy zone) matches card 1 and 2 exactly.
 const CONTAIN_SLUGS = new Set([
   "education-saas",
   "health-platform",
@@ -74,11 +74,14 @@ const CONTAIN_SLUGS = new Set([
   "streak",
 ]);
 
-// Full-bleed variant: photo fills the whole card, title/blurb/link sit on a
-// dark gradient over the image, same layout the viens-la.com reference uses
-// for its project cards.
+// The one card layout: full-bleed image/video, title + one pill on a dark
+// gradient over it, same language the viens-la.com reference uses for its
+// project cards. `contain` mode (see CONTAIN_SLUGS) is the only branch --
+// same overlay, same typography, just object-contain over a solid backdrop
+// instead of object-cover, for images a crop would mangle.
 function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
   const captionTone = PILL_TONES[(index + 1) % PILL_TONES.length];
+  const contain = CONTAIN_SLUGS.has(item.slug);
   // Reduced-motion still gets the card -- it just gets the poster frame,
   // not the loop. autoPlay is the only thing gated; the <video> element
   // itself renders either way so the poster still shows as a still image.
@@ -86,7 +89,16 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
   return (
     // Fills its wrapper exactly -- see ReelCard's padded wrapper div for
     // where the visible margin around this card actually comes from now.
-    <div className="relative h-full w-full">
+    // bg-surface-1 is the letterbox color for contain mode; invisible in
+    // cover mode since the image fills the box edge to edge regardless.
+    // object-top (contain mode only) pins the image to the top of its box
+    // instead of centering it -- centered, a short-and-wide strip lands
+    // right in the middle of the card, exactly where the title sits, and
+    // the two overlap illegibly (caught live: HEALTH OPTIMISATION PLATFORM
+    // ran straight across the score panel's chart lines). Pinning it up top
+    // keeps the whole bottom band clear for the title, every time, no
+    // per-image tuning needed regardless of how tall or short the image is.
+    <div className="relative h-full w-full bg-surface-1">
       {item.video ? (
         <video
           src={item.video}
@@ -95,7 +107,7 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
           loop
           muted
           playsInline
-          className="absolute inset-0 h-full w-full object-cover"
+          className={`absolute inset-0 h-full w-full ${contain ? "object-contain object-top p-10 sm:p-16" : "object-cover"}`}
         />
       ) : (
         <Image
@@ -103,11 +115,19 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
           alt={item.image.alt}
           fill
           sizes="(min-width: 640px) 90vw, 100vw"
-          className="object-cover"
+          className={contain ? "object-contain object-top p-10 sm:p-16" : "object-cover"}
           priority={index === 0}
         />
       )}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
+      {/* Stronger than a moody-photo gradient needs (was from-black/75
+          via-black/15): contain mode's backdrop is light, and a crop-free
+          screenshot can still be bright right up to the title zone, so the
+          scrim has to guarantee contrast on its own rather than counting on
+          the photo already being dark underneath -- this is the fix for the
+          exact "SPOTTER ELD"/"STREAK" white-on-white bug the old two-layout
+          split was built to dodge, applied to the scrim instead of routing
+          around it with a different card shape. */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent" />
       <span
         className={`nums absolute top-6 left-6 inline-flex h-9 w-11 items-center justify-center rounded-full text-[13px] font-semibold text-pastel-ink sm:top-8 sm:left-8 ${tone}`}
       >
@@ -123,54 +143,21 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
           well above the Dock (see the 76svh height above), so ordinary
           bottom air is already clear of it. */}
       <div className="absolute inset-x-6 bottom-10 sm:inset-x-10 sm:bottom-14">
-        <h3 className="[font-family:var(--font-card-title)] text-[clamp(2.6rem,9vw,5.75rem)] leading-[0.9] tracking-[-0.01em] text-balance text-white uppercase">
+        {/* The gradient above handles most images fine, but a tall
+            landscape screenshot (contain mode, height-constrained) can fill
+            the box edge to edge with little room left for the gradient to
+            darken before the title -- made-to-measure-shopify's own shirts
+            sat close enough to white behind the title that it read as
+            borderline even with the stronger scrim. A drop-shadow on the
+            text itself is a second, independent guarantee: near-invisible
+            against an already-dark backdrop, decisive against a bright one. */}
+        <h3 className="[font-family:var(--font-card-title)] [text-shadow:0_4px_24px_rgba(0,0,0,0.6)] text-[clamp(2.6rem,9vw,5.75rem)] leading-[0.9] tracking-[-0.01em] text-balance text-white uppercase">
           {item.title}
         </h3>
         <div className="mt-5">
           <FactPill text={item.caption} tone={captionTone} />
         </div>
         <span className="mono mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-sun opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
-          View case study <span aria-hidden="true">&rarr;</span>
-        </span>
-      </div>
-    </div>
-  );
-}
-
-// Two-zone variant for the pre-cropped strip images: the strip sits framed
-// and uncropped on its own surface, copy sits below on a solid surface, no
-// gradient-over-photo trick needed since there's no full photo to gradient.
-function ContainCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
-  const captionTone = PILL_TONES[(index + 1) % PILL_TONES.length];
-  return (
-    // Fills its wrapper exactly -- same reasoning as CoverCard above.
-    <div className="flex h-full w-full flex-col">
-      {/* Fixed height, not flex-1: these strips are ~7:1 (700x103/700x187), so
-          object-contain already centers the raster inside its box, but a box
-          that swallows every leftover pixel of the card leaves a huge dead
-          void above and below a thin strip -- centered on paper, but reading
-          as "stuck near the top" next to that much empty green. Capping the
-          zone's own height keeps the strip close to its natural size, and the
-          copy zone below picks up flex-1 + justify-center so the whole card
-          composes as one balanced unit instead of a small image floating in
-          a tall box above a copy block hugging the top of a short one. */}
-      <div className="relative h-[38vh] bg-surface-1 p-8 sm:h-[42vh] sm:p-12">
-        <Image src={item.image.src} alt={item.image.alt} fill sizes="90vw" className="object-contain p-6 sm:p-8" />
-        <span
-          className={`nums absolute top-6 left-6 inline-flex h-9 w-11 items-center justify-center rounded-full text-[13px] font-semibold text-pastel-ink sm:top-8 sm:left-8 ${tone}`}
-        >
-          {String(index + 1).padStart(2, "0")}
-        </span>
-      </div>
-      <div className="flex flex-1 flex-col justify-center bg-surface-2 p-6 sm:p-8">
-        <h3 className="[font-family:var(--font-card-title)] text-4xl leading-[0.9] tracking-[-0.01em] text-fg uppercase sm:text-6xl">
-          {item.title}
-        </h3>
-        <div className="mt-3">
-          <FactPill text={item.caption} tone={captionTone} />
-        </div>
-        <p className="mt-3 max-w-[48ch] text-sm leading-relaxed text-dim sm:text-base">{item.blurb}</p>
-        <span className="mono mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-accent">
           View case study <span aria-hidden="true">&rarr;</span>
         </span>
       </div>
@@ -237,7 +224,6 @@ function ReelCard({
   progress: MotionValue<number>;
 }) {
   const tone = PILL_TONES[index % PILL_TONES.length];
-  const contain = CONTAIN_SLUGS.has(item.slug);
   const [cursor, setCursor] = useState({ x: 0, y: 0, visible: false });
 
   const slot = 1 / count;
@@ -292,11 +278,7 @@ function ReelCard({
         }}
         onMouseLeave={() => setCursor((c) => ({ ...c, visible: false }))}
       >
-        {contain ? (
-          <ContainCard item={item} tone={tone} index={index} />
-        ) : (
-          <CoverCard item={item} tone={tone} index={index} />
-        )}
+        <CoverCard item={item} tone={tone} index={index} />
         <CardCursor x={cursor.x} y={cursor.y} visible={cursor.visible} />
       </Link>
     </motion.div>
@@ -337,7 +319,6 @@ function PlainStack({ items }: { items: WorkReelItem[] }) {
     <ol className="mt-10 list-none space-y-6 pl-0 sm:mt-16">
       {items.map((item, i) => {
         const tone = PILL_TONES[i % PILL_TONES.length];
-        const contain = CONTAIN_SLUGS.has(item.slug);
         return (
           <li key={item.slug} className="h-[80svh] w-full px-[3vw] sm:px-[6vw] lg:px-[10vw]">
             <Link
@@ -345,11 +326,7 @@ function PlainStack({ items }: { items: WorkReelItem[] }) {
               data-unit={`work:${item.slug}`}
               className="group relative block h-full w-full overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
             >
-              {contain ? (
-                <ContainCard item={item} tone={tone} index={i} />
-              ) : (
-                <CoverCard item={item} tone={tone} index={i} />
-              )}
+              <CoverCard item={item} tone={tone} index={i} />
             </Link>
           </li>
         );
