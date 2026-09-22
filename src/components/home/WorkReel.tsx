@@ -79,18 +79,34 @@ const CONTAIN_SLUGS = new Set([
 // for its project cards.
 function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
   const captionTone = PILL_TONES[(index + 1) % PILL_TONES.length];
+  // Reduced-motion still gets the card -- it just gets the poster frame,
+  // not the loop. autoPlay is the only thing gated; the <video> element
+  // itself renders either way so the poster still shows as a still image.
+  const reduce = useReducedMotion();
   return (
     // Fills its wrapper exactly -- see ReelCard's padded wrapper div for
     // where the visible margin around this card actually comes from now.
     <div className="relative h-full w-full">
-      <Image
-        src={item.image.src}
-        alt={item.image.alt}
-        fill
-        sizes="(min-width: 640px) 90vw, 100vw"
-        className="object-cover"
-        priority={index === 0}
-      />
+      {item.video ? (
+        <video
+          src={item.video}
+          poster={item.image.src}
+          autoPlay={!reduce}
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      ) : (
+        <Image
+          src={item.image.src}
+          alt={item.image.alt}
+          fill
+          sizes="(min-width: 640px) 90vw, 100vw"
+          className="object-cover"
+          priority={index === 0}
+        />
+      )}
       <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
       <span
         className={`nums absolute top-6 left-6 inline-flex h-9 w-11 items-center justify-center rounded-full text-[13px] font-semibold text-pastel-ink sm:top-8 sm:left-8 ${tone}`}
@@ -98,13 +114,14 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
         {String(index + 1).padStart(2, "0")}
       </span>
       {/* Resting state matches the b3 reference: title + one pill only, big
-          and with real bottom air, not jammed flush to the card edge. The
-          blurb and case-study link stay in the DOM for a11y/SEO but fade in
-          only on hover/focus -- viens-la's own cards never show body copy on
-          the face at all, ours keeps it as a hover flourish instead of
-          dropping the content outright. No Dock-specific inset needed here
-          any more: the card itself now ends well above the Dock (see the
-          76svh height above), so ordinary bottom air is already clear of it. */}
+          and with real bottom air, not jammed flush to the card edge. No
+          blurb on the face at all any more -- matches viens-la's own cards,
+          which never show body copy over the photo either (the blurb still
+          exists, just on the case-study page itself). The case-study link
+          stays in the DOM for a11y/SEO but fades in only on hover/focus. No
+          Dock-specific inset needed here any more: the card itself now ends
+          well above the Dock (see the 76svh height above), so ordinary
+          bottom air is already clear of it. */}
       <div className="absolute inset-x-6 bottom-10 sm:inset-x-10 sm:bottom-14">
         <h3 className="[font-family:var(--font-card-title)] text-[clamp(2.6rem,9vw,5.75rem)] leading-[0.9] tracking-[-0.01em] text-balance text-white uppercase">
           {item.title}
@@ -112,9 +129,6 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
         <div className="mt-5">
           <FactPill text={item.caption} tone={captionTone} />
         </div>
-        <p className="mt-4 max-w-[48ch] text-sm leading-relaxed text-white/80 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 sm:text-base">
-          {item.blurb}
-        </p>
         <span className="mono mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-sun opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
           View case study <span aria-hidden="true">&rarr;</span>
         </span>

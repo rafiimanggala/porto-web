@@ -20,6 +20,12 @@ export type WorkReelItem = {
     height: number;
     alt: string;
   };
+  // Optional looping preview clip, muted/no controls, shown instead of the
+  // static image where a real clip exists (only ai-video-production has
+  // one -- the others are screenshots of software, not footage, so a still
+  // image is the honest preview for them). `image` stays as the <video>'s
+  // poster frame either way.
+  video?: string;
 };
 
 export const workReel: WorkReelItem[] = [
@@ -35,6 +41,7 @@ export const workReel: WorkReelItem[] = [
       height: 540,
       alt: "A crowd scene from one of the AI-generated video assets produced for this account.",
     },
+    video: "/work/ai-video-production/10-scope-crowd.mp4",
   },
   {
     slug: "content-automation-pipeline",
