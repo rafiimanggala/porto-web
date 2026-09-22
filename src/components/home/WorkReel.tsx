@@ -102,15 +102,24 @@ function ContainCard({ item, tone, index }: { item: WorkReelItem; tone: string; 
   const captionTone = PILL_TONES[(index + 1) % PILL_TONES.length];
   return (
     <div className="flex h-[calc(100svh-5rem)] w-full flex-col sm:h-[calc(100svh-6.5rem)]">
-      <div className="relative flex-1 bg-surface-1 p-10 sm:p-14">
-        <Image src={item.image.src} alt={item.image.alt} fill sizes="90vw" className="object-contain p-10 sm:p-14" />
+      {/* Fixed height, not flex-1: these strips are ~7:1 (700x103/700x187), so
+          object-contain already centers the raster inside its box, but a box
+          that swallows every leftover pixel of the card leaves a huge dead
+          void above and below a thin strip -- centered on paper, but reading
+          as "stuck near the top" next to that much empty green. Capping the
+          zone's own height keeps the strip close to its natural size, and the
+          copy zone below picks up flex-1 + justify-center so the whole card
+          composes as one balanced unit instead of a small image floating in
+          a tall box above a copy block hugging the top of a short one. */}
+      <div className="relative h-[38vh] bg-surface-1 p-8 sm:h-[42vh] sm:p-12">
+        <Image src={item.image.src} alt={item.image.alt} fill sizes="90vw" className="object-contain p-6 sm:p-8" />
         <span
           className={`nums absolute top-6 left-6 inline-flex h-9 w-11 items-center justify-center rounded-full text-[13px] font-semibold text-pastel-ink sm:top-8 sm:left-8 ${tone}`}
         >
           {String(index + 1).padStart(2, "0")}
         </span>
       </div>
-      <div className="bg-surface-2 p-6 sm:p-8">
+      <div className="flex flex-1 flex-col justify-center bg-surface-2 p-6 sm:p-8">
         <h3 className="[font-family:var(--font-card-title)] text-4xl leading-[0.9] tracking-[-0.01em] text-fg uppercase sm:text-6xl">
           {item.title}
         </h3>
