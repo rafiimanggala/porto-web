@@ -71,7 +71,9 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
         {String(index + 1).padStart(2, "0")}
       </span>
       <div className="absolute inset-x-6 bottom-6 sm:inset-x-8 sm:bottom-8">
-        <h3 className="font-display text-3xl leading-[0.95] text-white sm:text-6xl">{item.title}</h3>
+        <h3 className="[font-family:var(--font-card-title)] text-[clamp(2rem,7vw,3.75rem)] leading-[0.92] tracking-[-0.01em] text-balance text-white uppercase">
+          {item.title}
+        </h3>
         <div className="mt-4">
           <FactPill text={item.caption} tone={captionTone} />
         </div>
@@ -100,7 +102,9 @@ function ContainCard({ item, tone, index }: { item: WorkReelItem; tone: string; 
         </span>
       </div>
       <div className="bg-surface-2 p-6 sm:p-8">
-        <h3 className="font-display text-2xl leading-[1.05] text-fg sm:text-4xl">{item.title}</h3>
+        <h3 className="[font-family:var(--font-card-title)] text-4xl leading-[0.9] tracking-[-0.01em] text-fg uppercase sm:text-6xl">
+          {item.title}
+        </h3>
         <div className="mt-3">
           <FactPill text={item.caption} tone={captionTone} />
         </div>

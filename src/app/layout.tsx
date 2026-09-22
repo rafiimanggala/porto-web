@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, Inter, JetBrains_Mono, Titan_One } from "next/font/google";
+import { Space_Grotesk, Inter, JetBrains_Mono, Titan_One, Anton } from "next/font/google";
 import "./globals.css";
 import SiteChrome from "@/components/SiteChrome";
 import PersonJsonLd from "@/components/seo/PersonJsonLd";
@@ -31,6 +31,18 @@ const jb = JetBrains_Mono({
   display: "swap",
 });
 
+// Tall, condensed black grotesk for WorkReel's big overlaid card titles --
+// viens-la.com's actual project cards use this register, not the rounded
+// Titan One the rest of the green theme runs on. Scoped to card titles only
+// via --font-card-title, not promoted to --font-display, so the page's own
+// type identity elsewhere is untouched.
+const anton = Anton({
+  weight: "400",
+  variable: "--font-card-title",
+  subsets: ["latin"],
+  display: "swap",
+});
+
 // viewportFit cover makes env(safe-area-inset-bottom) real on notched phones, which
 // the sticky brief bar relies on.
 export const viewport: Viewport = { viewportFit: "cover" };
@@ -57,7 +69,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${space.variable} ${inter.variable} ${jb.variable} ${titan.variable}`}
+      className={`${space.variable} ${inter.variable} ${jb.variable} ${titan.variable} ${anton.variable}`}
     >
       <body>
         {children}
