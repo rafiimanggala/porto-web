@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { workReel, type WorkReelItem } from "@/data/workReel";
@@ -121,29 +122,58 @@ function ContainCard({ item, tone, index }: { item: WorkReelItem; tone: string; 
 // (bg-bg, min-h-screen) -- not just the card itself -- so once a later card
 // locks to top:0 it blanks out every earlier one still underneath, edge to
 // edge. Every track after the first pulls up with a negative margin into the
-// previous track's tail: that overlap is what lets a card start rising into
-// view while the previous one is still fully stuck, so there's a real window
-// where both render at once, then the new one's higher z-index covers the
-// old one outright as its own track continues. No scale/shrink on the
-// outgoing card: a frame-by-frame check of viens-la.com's actual project
-// cards (not just the earlier screenshot) showed a straight cover, no
-// recede -- matching that instead of the initial guess. Native document
-// scroll only throughout: no scroll-jacking, no wheel interception, sticky +
-// negative margin, not scroll position read back into JS.
+// previous track's tail, and that pull MUST be at least as tall as the stage
+// itself (one viewport): a sticky card only locks once scroll reaches its
+// OWN track's start, and it releases once scroll passes (track height minus
+// stage height) into that same track. With a pull shorter than the stage
+// height, the next card's lock point lands AFTER the current card's release
+// point -- a real gap where neither card is locked, both just scroll past
+// like plain content, which reads as the old card being shoved off rather
+// than covered (verified live: sampling getBoundingClientRect() through a
+// full scroll found stretches with zero cards locked). Pulling up by more
+// than the stage height, instead, makes the next card lock WHILE the current
+// one is still locked, so there's a real window where the new one (higher
+// z-index) sits flush over the old one before the old one even starts to
+// release -- that's the actual cover. No scale/shrink on the outgoing card:
+// a frame-by-frame check of viens-la.com's actual project cards showed a
+// straight cover, no recede. Native document scroll only throughout: no
+// scroll-jacking, no wheel interception, sticky + negative margin, not
+// scroll position read back into JS.
 const STAGE_H = "min-h-[100svh]";
 // TRACK_H and REVEAL_PULL must be literal strings, not built via template
 // interpolation from a shared numeric constant -- Tailwind's scanner reads
 // source text for a complete class token, and "min-h-[" + a variable +
 // "vh]" never appears as one token in the file, so an interpolated version
-// silently generates no CSS at all. The 55vh pull must stay less than the
-// 170vh track so each card still gets a real dwell period before the next
-// one starts covering it.
-const TRACK_H = "min-h-[170vh]";
-const REVEAL_PULL = "-mt-[55vh]";
+// silently generates no CSS at all. REVEAL_PULL (130vh) is well past
+// STAGE_H's one viewport (100vh) so the next card locks a good 30vh before
+// the current one releases -- see the comment above for why that margin
+// matters. TRACK_H (200vh) keeps a real alone-on-screen dwell (70vh) before
+// the next card starts rising, so cards don't feel like they're covering
+// each other immediately on arrival.
+const TRACK_H = "min-h-[200vh]";
+const REVEAL_PULL = "-mt-[130vh]";
+
+// Replaces the native pointer over a card with a circular "View" badge that
+// tracks the mouse, same move viens-la.com makes over its own project
+// photos. Position is relative to the card itself (set from the Link's own
+// mousemove), not the document, so it stays correct however far down the
+// page the card has scrolled.
+function CardCursor({ x, y, visible }: { x: number; y: number; visible: boolean }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="mono pointer-events-none absolute top-0 left-0 z-20 flex h-16 w-16 items-center justify-center rounded-full bg-sun text-[11px] font-semibold tracking-[0.06em] text-pastel-ink uppercase transition-opacity duration-150"
+      style={{ transform: `translate(${x - 32}px, ${y - 32}px)`, opacity: visible ? 1 : 0 }}
+    >
+      View
+    </span>
+  );
+}
 
 function StackCard({ item, index }: { item: WorkReelItem; index: number }) {
   const tone = PILL_TONES[index % PILL_TONES.length];
   const contain = CONTAIN_SLUGS.has(item.slug);
+  const [cursor, setCursor] = useState({ x: 0, y: 0, visible: false });
 
   return (
     <li className={`relative ${TRACK_H} ${index === 0 ? "" : REVEAL_PULL}`} style={{ zIndex: index + 1 }}>
@@ -155,13 +185,19 @@ function StackCard({ item, index }: { item: WorkReelItem; index: number }) {
         <Link
           href={`/work/${item.slug}`}
           data-unit={`work:${item.slug}`}
-          className="block w-full overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
+          className="group relative block w-full cursor-none overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
+          onMouseMove={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            setCursor({ x: e.clientX - rect.left, y: e.clientY - rect.top, visible: true });
+          }}
+          onMouseLeave={() => setCursor((c) => ({ ...c, visible: false }))}
         >
           {contain ? (
             <ContainCard item={item} tone={tone} index={index} />
           ) : (
             <CoverCard item={item} tone={tone} index={index} />
           )}
+          <CardCursor x={cursor.x} y={cursor.y} visible={cursor.visible} />
         </Link>
       </div>
     </li>
