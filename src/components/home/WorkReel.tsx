@@ -44,11 +44,27 @@ function FactPill({ text, tone }: { text: string; tone: string }) {
   );
 }
 
-// education-saas and health-platform are pre-cropped thin strips, not full
-// screenshots -- a full-bleed cover crop would mangle them further, so those
-// two render on a padded surface zone with object-contain instead of the
-// full-bleed photo treatment every other card gets.
-const CONTAIN_SLUGS = new Set(["education-saas", "health-platform"]);
+// Two different reasons a card needs the padded contain treatment instead of
+// the full-bleed cover photo every other card gets:
+// - education-saas, health-platform: pre-cropped thin strips, not full
+//   screenshots -- a full-bleed cover crop would mangle them further.
+// - made-to-measure-shopify, spotter-eld, streak: real product screenshots
+//   with a white or cream UI background. CoverCard overlays the title in
+//   white on a dark gradient meant for moody photography -- against a light
+//   screenshot that gradient barely darkens the lower third, so the title
+//   read as white-on-white, nearly illegible (caught live: "SPOTTER ELD" and
+//   "STREAK" were both unreadable against their own screenshots). Cropping
+//   the sidebar icons on made-to-measure-shopify's raw storefront screenshot
+//   this way also left a UI icon peeking outside the card's rounded corner.
+//   ContainCard sidesteps all of it: the title sits on its own solid
+//   surface-2 zone below the image, never on top of it.
+const CONTAIN_SLUGS = new Set([
+  "education-saas",
+  "health-platform",
+  "made-to-measure-shopify",
+  "spotter-eld",
+  "streak",
+]);
 
 // Full-bleed variant: photo fills the whole card, title/blurb/link sit on a
 // dark gradient over the image, same layout the viens-la.com reference uses
