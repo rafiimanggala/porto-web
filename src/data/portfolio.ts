@@ -7,8 +7,7 @@ export const profile = {
   role: "AI Engineer · Autonomous Systems",
   location: "Indonesia · UTC+7 · Remote",
   available: true,
-  tagline:
-    "I build systems where AI agents do the work, not just write the code.",
+  tagline: "AI agents that do the work, not just write the code.",
   thesis:
     "Most people use Claude Code to write functions. I deploy it as the engine: always-on agents that observe, decide, and act in production. Trading bots that reach multi-model consensus before risking capital. A digital twin that reasons from my own decision history. An inbox that fixes client bugs while I sleep. The code is the easy part. The interesting work is the orchestration.",
   email: "rafiimanggala3@gmail.com",

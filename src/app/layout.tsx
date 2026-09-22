@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://rafiimanggala.vercel.app"),
   title: "Rafii Manggala · AI Engineer · Autonomous Systems",
   description:
-    "I build systems where AI agents do the work, not just write the code. Trading bots, digital twins, and autonomous infra powered by Claude Code.",
+    "AI agents that do the work, not just write the code. Trading bots, digital twins, and autonomous infra powered by Claude Code.",
   alternates: { canonical: "/" },
   openGraph: {
     title: "Rafii Manggala · AI Engineer",
