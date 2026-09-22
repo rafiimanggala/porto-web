@@ -1,7 +1,9 @@
 "use client";
 
+import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { workReel, type WorkReelItem } from "@/data/workReel";
 
 // Header block, same language as DirectoryHead.tsx: a sun pastel label chip,
@@ -107,50 +109,77 @@ function ContainCard({ item, tone, index }: { item: WorkReelItem; tone: string; 
 }
 
 // One card in the stack. The sticky element is a full-viewport, opaque stage
-// (bg-bg, min-h-screen) -- not just the card itself -- so once it locks to
-// top:0 it blanks out whatever card is still underneath, edge to edge, not
-// just where the rounded card art sits. Every track after the first pulls up
-// with a negative margin into the previous track's tail: that overlap is
-// what lets this card start rising into view WHILE the previous one is still
-// fully stuck, so there's a real window where both render at once (old one
-// static, new one sliding up over it) instead of the two swapping the instant
-// the old one would otherwise start exiting -- a plain min-h track with no
-// overlap produces an exact hand-off with zero visible covering, which is
-// what earlier measurement caught as a "gap" against the viens-la.com
-// reference. Native document scroll only: no scroll-jacking, no wheel
-// interception, just position: sticky and negative margin.
+// (bg-bg, min-h-screen) -- not just the card itself -- so once a later card
+// locks to top:0 it blanks out every earlier one still underneath, edge to
+// edge. Every track after the first pulls up with a negative margin into the
+// previous track's tail: that overlap is what lets a card start rising into
+// view while the previous one is still fully stuck, so there's a real window
+// where both render at once. On top of that, each card (other than the last)
+// scales down a little -- 1 to 0.92 -- as its OWN track scrolls past, origin
+// pinned to its top edge so the top stays put and only the bottom recedes.
+// That's what makes it read as the outgoing card shrinking back into the
+// stack while the next one covers it, the viens-la.com reference's actual
+// motion, instead of the flat top:0-to-top:0 hand-off a same-size card gives,
+// which just looks like it gets shoved off-screen. Native document scroll
+// only throughout: no scroll-jacking, no wheel interception, sticky +
+// negative margin + a scroll-linked transform, not scroll position itself.
 const STAGE_H = "min-h-[100svh]";
-const TRACK_H = "min-h-[150vh] sm:min-h-[180vh]";
-const REVEAL_PULL = "-mt-[35vh] sm:-mt-[60vh]";
+// Same value at every breakpoint (vh already scales with the viewport) so
+// the JS cover-start fraction below stays correct on mobile and desktop
+// instead of drifting between two Tailwind breakpoint variants. TRACK_H and
+// REVEAL_PULL must be literal strings, not built from TRACK_VH/REVEAL_VH via
+// template interpolation -- Tailwind's scanner reads source text for a
+// complete class token, and "min-h-[" + a variable + "vh]" never appears as
+// one token in the file, so an interpolated version silently generates no
+// CSS at all. Keep the numbers below equal to the ones inside these two
+// strings by hand.
+const TRACK_VH = 170;
+const REVEAL_VH = 55;
+const TRACK_H = "min-h-[170vh]";
+const REVEAL_PULL = "-mt-[55vh]";
+const RECEDE_SCALE = 0.92;
+// Fraction of a card's OWN track scroll where the next card's negative
+// margin actually starts covering it -- shrink needs to start here, not
+// spread evenly across the whole track, or by the time covering is visible
+// the scale has barely moved (most of the range gets used up while the card
+// is still alone on screen, where a few-percent shrink isn't perceptible).
+const COVER_START = (TRACK_VH - REVEAL_VH) / TRACK_VH;
 
-function StackCard({ item, index }: { item: WorkReelItem; index: number }) {
+function StackCard({ item, index, isLast }: { item: WorkReelItem; index: number; isLast: boolean }) {
   const tone = PILL_TONES[index % PILL_TONES.length];
   const contain = CONTAIN_SLUGS.has(item.slug);
+  const trackRef = useRef<HTMLLIElement>(null);
+  const { scrollYProgress } = useScroll({ target: trackRef, offset: ["start start", "end start"] });
+  const scale = useTransform(
+    scrollYProgress,
+    [0, COVER_START, 1],
+    [1, 1, isLast ? 1 : RECEDE_SCALE],
+  );
 
   return (
     <li
+      ref={trackRef}
       className={`relative ${TRACK_H} ${index === 0 ? "" : REVEAL_PULL}`}
       style={{ zIndex: index + 1 }}
     >
       {/* No top padding here: the card sits flush with the stage's own top
-          edge on purpose. A gap here would show as a band of flat green
-          background between the outgoing and incoming card mid-transition,
-          since the incoming stage's padding would be all a viewer sees for
-          a moment before the card itself arrives -- exactly the "green gap"
-          this was built to remove. Bottom clearance (Dock) still lives on
-          the card's own height below. */}
+          edge on purpose -- a gap here would show as a band of flat green
+          background before the card itself arrives. Bottom clearance for
+          the floating Dock lives on the card's own height below instead. */}
       <div className={`sticky top-0 ${STAGE_H} bg-bg px-1`}>
-        <Link
-          href={`/work/${item.slug}`}
-          data-unit={`work:${item.slug}`}
-          className="block w-full overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
-        >
-          {contain ? (
-            <ContainCard item={item} tone={tone} index={index} />
-          ) : (
-            <CoverCard item={item} tone={tone} index={index} />
-          )}
-        </Link>
+        <motion.div style={{ scale, transformOrigin: "top center" }} className="w-full">
+          <Link
+            href={`/work/${item.slug}`}
+            data-unit={`work:${item.slug}`}
+            className="block w-full overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
+          >
+            {contain ? (
+              <ContainCard item={item} tone={tone} index={index} />
+            ) : (
+              <CoverCard item={item} tone={tone} index={index} />
+            )}
+          </Link>
+        </motion.div>
       </div>
     </li>
   );
@@ -170,7 +199,7 @@ export default function WorkReel() {
       <WorkHead />
       <ol className="relative mt-10 list-none pl-0 sm:mt-16">
         {workReel.map((item, i) => (
-          <StackCard key={item.slug} item={item} index={i} />
+          <StackCard key={item.slug} item={item} index={i} isLast={i === workReel.length - 1} />
         ))}
       </ol>
     </section>
