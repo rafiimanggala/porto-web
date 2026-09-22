@@ -27,7 +27,7 @@ function DockItem({ link, current }: { link: DockLink; current: boolean }) {
 }
 
 // Floating pill nav, fixed at the bottom centre. The current section is the filled
-// violet pill. 12px side margins and the safe-area inset keep it inside a phone screen.
+// orange pill. 12px side margins and the safe-area inset keep it inside a phone screen.
 export default function Dock() {
   const section = useActiveSection(WATCHED_SECTIONS);
   const currentKey = DOCK_LINKS.find((l) => l.sections?.includes(section))?.key;
@@ -38,7 +38,7 @@ export default function Dock() {
       className="pointer-events-none fixed inset-x-3 z-50 flex justify-center"
       style={{ bottom: "calc(12px + env(safe-area-inset-bottom, 0px))" }}
     >
-      <div className="pointer-events-auto flex max-w-full items-center gap-1 rounded-full border border-line bg-surface-2/80 p-1.5 shadow-[0_8px_24px_rgba(21,32,18,0.08)] backdrop-blur-md sm:gap-2">
+      <div className="pointer-events-auto flex max-w-full items-center gap-1 rounded-full border border-line bg-surface-2/80 p-1.5 shadow-[0_8px_24px_rgba(8,16,12,0.4)] backdrop-blur-md sm:gap-2">
         <span className="font-display px-2 text-xl leading-none text-accent max-[359px]:hidden sm:px-3">
           rafii.
         </span>

@@ -1,12 +1,13 @@
 // The 3D sign look for the wordmark: many hard, blur-free text-shadows stepping
 // down and right (the steps are CSS custom properties, so the pointer parallax only
-// has to update two numbers). Near half is the mid green, far half the dark
-// Porsche green, then one soft ink shadow under the whole block.
+// has to update two numbers). Near half is a mid rust-orange, far half a near-black
+// one, then one dark contact shadow under the whole block (needs real opacity to
+// read against the dark green page, unlike a light-page shadow).
 
 const LAYERS = 30;
-const NEAR = "#3f7a1e";
-const FAR = "#23430f";
-const GROUND = "rgba(21, 32, 18, 0.08)";
+const NEAR = "#8f3a0c";
+const FAR = "#4a2007";
+const GROUND = "rgba(8, 16, 12, 0.4)";
 
 export function buildExtrusion(layers: number = LAYERS): string {
   const steps = Array.from({ length: layers }, (_, i) => {

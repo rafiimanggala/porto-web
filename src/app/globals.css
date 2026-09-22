@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* Not "inline": utilities must read var(--color-*) so a wrapper class can swap the
-   whole palette (.theme-cream below) without touching any component. */
+   whole palette (.theme-green below) without touching any component. */
 @theme {
   /* Surface stack: never pure black, depth from layered light */
   --color-bg: #0a0a0b;
@@ -23,11 +23,15 @@
      the accent never becomes the theme's default). */
   --color-accent: #ff6a12;
 
-  /* Pastel blocks, used as flat fills (chips, nodes, cards) in the cream theme. */
+  /* Pastel blocks, used as flat fills (chips, nodes, cards) in the green home theme. */
   --color-sun: #ffe375;
   --color-sky: #a6e8fa;
   --color-rose: #ffa9a9;
   --color-mint: #9cf0cb;
+  /* Fixed dark ink for text sitting directly on a pastel fill above. Not themed:
+     the pastels never change lightness, so this never needs to either, even
+     though the theme's own --color-fg now goes light on the dark green home. */
+  --color-pastel-ink: #152012;
 
   /* Fonts (wired to next/font in layout.tsx) */
   --font-display: var(--font-space), ui-sans-serif, system-ui, sans-serif;
@@ -55,24 +59,26 @@
   --ease-in-out-quint: cubic-bezier(0.86, 0, 0.07, 1);
 }
 
-/* Home theme: near-white, Porsche green ink, pastel blocks, big rounded display
-   type (direction taken from the B3 reference; accent swapped off violet to a
-   light Porsche-style green, with a dark green for the wordmark's own depth
-   shadow and orange left as-is, already the dark pages' accent below). Scoped
-   by a wrapper class, so the other pages stay dark until they are redone.
-   Promote by moving these onto :root. */
-.theme-light {
-  color-scheme: light;
-  --color-bg: #f6f7f4;
-  --color-surface-1: #ffffff;
-  --color-surface-2: #ffffff;
-  --color-surface-3: #e7ede2;
-  --color-line: rgba(21, 32, 18, 0.1);
-  --color-line-strong: rgba(21, 32, 18, 0.2);
-  --color-fg: #152012;
-  --color-dim: #48564a;
-  --color-mute: #5e6f5f;
-  --color-accent: #5fa82d;
+/* Home theme: a Porsche-livery duotone, deep racing green field with a warm
+   cream ink and one orange accent (direction taken from the B3 reference for
+   shape/type, recoloured to the green-body/orange-interior reference photo).
+   Surfaces stay within the same dark-green family as bg (never a light card on
+   a dark page), so a single light ink works everywhere; orange is reserved for
+   the accent alone. Scoped by a wrapper class, so the other pages stay on the
+   near-black default theme until they are redone. Promote by moving these onto
+   :root. */
+.theme-green {
+  color-scheme: dark;
+  --color-bg: #23473a;
+  --color-surface-1: #1c3a2f;
+  --color-surface-2: #2c5645;
+  --color-surface-3: #3a7059;
+  --color-line: rgba(243, 241, 230, 0.12);
+  --color-line-strong: rgba(243, 241, 230, 0.22);
+  --color-fg: #f3f1e6;
+  --color-dim: #b9c8bd;
+  --color-mute: #9fb8a4;
+  --color-accent: #c94e12;
   --font-display: var(--font-titan), ui-rounded, system-ui, sans-serif;
   --font-mono: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   background: var(--color-bg);
@@ -96,13 +102,13 @@
   color: var(--color-fg);
 }
 /* Overscroll and short pages show the body, so match it. */
-html:has(.theme-light) body { background: #f6f7f4; }
-.theme-light .grid-backdrop {
+html:has(.theme-green) body { background: #23473a; }
+.theme-green .grid-backdrop {
   background-image:
-    linear-gradient(rgba(95, 168, 45, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(95, 168, 45, 0.08) 1px, transparent 1px);
+    linear-gradient(rgba(243, 241, 230, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(243, 241, 230, 0.05) 1px, transparent 1px);
 }
-.theme-light ::selection { background: color-mix(in oklab, var(--color-accent) 28%, transparent); color: var(--color-fg); }
+.theme-green ::selection { background: color-mix(in oklab, var(--color-accent) 45%, transparent); color: var(--color-fg); }
 
 @layer base {
   * {

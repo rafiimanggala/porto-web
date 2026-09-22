@@ -7,7 +7,7 @@ import s from "./home.module.css";
 
 const SHADOW: CSSProperties = { textShadow: EXTRUSION_SHADOW };
 
-// The page h1: the giant violet "Rafii" sign. Real DOM text (the extrusion is only
+// The page h1: the giant orange "Rafii" sign. Real DOM text (the extrusion is only
 // text-shadow), with the rest of the name and role for screen readers and search.
 export default function Wordmark({ style }: { style?: CSSProperties }) {
   const ref = useRef<HTMLHeadingElement>(null);

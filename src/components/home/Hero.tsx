@@ -31,9 +31,9 @@ function Tagline() {
     <div className={`${s.rise} max-w-[15rem] sm:max-w-none`} style={stagger(0)}>
       <p className="text-sm font-semibold text-accent">Rafii Manggala, AI engineer</p>
       <p className="mt-2 flex flex-wrap items-center gap-1.5 text-sm font-semibold text-fg">
-        <span className="rounded-md bg-sun px-2 py-0.5">Web apps</span>
+        <span className="rounded-md bg-sun px-2 py-0.5 text-pastel-ink">Web apps</span>
         <span>&amp;</span>
-        <span className="rounded-md bg-sky px-2 py-0.5">AI features</span>
+        <span className="rounded-md bg-sky px-2 py-0.5 text-pastel-ink">AI features</span>
       </p>
       <p className="mt-2 text-xs text-dim">Freelance, remote, UTC+7</p>
     </div>
@@ -61,7 +61,7 @@ export default function Hero() {
           <a
             href="#directory"
             data-unit="cta:work"
-            className={`${BUTTON} bg-accent text-white hover:bg-[#3f7a1e]`}
+            className={`${BUTTON} bg-accent text-white hover:bg-[#8f3a0c]`}
           >
             See what I build
           </a>
@@ -78,7 +78,7 @@ export default function Hero() {
       <a
         href={`mailto:${profile.email}`}
         aria-label="Email Rafii"
-        className={`${s.rise} absolute top-5 right-4 grid size-14 place-items-center rounded-full bg-sky text-fg transition-transform hover:-translate-y-0.5 sm:right-8 min-[1280px]:top-[34%]`}
+        className={`${s.rise} absolute top-5 right-4 grid size-14 place-items-center rounded-full bg-sky text-pastel-ink transition-transform hover:-translate-y-0.5 sm:right-8 min-[1280px]:top-[34%]`}
         style={stagger(4)}
       >
         <EnvelopeIcon />

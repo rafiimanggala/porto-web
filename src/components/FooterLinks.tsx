@@ -2,9 +2,9 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { profile, toolkit, techStack } from "@/data/portfolio";
 
-// Quiet closing footer for the cream home: a hairline, the brand and tagline
+// Quiet closing footer for the green home: a hairline, the brand and tagline
 // beside four link groups (ink group titles, dim links), then a small bottom
-// bar. Contact.tsx (lean) owns the violet closing panel right above this.
+// bar. Contact.tsx (lean) owns the orange closing panel right above this.
 
 // Links are min 44px tall so they are easy to hit on a phone.
 const LINK =

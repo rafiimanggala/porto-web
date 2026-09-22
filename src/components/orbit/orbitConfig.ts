@@ -1,12 +1,14 @@
 // Constants for the service orbit. No three import here, so the React side can
 // read them without pulling the renderer into the first-load bundle.
 
-// Light-theme palette (Porsche green). Hex numbers for three.js, the same values
-// as CSS below.
-export const GREEN = 0x5fa82d;
-// Lighter green for the soft glow ring around the core.
-export const GREEN_SOFT = 0x8fd15e;
-export const INK = 0x152012;
+// Green home theme (Porsche livery, dark green field + orange accent). Named by
+// role, not by hue, so the next palette swap does not need another rename pass.
+// Hex numbers for three.js, the same values as CSS below.
+export const ACCENT = 0xc94e12;
+// Lighter orange for the soft glow ring around the core.
+export const ACCENT_SOFT = 0xe8813f;
+// Wireframe/outline colour. Light, because the page bg is now dark green.
+export const INK = 0xf3f1e6;
 
 // One pastel per service, in skill order. Defined once: the scene reads `hex`,
 // the DOM (labels, card, accordion) reads `css` through the --node variable.

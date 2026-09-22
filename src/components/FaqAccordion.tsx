@@ -74,7 +74,7 @@ export default function FaqAccordion({ index }: { index: string }) {
                 >
                   <span
                     aria-hidden
-                    className={`flex h-9 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold tabular-nums text-fg sm:w-12 ${PILL_TONES[i % PILL_TONES.length]}`}
+                    className={`flex h-9 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold tabular-nums text-pastel-ink sm:w-12 ${PILL_TONES[i % PILL_TONES.length]}`}
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>

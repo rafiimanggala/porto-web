@@ -11,8 +11,8 @@ import {
   NODE_OUTLINE,
   NODE_RADIUS,
   RINGS,
-  GREEN,
-  GREEN_SOFT,
+  ACCENT,
+  ACCENT_SOFT,
   nodeSlots,
 } from "./orbitConfig";
 
@@ -98,8 +98,8 @@ function makeKit(THREE: Three): { kit: Kit; dispose: () => void } {
   return { kit: { THREE, track }, dispose: () => owned.forEach((x) => x.dispose()) };
 }
 
-// Core: a solid green sphere, wrapped by an ink wireframe icosahedron and a
-// smaller counter-rotating green one, over a soft lighter-green glow ring.
+// Core: a solid orange sphere, wrapped by an ink wireframe icosahedron and a
+// smaller counter-rotating orange one, over a soft lighter-orange glow ring.
 // Flat basic materials only, no lighting.
 function buildCore({ THREE, track }: Kit) {
   const core = new THREE.Group();
@@ -109,17 +109,17 @@ function buildCore({ THREE, track }: Kit) {
   );
   const coreInner = new THREE.LineSegments(
     track(new THREE.EdgesGeometry(track(new THREE.IcosahedronGeometry(0.62, 0)))),
-    track(new THREE.LineBasicMaterial({ color: GREEN, transparent: true, opacity: 0.35 })),
+    track(new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.35 })),
   );
   const sphere = new THREE.Mesh(
     track(new THREE.SphereGeometry(CORE_SOLID_RADIUS, 32, 20)),
-    track(new THREE.MeshBasicMaterial({ color: GREEN })),
+    track(new THREE.MeshBasicMaterial({ color: ACCENT })),
   );
   const glow = new THREE.Sprite(
     track(
       new THREE.SpriteMaterial({
         map: track(glowTexture(THREE)),
-        color: GREEN_SOFT,
+        color: ACCENT_SOFT,
         transparent: true,
         opacity: 0.5,
         depthWrite: false,
@@ -140,7 +140,7 @@ function buildRings({ THREE, track }: Kit, root: ThreeNS.Group): ThreeNS.Group[]
     const geo = track(new THREE.BufferGeometry());
     geo.setAttribute("position", new THREE.BufferAttribute(circlePoints(spec.radius, 160), 3));
     const material = track(
-      new THREE.LineBasicMaterial({ color: GREEN, transparent: true, opacity: spec.faint, depthWrite: false }),
+      new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: spec.faint, depthWrite: false }),
     );
     const spin = new THREE.Group();
     tilt.add(new THREE.LineLoop(geo, material), spin);
@@ -204,7 +204,7 @@ function buildDust({ THREE, track }: Kit): ThreeNS.Points {
   geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
   const material = track(
     new THREE.PointsMaterial({
-      color: GREEN,
+      color: ACCENT,
       size: 0.03,
       sizeAttenuation: true,
       transparent: true,

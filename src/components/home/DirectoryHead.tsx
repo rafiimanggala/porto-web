@@ -3,7 +3,7 @@
 export default function DirectoryHead() {
   return (
     <header>
-      <span className="mb-6 inline-flex w-fit rounded-full bg-sun px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-fg">
+      <span className="mb-6 inline-flex w-fit rounded-full bg-sun px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-pastel-ink">
         View the work
       </span>
       <h2

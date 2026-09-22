@@ -96,7 +96,7 @@ function Row({
         >
           <span
             aria-hidden
-            className="nums inline-flex h-9 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--node)] text-[13px] font-semibold text-fg"
+            className="nums inline-flex h-9 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--node)] text-[13px] font-semibold text-pastel-ink"
           >
             {pad(skill.n)}
           </span>

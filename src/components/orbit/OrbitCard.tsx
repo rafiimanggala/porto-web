@@ -51,12 +51,12 @@ export default function OrbitCard({
       animate={{ opacity: 1, y: 0 }}
       exit={reduce ? { opacity: 0 } : { opacity: 0, y: -6 }}
       transition={{ duration: reduce ? 0 : 0.22, ease: [0.19, 1, 0.22, 1] }}
-      className="pointer-events-auto max-h-full w-[280px] overflow-y-auto rounded-3xl border border-line bg-surface-2 p-5 shadow-[0_8px_24px_rgba(21,32,18,0.08)] lg:w-[340px] lg:p-6"
+      className="pointer-events-auto max-h-full w-[280px] overflow-y-auto rounded-3xl border border-line bg-surface-2 p-5 shadow-[0_8px_24px_rgba(8,16,12,0.4)] lg:w-[340px] lg:p-6"
     >
       <div className="flex items-center justify-between">
         <span
           aria-hidden
-          className="nums inline-flex h-8 min-w-11 items-center justify-center rounded-full bg-[var(--node)] px-3 text-[13px] font-semibold text-fg"
+          className="nums inline-flex h-8 min-w-11 items-center justify-center rounded-full bg-[var(--node)] px-3 text-[13px] font-semibold text-pastel-ink"
         >
           {String(skill.n).padStart(2, "0")}
         </span>

@@ -56,11 +56,11 @@ export default function OrbitNode({
       >
         <span
           aria-hidden
-          className="nums text-[10px] font-semibold text-fg/70 group-aria-pressed/n:text-white/85"
+          className="nums text-[10px] font-semibold text-pastel-ink/70 group-aria-pressed/n:text-white/85"
         >
           {String(skill.n).padStart(2, "0")}
         </span>
-        <span className="text-[13px] font-semibold leading-tight text-fg group-aria-pressed/n:text-white">
+        <span className="text-[13px] font-semibold leading-tight text-pastel-ink group-aria-pressed/n:text-white">
           {skill.title}
         </span>
       </span>

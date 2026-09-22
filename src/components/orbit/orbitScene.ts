@@ -8,7 +8,7 @@
 
 import type * as ThreeNS from "three";
 import { buildOrbit, type Three } from "./orbitBuild";
-import { EXTENT_X, EXTENT_Y, FOV, NODE_RADIUS, RINGS, GREEN, nodeScale, serviceColor } from "./orbitConfig";
+import { EXTENT_X, EXTENT_Y, FOV, NODE_RADIUS, RINGS, ACCENT, nodeScale, serviceColor } from "./orbitConfig";
 import type { Ctx, OrbitSceneOptions } from "./orbitCtx";
 import { clamp, depthOf, projectSpots, writeButtons } from "./orbitLabels";
 
@@ -90,8 +90,8 @@ function stepNodes(c: Ctx, dt: number): void {
     c.dim[i] = approach(c.dim[i], c.selected >= 0 && c.selected !== i ? 1 : 0, k);
     const scale = nodeScale(c.hov[i], c.sel[i]);
     node.mesh.scale.setScalar(scale);
-    // Flat pastel at rest, Porsche green when selected.
-    node.mesh.material.color.copy(c.pastel[i]).lerp(c.green, c.sel[i]);
+    // Flat pastel at rest, orange when selected.
+    node.mesh.material.color.copy(c.pastel[i]).lerp(c.accent, c.sel[i]);
     // Pull the selected node toward the camera: world +z, expressed in the
     // ring's local frame because the ring is tilted and spinning.
     node.mesh.position.copy(node.base);
@@ -175,7 +175,7 @@ function createContext(
     selected: -1, hovered: -1,
     pointer: { tx: 0, ty: 0, x: 0, y: 0 },
     sel: zeros(), hov: zeros(), dim: zeros(),
-    green: new THREE.Color(GREEN),
+    accent: new THREE.Color(ACCENT),
     pastel: Array.from({ length: count }, (_, i) => new THREE.Color(serviceColor(i).hex)),
     tmp: { v: new THREE.Vector3(), f: new THREE.Vector3(), q: new THREE.Quaternion() },
   };

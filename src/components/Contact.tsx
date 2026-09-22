@@ -2,13 +2,13 @@ import { profile, techStack } from "@/data/portfolio";
 import Reveal from "./ui/Reveal";
 import Marquee from "./ui/Marquee";
 
-// Shared footer. `lean` is what the switchboard homepage uses: a flat violet
-// panel on the cream theme with the email as the one big action. The bio, the
+// Shared footer. `lean` is what the switchboard homepage uses: a flat orange
+// panel on the green theme with the email as the one big action. The bio, the
 // tech marquee and the second availability badge are dropped there because the
 // homepage already states availability once and says nothing twice. The full
 // (non-lean) block below is what the dark /dev and /video pages still use.
 
-// Focus ring that stays visible on the violet panel (the global ring is violet).
+// Focus ring that stays visible on the orange panel (the global ring is orange).
 const PILL_FOCUS = "focus-visible:outline-sun";
 
 function ArrowUpRight() {
@@ -24,7 +24,7 @@ function ArrowUpRight() {
 function TargetMark({ className }: { className: string }) {
   return (
     <svg aria-hidden viewBox="0 0 200 200" className={className}>
-      <circle cx="100" cy="100" r="100" fill="var(--color-surface-1)" opacity="0.18" />
+      <circle cx="100" cy="100" r="100" fill="var(--color-fg)" opacity="0.18" />
       <circle cx="100" cy="100" r="78" fill="var(--color-sky)" />
       <circle cx="100" cy="100" r="52" fill="var(--color-rose)" />
       <circle cx="100" cy="100" r="26" fill="var(--color-sun)" />
@@ -52,7 +52,7 @@ function OutPill({
       rel="noreferrer"
       data-unit={unit}
       aria-label={`${label} (${sr})`}
-      className={`inline-flex min-h-12 cursor-pointer items-center gap-2 rounded-full px-6 text-sm font-semibold text-fg transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${tone} ${PILL_FOCUS}`}
+      className={`inline-flex min-h-12 cursor-pointer items-center gap-2 rounded-full px-6 text-sm font-semibold text-pastel-ink transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${tone} ${PILL_FOCUS}`}
     >
       {label}
       <ArrowUpRight />
@@ -74,11 +74,11 @@ function LeanContact() {
               </span>
               <h2 className="mt-4 font-display text-[clamp(2.5rem,1.6rem+3.4vw,4.25rem)] font-normal leading-[1.16] tracking-[-0.01em]">
                 <span>Tell me what is broken, or </span>
-                <span className="rounded-2xl bg-sun px-3 text-fg [box-decoration-break:clone]">
+                <span className="rounded-2xl bg-sun px-3 text-pastel-ink [box-decoration-break:clone]">
                   what you want built.
                 </span>
               </h2>
-              <p className="t-lead mt-6 max-w-[54ch] text-surface-1/95">
+              <p className="t-lead mt-6 max-w-[54ch] text-fg/95">
                 Not sure which one? Describe the problem and I will tell you if it is mine to solve. Reply within a day, Indonesia time.
               </p>
 
@@ -86,7 +86,7 @@ function LeanContact() {
                 <a
                   href={`mailto:${profile.email}`}
                   data-unit="cta:email"
-                  className={`inline-flex min-h-14 max-w-full cursor-pointer items-center gap-3 rounded-full bg-sun px-6 text-base font-semibold text-fg transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:min-h-16 sm:px-8 sm:text-xl ${PILL_FOCUS}`}
+                  className={`inline-flex min-h-14 max-w-full cursor-pointer items-center gap-3 rounded-full bg-sun px-6 text-base font-semibold text-pastel-ink transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:min-h-16 sm:px-8 sm:text-xl ${PILL_FOCUS}`}
                 >
                   <span className="min-w-0 break-all">{profile.email}</span>
                   <ArrowUpRight />
@@ -96,12 +96,12 @@ function LeanContact() {
               </div>
 
               <ul className="mt-10 flex flex-wrap gap-2 text-[11px] font-semibold uppercase tracking-[0.1em] sm:text-xs sm:tracking-[0.12em]">
-                <li className="inline-flex items-center gap-2 rounded-full bg-mint px-3 py-2 text-fg sm:px-3.5">
-                  <span aria-hidden className="h-2 w-2 rounded-full bg-fg" />
+                <li className="inline-flex items-center gap-2 rounded-full bg-mint px-3 py-2 text-pastel-ink sm:px-3.5">
+                  <span aria-hidden className="h-2 w-2 rounded-full bg-pastel-ink" />
                   Available
                 </li>
-                <li className="rounded-full border border-surface-1/45 px-3 py-2 sm:px-3.5">Remote</li>
-                <li className="rounded-full border border-surface-1/45 px-3 py-2 sm:px-3.5">UTC+7</li>
+                <li className="rounded-full border border-fg/45 px-3 py-2 sm:px-3.5">Remote</li>
+                <li className="rounded-full border border-fg/45 px-3 py-2 sm:px-3.5">UTC+7</li>
               </ul>
             </div>
           </div>
@@ -254,7 +254,7 @@ function FullContact({
   );
 }
 
-// `hideHeading` only applies to the full block. The lean cream panel always
+// `hideHeading` only applies to the full block. The lean orange panel always
 // shows its heading: the heading is the point of the panel.
 export default function Contact({
   index = "09",
