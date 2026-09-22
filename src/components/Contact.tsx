@@ -1,6 +1,10 @@
+"use client";
+
+import { motion, useReducedMotion } from "framer-motion";
 import { profile, techStack } from "@/data/portfolio";
 import Reveal from "./ui/Reveal";
 import Marquee from "./ui/Marquee";
+import { SPRING, HOVER_SCALE, TAP_SCALE } from "./home/springs";
 
 // Shared footer. `lean` is what the switchboard homepage uses: a flat orange
 // panel on the green theme with the email as the one big action. The bio, the
@@ -45,22 +49,27 @@ function OutPill({
   label: string;
   sr: string;
 }) {
+  const reduce = useReducedMotion();
   return (
-    <a
+    <motion.a
       href={href}
       target="_blank"
       rel="noreferrer"
       data-unit={unit}
       aria-label={`${label} (${sr})`}
       className={`inline-flex min-h-12 cursor-pointer items-center gap-2 rounded-full px-6 text-sm font-semibold text-pastel-ink transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${tone} ${PILL_FOCUS}`}
+      whileHover={reduce ? undefined : HOVER_SCALE}
+      whileTap={reduce ? undefined : TAP_SCALE}
+      transition={SPRING}
     >
       {label}
       <ArrowUpRight />
-    </a>
+    </motion.a>
   );
 }
 
 function LeanContact() {
+  const reduce = useReducedMotion();
   return (
     <footer id="contact" className="relative">
       <div className="mx-auto w-full max-w-[1120px] px-6 pb-16 sm:pb-24 lg:px-8">
@@ -83,14 +92,17 @@ function LeanContact() {
               </p>
 
               <div className="mt-10 flex flex-wrap items-center gap-3">
-                <a
+                <motion.a
                   href={`mailto:${profile.email}`}
                   data-unit="cta:email"
                   className={`inline-flex min-h-14 max-w-full cursor-pointer items-center gap-3 rounded-full bg-sun px-6 text-base font-semibold text-pastel-ink transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:min-h-16 sm:px-8 sm:text-xl ${PILL_FOCUS}`}
+                  whileHover={reduce ? undefined : HOVER_SCALE}
+                  whileTap={reduce ? undefined : TAP_SCALE}
+                  transition={SPRING}
                 >
                   <span className="min-w-0 break-all">{profile.email}</span>
                   <ArrowUpRight />
-                </a>
+                </motion.a>
                 <OutPill href={profile.github} unit="cta:github" tone="bg-sky" label="GitHub" sr="opens in a new tab" />
                 <OutPill href={profile.linkedin} unit="cta:linkedin" tone="bg-rose" label="LinkedIn" sr="opens in a new tab" />
               </div>

@@ -1,10 +1,14 @@
 import { profile } from "@/data/portfolio";
-import Wordmark from "./Wordmark";
 import { stagger } from "./stagger";
 import s from "./home.module.css";
 
 const BUTTON =
   "inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full px-7 text-base font-semibold transition-colors";
+
+// One sentence sourced from profile.thesis's own wording (near-verbatim,
+// not a new claim): what "I deploy it as the engine" actually means.
+const SUPPORTING_LINE =
+  "Most people use Claude Code to write functions; I deploy it as the engine: always-on agents that observe, decide, and act in production.";
 
 function EnvelopeIcon() {
   return (
@@ -45,21 +49,27 @@ export default function Hero() {
     <section
       id="home"
       aria-labelledby="home-h"
-      className={`${s.wash} relative flex min-h-[100svh] flex-col px-4 pt-6 pb-[calc(6.5rem+env(safe-area-inset-bottom,0px))] sm:px-8 sm:pt-8`}
+      className="relative flex flex-col gap-10 px-4 pt-16 pb-16 sm:px-8 sm:pt-24 sm:pb-24"
     >
       <Tagline />
 
-      <div className="my-auto flex flex-col items-center py-10 text-center">
-        <Wordmark style={stagger(1)} />
-        <p
-          className={`${s.rise} mt-10 max-w-[34ch] text-balance text-lg text-fg sm:text-xl`}
-          style={stagger(2)}
+      <div className="flex flex-col items-start gap-6">
+        <h1
+          id="home-h"
+          className={`${s.rise} font-display max-w-[16ch] text-balance text-[clamp(3rem,10vw,7rem)] leading-[0.95] font-normal tracking-[-0.01em] text-accent`}
+          style={stagger(1)}
         >
           {profile.tagline}
+        </h1>
+        <p
+          className={`${s.rise} max-w-[46ch] text-base leading-relaxed text-dim sm:text-lg`}
+          style={stagger(2)}
+        >
+          {SUPPORTING_LINE}
         </p>
-        <div className={`${s.rise} mt-8 flex flex-wrap justify-center gap-3`} style={stagger(3)}>
+        <div className={`${s.rise} flex flex-wrap gap-3`} style={stagger(3)}>
           <a
-            href="#directory"
+            href="#work"
             data-unit="cta:work"
             className={`${BUTTON} bg-accent text-white hover:bg-[#8f3a0c]`}
           >

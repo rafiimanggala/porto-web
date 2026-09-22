@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import Section from "./ui/Section";
+import { SPRING, HOVER_SCALE, TAP_SCALE } from "./home/springs";
 
 // Accordion (APG, non-exclusive): each trigger toggles its own panel
 // independently. aria-expanded on the trigger, aria-controls -> panel id,
@@ -26,30 +28,29 @@ const FAQS = [
 // can see them.
 const PILL_TONES = ["bg-sun", "bg-sky", "bg-rose"];
 
-// Plus that becomes a minus: the vertical bar collapses when open.
+// Plus that becomes an X: the whole glyph springs 45deg open instead of the
+// vertical bar snapping away. Reduced motion still reaches the open state,
+// just without the spring (instant transition instead of skipping it).
 function Toggle({ open }: { open: boolean }) {
+  const reduce = useReducedMotion();
   return (
-    <span
+    <motion.span
       aria-hidden
       className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-surface-2 sm:h-11 sm:w-11"
+      animate={{ rotate: open ? 45 : 0 }}
+      transition={reduce ? { duration: 0 } : SPRING}
     >
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round">
         <path d="M5 12h14" />
-        <path
-          d="M12 5v14"
-          style={{
-            transformOrigin: "center",
-            transform: open ? "scaleY(0)" : "scaleY(1)",
-          }}
-          className="transition-transform duration-200 motion-reduce:transition-none"
-        />
+        <path d="M12 5v14" />
       </svg>
-    </span>
+    </motion.span>
   );
 }
 
 export default function FaqAccordion({ index }: { index: string }) {
   const [open, setOpen] = useState<number | null>(0);
+  const reduce = useReducedMotion();
 
   return (
     <Section id="faq" index={index} label="FAQ" title="Before you reach out">
@@ -64,13 +65,16 @@ export default function FaqAccordion({ index }: { index: string }) {
               }`}
             >
               <h3>
-                <button
+                <motion.button
                   type="button"
                   aria-expanded={isOpen}
                   aria-controls={`faq-panel-${i}`}
                   id={`faq-trigger-${i}`}
                   onClick={() => setOpen(isOpen ? null : i)}
                   className="flex min-h-[72px] w-full cursor-pointer items-center gap-3 rounded-3xl p-4 text-left focus-visible:outline-offset-[-4px] sm:gap-4 sm:p-5"
+                  whileHover={reduce ? undefined : HOVER_SCALE}
+                  whileTap={reduce ? undefined : TAP_SCALE}
+                  transition={SPRING}
                 >
                   <span
                     aria-hidden
@@ -82,7 +86,7 @@ export default function FaqAccordion({ index }: { index: string }) {
                     {item.q}
                   </span>
                   <Toggle open={isOpen} />
-                </button>
+                </motion.button>
               </h3>
               <div
                 id={`faq-panel-${i}`}

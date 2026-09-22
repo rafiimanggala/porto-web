@@ -1,28 +1,48 @@
 "use client";
 
 import Link from "next/link";
+import { motion, useReducedMotion } from "framer-motion";
 import RoleSwap from "@/components/ui/RoleSwap";
 import { DOCK_LINKS, WATCHED_SECTIONS, type DockLink } from "./sections";
 import { useActiveSection } from "./useActiveSection";
+import { SPRING, HOVER_SCALE, TAP_SCALE } from "./springs";
 
 const PILL =
   "flex min-h-11 items-center rounded-full px-3 text-[13px] font-semibold transition-colors duration-200 max-[359px]:px-2.5 sm:px-4 sm:text-sm";
 const IDLE = "text-fg hover:bg-surface-3";
 const ACTIVE = "bg-accent text-white";
 
+// next/link isn't a motion component on its own, so give it the same spring
+// hover/tap the plain-anchor pills get below.
+const MotionLink = motion.create(Link);
+
 function DockItem({ link, current }: { link: DockLink; current: boolean }) {
   const cls = `${PILL} ${current ? ACTIVE : IDLE}`;
+  const reduce = useReducedMotion();
   if (link.external) {
     return (
-      <Link href={link.href} className={cls}>
+      <MotionLink
+        href={link.href}
+        className={cls}
+        whileHover={reduce ? undefined : HOVER_SCALE}
+        whileTap={reduce ? undefined : TAP_SCALE}
+        transition={SPRING}
+      >
         {link.label}
-      </Link>
+      </MotionLink>
     );
   }
   return (
-    <a href={link.href} aria-current={current ? "location" : undefined} className={cls}>
+    <motion.a
+      href={link.href}
+      aria-current={current ? "location" : undefined}
+      className={cls}
+      whileHover={reduce ? undefined : HOVER_SCALE}
+      whileTap={reduce ? undefined : TAP_SCALE}
+      transition={SPRING}
+    >
       {link.label}
-    </a>
+    </motion.a>
   );
 }
 

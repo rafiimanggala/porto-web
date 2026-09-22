@@ -6,6 +6,7 @@ import ServiceOrbit from "@/components/orbit/ServiceOrbit";
 import Hero from "@/components/home/Hero";
 import Dock from "@/components/home/Dock";
 import DirectoryHead from "@/components/home/DirectoryHead";
+import WorkReel from "@/components/home/WorkReel";
 
 export const metadata: Metadata = {
   title: "Rafii Manggala · Web apps, AI features, automation",
@@ -19,6 +20,8 @@ export default function Home() {
   return (
     <main className="theme-green relative min-h-screen pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))]">
       <Hero />
+
+      <WorkReel />
 
       <section
         id="directory"

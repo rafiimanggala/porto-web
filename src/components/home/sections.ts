@@ -10,7 +10,7 @@ export type DockLink = {
 
 export const DOCK_LINKS: readonly DockLink[] = [
   { key: "home", label: "Home", href: "#home", sections: ["home"] },
-  { key: "work", label: "Work", href: "#directory", sections: ["directory"] },
+  { key: "work", label: "Work", href: "#work", sections: ["work", "directory"] },
   { key: "lab", label: "Lab", href: "/lab", external: true },
   { key: "contact", label: "Contact", href: "#contact", sections: ["faq", "contact"] },
 ];
