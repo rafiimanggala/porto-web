@@ -52,7 +52,7 @@ const CONTAIN_SLUGS = new Set(["education-saas", "health-platform"]);
 function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
   const captionTone = PILL_TONES[(index + 1) % PILL_TONES.length];
   return (
-    <div className="relative h-[calc(100svh-6.5rem)] w-full sm:h-[calc(100svh-9rem)]">
+    <div className="relative h-[calc(100svh-5rem)] w-full sm:h-[calc(100svh-6.5rem)]">
       <Image
         src={item.image.src}
         alt={item.image.alt}
@@ -85,7 +85,7 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
 function ContainCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
   const captionTone = PILL_TONES[(index + 1) % PILL_TONES.length];
   return (
-    <div className="flex h-[calc(100svh-6.5rem)] w-full flex-col sm:h-[calc(100svh-9rem)]">
+    <div className="flex h-[calc(100svh-5rem)] w-full flex-col sm:h-[calc(100svh-6.5rem)]">
       <div className="relative flex-1 bg-surface-1 p-10 sm:p-14">
         <Image src={item.image.src} alt={item.image.alt} fill sizes="90vw" className="object-contain p-10 sm:p-14" />
         <span
@@ -132,7 +132,14 @@ function StackCard({ item, index }: { item: WorkReelItem; index: number }) {
       className={`relative ${TRACK_H} ${index === 0 ? "" : REVEAL_PULL}`}
       style={{ zIndex: index + 1 }}
     >
-      <div className={`sticky top-0 ${STAGE_H} bg-bg px-1 pt-6 sm:pt-10`}>
+      {/* No top padding here: the card sits flush with the stage's own top
+          edge on purpose. A gap here would show as a band of flat green
+          background between the outgoing and incoming card mid-transition,
+          since the incoming stage's padding would be all a viewer sees for
+          a moment before the card itself arrives -- exactly the "green gap"
+          this was built to remove. Bottom clearance (Dock) still lives on
+          the card's own height below. */}
+      <div className={`sticky top-0 ${STAGE_H} bg-bg px-1`}>
         <Link
           href={`/work/${item.slug}`}
           data-unit={`work:${item.slug}`}
