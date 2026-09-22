@@ -144,14 +144,18 @@ const STAGE_H = "min-h-[100svh]";
 // interpolation from a shared numeric constant -- Tailwind's scanner reads
 // source text for a complete class token, and "min-h-[" + a variable +
 // "vh]" never appears as one token in the file, so an interpolated version
-// silently generates no CSS at all. REVEAL_PULL (130vh) is well past
-// STAGE_H's one viewport (100vh) so the next card locks a good 30vh before
-// the current one releases -- see the comment above for why that margin
-// matters. TRACK_H (200vh) keeps a real alone-on-screen dwell (70vh) before
-// the next card starts rising, so cards don't feel like they're covering
-// each other immediately on arrival.
-const TRACK_H = "min-h-[200vh]";
-const REVEAL_PULL = "-mt-[130vh]";
+// silently generates no CSS at all. REVEAL_PULL (120vh) stays past STAGE_H's
+// one viewport (100vh) so the next card still locks before the current one
+// releases (see the comment above). TRACK_H went 200vh -> 250vh because
+// 200vh only left ~70vh of the current card fully alone on screen before
+// the next one started peeking in at the very bottom -- barely any scroll,
+// so a new card was already visible almost as soon as the current one
+// settled, reading as "it just pops up" instead of a deliberate reveal.
+// 250vh gives a real alone stretch before the next card's top edge enters
+// the viewport at all, matching how long viens-la.com holds a single card
+// with nothing rising into it yet.
+const TRACK_H = "min-h-[250vh]";
+const REVEAL_PULL = "-mt-[120vh]";
 
 // Replaces the native pointer over a card with a circular "View" badge that
 // tracks the mouse, same move viens-la.com makes over its own project
