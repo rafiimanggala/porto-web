@@ -56,7 +56,18 @@ const CONTAIN_SLUGS = new Set(["education-saas", "health-platform"]);
 function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
   const captionTone = PILL_TONES[(index + 1) % PILL_TONES.length];
   return (
-    <div className="relative h-[calc(100svh-5rem)] w-full sm:h-[calc(100svh-6.5rem)]">
+    // Full 100svh, not shrunk to leave room for the floating Dock: the Dock is
+    // position:fixed with its own z-50, it already floats above every card
+    // regardless of the card's own height. A shorter card here used to leave
+    // a bare strip of stage background exposed at the bottom -- during a
+    // transition, that strip was tall enough to still show the OUTGOING
+    // card's own bottom-rounded corner peeking through under the incoming
+    // card's top-rounded corner, reading as two different roundings stacked
+    // instead of one clean cover. Filling the full stage means neighbouring
+    // cards' rounded rects line up exactly, so only one is ever visible at a
+    // time. Dock clearance now lives on the text block's own bottom inset
+    // instead (see below).
+    <div className="relative h-[100svh] w-full">
       <Image
         src={item.image.src}
         alt={item.image.alt}
@@ -77,7 +88,10 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
           only on hover/focus -- viens-la's own cards never show body copy on
           the face at all, ours keeps it as a hover flourish instead of
           dropping the content outright. */}
-      <div className="absolute inset-x-6 bottom-10 sm:inset-x-10 sm:bottom-14">
+      {/* bottom-[4.5rem] clears the Dock pill (measured ~58px tall + 12px
+          margin = ~70px live) with a little air to spare; sm bumps it further
+          since the pill itself grows on larger screens. */}
+      <div className="absolute inset-x-6 bottom-[4.5rem] sm:inset-x-10 sm:bottom-[5.5rem]">
         <h3 className="[font-family:var(--font-card-title)] text-[clamp(2.6rem,9vw,5.75rem)] leading-[0.9] tracking-[-0.01em] text-balance text-white uppercase">
           {item.title}
         </h3>
@@ -101,7 +115,12 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
 function ContainCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
   const captionTone = PILL_TONES[(index + 1) % PILL_TONES.length];
   return (
-    <div className="flex h-[calc(100svh-5rem)] w-full flex-col sm:h-[calc(100svh-6.5rem)]">
+    // Full 100svh for the same reason as CoverCard: the Dock floats above via
+    // its own position:fixed + z-50, so shrinking the card to dodge it was
+    // never necessary and only left a gap that exposed the previous card's
+    // rounded corner mid-transition. Dock clearance moves to the copy zone's
+    // own bottom padding instead.
+    <div className="flex h-[100svh] w-full flex-col">
       {/* Fixed height, not flex-1: these strips are ~7:1 (700x103/700x187), so
           object-contain already centers the raster inside its box, but a box
           that swallows every leftover pixel of the card leaves a huge dead
@@ -119,7 +138,7 @@ function ContainCard({ item, tone, index }: { item: WorkReelItem; tone: string; 
           {String(index + 1).padStart(2, "0")}
         </span>
       </div>
-      <div className="flex flex-1 flex-col justify-center bg-surface-2 p-6 sm:p-8">
+      <div className="flex flex-1 flex-col justify-center bg-surface-2 p-6 pb-[4.5rem] sm:p-8 sm:pb-[5.5rem]">
         <h3 className="[font-family:var(--font-card-title)] text-4xl leading-[0.9] tracking-[-0.01em] text-fg uppercase sm:text-6xl">
           {item.title}
         </h3>
@@ -200,8 +219,9 @@ function StackCard({ item, index }: { item: WorkReelItem; index: number }) {
     <li className={`relative ${TRACK_H} ${index === 0 ? "" : REVEAL_PULL}`} style={{ zIndex: index + 1 }}>
       {/* No top padding here: the card sits flush with the stage's own top
           edge on purpose -- a gap here would show as a band of flat green
-          background before the card itself arrives. Bottom clearance for
-          the floating Dock lives on the card's own height below instead. */}
+          background before the card itself arrives. No bottom gap either
+          now: the card fills the full stage (see CoverCard/ContainCard),
+          Dock clearance lives on each variant's own inner padding instead. */}
       <div className={`sticky top-0 ${STAGE_H} bg-bg px-1`}>
         <Link
           href={`/work/${item.slug}`}
