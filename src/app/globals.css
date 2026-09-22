@@ -119,6 +119,14 @@ html:has(.theme-green) body { background: #23473a; }
     scroll-behavior: smooth;
   }
 
+  /* Lenis (home page smooth-scroll) tags <html> with this once it mounts and
+     drives its own eased scroll loop; the CSS smooth-scroll above would then
+     fight it on every #anchor jump, so it steps aside once Lenis is active.
+     Standard Lenis setup, see components/home/SmoothScroll.tsx. */
+  html.lenis {
+    scroll-behavior: auto !important;
+  }
+
   body {
     background: var(--color-bg);
     color: var(--color-fg);
