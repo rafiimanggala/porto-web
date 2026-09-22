@@ -55,17 +55,18 @@
   --ease-in-out-quint: cubic-bezier(0.86, 0, 0.07, 1);
 }
 
-/* Home theme: warm cream, violet ink, pastel blocks, big rounded display type
-   (direction taken from the B3 reference). Scoped by a wrapper class, so the other
-   pages stay dark until they are redone. Promote by moving these onto :root. */
-.theme-cream {
+/* Home theme: near-white, violet ink, pastel blocks, big rounded display type
+   (direction taken from the B3 reference, background swapped off cream to a cool
+   off-white). Scoped by a wrapper class, so the other pages stay dark until they
+   are redone. Promote by moving these onto :root. */
+.theme-light {
   color-scheme: light;
-  --color-bg: #fbefdf;
-  --color-surface-1: #fff8ee;
+  --color-bg: #f6f5fb;
+  --color-surface-1: #ffffff;
   --color-surface-2: #ffffff;
-  --color-surface-3: #f5e3cc;
-  --color-line: rgba(36, 27, 75, 0.12);
-  --color-line-strong: rgba(36, 27, 75, 0.24);
+  --color-surface-3: #ece9f8;
+  --color-line: rgba(36, 27, 75, 0.1);
+  --color-line-strong: rgba(36, 27, 75, 0.2);
   --color-fg: #241b4b;
   --color-dim: #5b5382;
   --color-mute: #6f6893;
@@ -75,7 +76,7 @@
   background: var(--color-bg);
   color: var(--color-fg);
 }
-/* Dark island inside the cream theme (product mockups, previews). */
+/* Dark island inside the light theme (product mockups, previews). */
 .theme-dark {
   color-scheme: dark;
   --color-bg: #0a0a0b;
@@ -93,13 +94,13 @@
   color: var(--color-fg);
 }
 /* Overscroll and short pages show the body, so match it. */
-html:has(.theme-cream) body { background: #fbefdf; }
-.theme-cream .grid-backdrop {
+html:has(.theme-light) body { background: #f6f5fb; }
+.theme-light .grid-backdrop {
   background-image:
     linear-gradient(rgba(100, 72, 252, 0.07) 1px, transparent 1px),
     linear-gradient(90deg, rgba(100, 72, 252, 0.07) 1px, transparent 1px);
 }
-.theme-cream ::selection { background: color-mix(in oklab, var(--color-accent) 28%, transparent); color: var(--color-fg); }
+.theme-light ::selection { background: color-mix(in oklab, var(--color-accent) 28%, transparent); color: var(--color-fg); }
 
 @layer base {
   * {

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 // Section ids the floating dock relies on: #home (hero), #directory, #faq, #contact.
 export default function Home() {
   return (
-    <main className="theme-cream relative min-h-screen pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))]">
+    <main className="theme-light relative min-h-screen pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))]">
       <Hero />
 
       <section
