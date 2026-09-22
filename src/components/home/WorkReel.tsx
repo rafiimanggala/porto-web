@@ -1,9 +1,7 @@
 "use client";
 
-import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
 import { workReel, type WorkReelItem } from "@/data/workReel";
 
 // Header block, same language as DirectoryHead.tsx: a sun pastel label chip,
@@ -30,12 +28,15 @@ function WorkHead() {
 // Pastel index chip cycle, same tones the FAQ and orbit number pills use.
 const PILL_TONES = ["bg-sun", "bg-sky", "bg-rose", "bg-mint"] as const;
 
-// Tilted sticker caption, same role as viens-la.com's rotated pastel label
-// over its project photos: one concrete fact, not the title or blurb again.
-function CaptionChip({ text, tone }: { text: string; tone: string }) {
+// Flat pill under the title, same role as the small year/category tags on
+// viens-la.com's actual project cards: one concrete fact, sitting in normal
+// flow next to the title, not a rotated sticker floating over the photo
+// (that rotated-chip look came from a different section of their site, not
+// their project cards, per a frame-by-frame check of a live reference video).
+function FactPill({ text, tone }: { text: string; tone: string }) {
   return (
     <span
-      className={`absolute top-6 right-6 max-w-[15ch] -rotate-3 rounded-2xl px-4 py-2.5 text-xs font-semibold leading-snug text-pastel-ink shadow-[0_8px_20px_rgba(8,16,12,0.35)] sm:top-8 sm:right-8 sm:max-w-[18ch] sm:px-5 sm:py-3 sm:text-sm ${tone}`}
+      className={`inline-flex max-w-[26ch] rounded-full px-3.5 py-1.5 text-xs font-semibold leading-snug text-pastel-ink sm:text-sm ${tone}`}
     >
       {text}
     </span>
@@ -69,10 +70,12 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
       >
         {String(index + 1).padStart(2, "0")}
       </span>
-      <CaptionChip text={item.caption} tone={captionTone} />
       <div className="absolute inset-x-6 bottom-6 sm:inset-x-8 sm:bottom-8">
-        <h3 className="font-display text-2xl leading-[1.05] text-white sm:text-4xl">{item.title}</h3>
-        <p className="mt-3 max-w-[48ch] text-sm leading-relaxed text-white/80 sm:text-base">{item.blurb}</p>
+        <h3 className="font-display text-3xl leading-[0.95] text-white sm:text-6xl">{item.title}</h3>
+        <div className="mt-4">
+          <FactPill text={item.caption} tone={captionTone} />
+        </div>
+        <p className="mt-4 max-w-[48ch] text-sm leading-relaxed text-white/80 sm:text-base">{item.blurb}</p>
         <span className="mono mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-sun">
           View case study <span aria-hidden="true">&rarr;</span>
         </span>
@@ -95,10 +98,12 @@ function ContainCard({ item, tone, index }: { item: WorkReelItem; tone: string; 
         >
           {String(index + 1).padStart(2, "0")}
         </span>
-        <CaptionChip text={item.caption} tone={captionTone} />
       </div>
       <div className="bg-surface-2 p-6 sm:p-8">
         <h3 className="font-display text-2xl leading-[1.05] text-fg sm:text-4xl">{item.title}</h3>
+        <div className="mt-3">
+          <FactPill text={item.caption} tone={captionTone} />
+        </div>
         <p className="mt-3 max-w-[48ch] text-sm leading-relaxed text-dim sm:text-base">{item.blurb}</p>
         <span className="mono mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-accent">
           View case study <span aria-hidden="true">&rarr;</span>
@@ -114,72 +119,46 @@ function ContainCard({ item, tone, index }: { item: WorkReelItem; tone: string; 
 // edge. Every track after the first pulls up with a negative margin into the
 // previous track's tail: that overlap is what lets a card start rising into
 // view while the previous one is still fully stuck, so there's a real window
-// where both render at once. On top of that, each card (other than the last)
-// scales down a little -- 1 to 0.92 -- as its OWN track scrolls past, origin
-// pinned to its top edge so the top stays put and only the bottom recedes.
-// That's what makes it read as the outgoing card shrinking back into the
-// stack while the next one covers it, the viens-la.com reference's actual
-// motion, instead of the flat top:0-to-top:0 hand-off a same-size card gives,
-// which just looks like it gets shoved off-screen. Native document scroll
-// only throughout: no scroll-jacking, no wheel interception, sticky +
-// negative margin + a scroll-linked transform, not scroll position itself.
+// where both render at once, then the new one's higher z-index covers the
+// old one outright as its own track continues. No scale/shrink on the
+// outgoing card: a frame-by-frame check of viens-la.com's actual project
+// cards (not just the earlier screenshot) showed a straight cover, no
+// recede -- matching that instead of the initial guess. Native document
+// scroll only throughout: no scroll-jacking, no wheel interception, sticky +
+// negative margin, not scroll position read back into JS.
 const STAGE_H = "min-h-[100svh]";
-// Same value at every breakpoint (vh already scales with the viewport) so
-// the JS cover-start fraction below stays correct on mobile and desktop
-// instead of drifting between two Tailwind breakpoint variants. TRACK_H and
-// REVEAL_PULL must be literal strings, not built from TRACK_VH/REVEAL_VH via
-// template interpolation -- Tailwind's scanner reads source text for a
-// complete class token, and "min-h-[" + a variable + "vh]" never appears as
-// one token in the file, so an interpolated version silently generates no
-// CSS at all. Keep the numbers below equal to the ones inside these two
-// strings by hand.
-const TRACK_VH = 170;
-const REVEAL_VH = 55;
+// TRACK_H and REVEAL_PULL must be literal strings, not built via template
+// interpolation from a shared numeric constant -- Tailwind's scanner reads
+// source text for a complete class token, and "min-h-[" + a variable +
+// "vh]" never appears as one token in the file, so an interpolated version
+// silently generates no CSS at all. The 55vh pull must stay less than the
+// 170vh track so each card still gets a real dwell period before the next
+// one starts covering it.
 const TRACK_H = "min-h-[170vh]";
 const REVEAL_PULL = "-mt-[55vh]";
-const RECEDE_SCALE = 0.92;
-// Fraction of a card's OWN track scroll where the next card's negative
-// margin actually starts covering it -- shrink needs to start here, not
-// spread evenly across the whole track, or by the time covering is visible
-// the scale has barely moved (most of the range gets used up while the card
-// is still alone on screen, where a few-percent shrink isn't perceptible).
-const COVER_START = (TRACK_VH - REVEAL_VH) / TRACK_VH;
 
-function StackCard({ item, index, isLast }: { item: WorkReelItem; index: number; isLast: boolean }) {
+function StackCard({ item, index }: { item: WorkReelItem; index: number }) {
   const tone = PILL_TONES[index % PILL_TONES.length];
   const contain = CONTAIN_SLUGS.has(item.slug);
-  const trackRef = useRef<HTMLLIElement>(null);
-  const { scrollYProgress } = useScroll({ target: trackRef, offset: ["start start", "end start"] });
-  const scale = useTransform(
-    scrollYProgress,
-    [0, COVER_START, 1],
-    [1, 1, isLast ? 1 : RECEDE_SCALE],
-  );
 
   return (
-    <li
-      ref={trackRef}
-      className={`relative ${TRACK_H} ${index === 0 ? "" : REVEAL_PULL}`}
-      style={{ zIndex: index + 1 }}
-    >
+    <li className={`relative ${TRACK_H} ${index === 0 ? "" : REVEAL_PULL}`} style={{ zIndex: index + 1 }}>
       {/* No top padding here: the card sits flush with the stage's own top
           edge on purpose -- a gap here would show as a band of flat green
           background before the card itself arrives. Bottom clearance for
           the floating Dock lives on the card's own height below instead. */}
       <div className={`sticky top-0 ${STAGE_H} bg-bg px-1`}>
-        <motion.div style={{ scale, transformOrigin: "top center" }} className="w-full">
-          <Link
-            href={`/work/${item.slug}`}
-            data-unit={`work:${item.slug}`}
-            className="block w-full overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
-          >
-            {contain ? (
-              <ContainCard item={item} tone={tone} index={index} />
-            ) : (
-              <CoverCard item={item} tone={tone} index={index} />
-            )}
-          </Link>
-        </motion.div>
+        <Link
+          href={`/work/${item.slug}`}
+          data-unit={`work:${item.slug}`}
+          className="block w-full overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
+        >
+          {contain ? (
+            <ContainCard item={item} tone={tone} index={index} />
+          ) : (
+            <CoverCard item={item} tone={tone} index={index} />
+          )}
+        </Link>
       </div>
     </li>
   );
@@ -199,7 +178,7 @@ export default function WorkReel() {
       <WorkHead />
       <ol className="relative mt-10 list-none pl-0 sm:mt-16">
         {workReel.map((item, i) => (
-          <StackCard key={item.slug} item={item} index={i} isLast={i === workReel.length - 1} />
+          <StackCard key={item.slug} item={item} index={i} />
         ))}
       </ol>
     </section>
