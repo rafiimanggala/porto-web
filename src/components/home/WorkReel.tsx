@@ -71,15 +71,23 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
       >
         {String(index + 1).padStart(2, "0")}
       </span>
-      <div className="absolute inset-x-6 bottom-6 sm:inset-x-8 sm:bottom-8">
-        <h3 className="[font-family:var(--font-card-title)] text-[clamp(2rem,7vw,3.75rem)] leading-[0.92] tracking-[-0.01em] text-balance text-white uppercase">
+      {/* Resting state matches the b3 reference: title + one pill only, big
+          and with real bottom air, not jammed flush to the card edge. The
+          blurb and case-study link stay in the DOM for a11y/SEO but fade in
+          only on hover/focus -- viens-la's own cards never show body copy on
+          the face at all, ours keeps it as a hover flourish instead of
+          dropping the content outright. */}
+      <div className="absolute inset-x-6 bottom-10 sm:inset-x-10 sm:bottom-14">
+        <h3 className="[font-family:var(--font-card-title)] text-[clamp(2.6rem,9vw,5.75rem)] leading-[0.9] tracking-[-0.01em] text-balance text-white uppercase">
           {item.title}
         </h3>
-        <div className="mt-4">
+        <div className="mt-5">
           <FactPill text={item.caption} tone={captionTone} />
         </div>
-        <p className="mt-4 max-w-[48ch] text-sm leading-relaxed text-white/80 sm:text-base">{item.blurb}</p>
-        <span className="mono mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-sun">
+        <p className="mt-4 max-w-[48ch] text-sm leading-relaxed text-white/80 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 sm:text-base">
+          {item.blurb}
+        </p>
+        <span className="mono mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-sun opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
           View case study <span aria-hidden="true">&rarr;</span>
         </span>
       </div>
