@@ -3,6 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import {
+  motion,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
 import { workReel, type WorkReelItem } from "@/data/workReel";
 
 // Header block, same language as DirectoryHead.tsx: a sun pastel label chip,
@@ -72,7 +80,7 @@ const CONTAIN_SLUGS = new Set([
 function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
   const captionTone = PILL_TONES[(index + 1) % PILL_TONES.length];
   return (
-    // Fills its wrapper exactly -- see StackCard's padded wrapper div for
+    // Fills its wrapper exactly -- see ReelCard's padded wrapper div for
     // where the visible margin around this card actually comes from now.
     <div className="relative h-full w-full">
       <Image
@@ -156,45 +164,6 @@ function ContainCard({ item, tone, index }: { item: WorkReelItem; tone: string; 
   );
 }
 
-// One card in the stack. The sticky element is a full-viewport, opaque stage
-// (bg-bg, min-h-screen) -- not just the card itself -- so once a later card
-// locks to top:0 it blanks out every earlier one still underneath, edge to
-// edge. Every track after the first pulls up with a negative margin into the
-// previous track's tail, and that pull MUST be at least as tall as the stage
-// itself (one viewport): a sticky card only locks once scroll reaches its
-// OWN track's start, and it releases once scroll passes (track height minus
-// stage height) into that same track. With a pull shorter than the stage
-// height, the next card's lock point lands AFTER the current card's release
-// point -- a real gap where neither card is locked, both just scroll past
-// like plain content, which reads as the old card being shoved off rather
-// than covered (verified live: sampling getBoundingClientRect() through a
-// full scroll found stretches with zero cards locked). Pulling up by more
-// than the stage height, instead, makes the next card lock WHILE the current
-// one is still locked, so there's a real window where the new one (higher
-// z-index) sits flush over the old one before the old one even starts to
-// release -- that's the actual cover. No scale/shrink on the outgoing card:
-// a frame-by-frame check of viens-la.com's actual project cards showed a
-// straight cover, no recede. Native document scroll only throughout: no
-// scroll-jacking, no wheel interception, sticky + negative margin, not
-// scroll position read back into JS.
-const STAGE_H = "min-h-[100svh]";
-// TRACK_H and REVEAL_PULL must be literal strings, not built via template
-// interpolation from a shared numeric constant -- Tailwind's scanner reads
-// source text for a complete class token, and "min-h-[" + a variable +
-// "vh]" never appears as one token in the file, so an interpolated version
-// silently generates no CSS at all. REVEAL_PULL (120vh) stays past STAGE_H's
-// one viewport (100vh) so the next card still locks before the current one
-// releases (see the comment above). TRACK_H went 200vh -> 250vh because
-// 200vh only left ~70vh of the current card fully alone on screen before
-// the next one started peeking in at the very bottom -- barely any scroll,
-// so a new card was already visible almost as soon as the current one
-// settled, reading as "it just pops up" instead of a deliberate reveal.
-// 250vh gives a real alone stretch before the next card's top edge enters
-// the viewport at all, matching how long viens-la.com holds a single card
-// with nothing rising into it yet.
-const TRACK_H = "min-h-[250vh]";
-const REVEAL_PULL = "-mt-[120vh]";
-
 // Replaces the native pointer over a card with a circular "View" badge that
 // tracks the mouse, same move viens-la.com makes over its own project
 // photos. Position is relative to the card itself (set from the Link's own
@@ -212,122 +181,180 @@ function CardCursor({ x, y, visible }: { x: number; y: number; visible: boolean 
   );
 }
 
-function StackCard({ item, index }: { item: WorkReelItem; index: number }) {
+// How much of the PREVIOUS card's slot the incoming card spends easing in
+// (translateY + rotate, from off-screen-below to settled). The remainder of
+// that slot is the outgoing card's alone-on-screen stretch before the next
+// one starts rising into view -- matches how long viens-la.com holds a
+// single card with nothing rising into it yet (same intent the old
+// TRACK_H/REVEAL_PULL split served, just expressed as a fraction of one
+// shared progress value instead of two separate CSS lengths).
+const ARRIVE_FRACTION = 0.55;
+// Scale every card eases toward once it starts receding, at progress = 1
+// (the very end of the whole reel). A card almost never actually reaches
+// this scale while still visible -- it gets covered by the next arrival
+// first -- so this is a target rate, not a value any card visibly hits.
+// Viens-la.com's own measured recede rate (~-0.0000574 scale/px) doesn't
+// port literally: that number is scaled to THEIR total virtual-scroll
+// height (25485px), which has no equivalent here. What transfers is the
+// shape -- constant shrink while pinned, still fully visible underneath the
+// next card during its arrival -- not the literal constant.
+const MIN_SCALE = 0.82;
+
+// One card in the reel. Position/rotation/scale all come from ONE shared
+// scroll-progress value (see WorkReel below) instead of each card owning
+// its own independent sticky element -- that's what makes the outgoing
+// card's shrink-while-still-visible possible: with N separate sticky boxes
+// each locking to the SAME top:0, there's no way for an earlier one to stay
+// on screen, smaller, once a later one has locked over it (it's either
+// fully covered by the later box's opaque stage, or it isn't locked yet --
+// nothing in between). A single stage with every card absolutely positioned
+// inside it, stacked by DOM order, can hold that in-between state: the
+// later card animates in on top while the earlier one is still fully
+// painted underneath, just progressively smaller.
+function ReelCard({
+  item,
+  index,
+  count,
+  progress,
+}: {
+  item: WorkReelItem;
+  index: number;
+  count: number;
+  progress: MotionValue<number>;
+}) {
   const tone = PILL_TONES[index % PILL_TONES.length];
   const contain = CONTAIN_SLUGS.has(item.slug);
   const [cursor, setCursor] = useState({ x: 0, y: 0, visible: false });
 
-  // Every card after the first stays invisible until its own sticky stage has
-  // actually locked to top:0 -- see the scroll-driven check below for why.
-  // Card 0 has nothing to hide behind, so it's just always on.
-  const [locked, setLocked] = useState(index === 0);
-  const stageRef = useRef<HTMLDivElement>(null);
+  const slot = 1 / count;
+  const start = index * slot;
+  const nextStart = index === count - 1 ? 1 : (index + 1) * slot;
+  // Card 0 has nothing to arrive from -- it's the resting state from the
+  // very first frame of the pin. Every other card eases in across the back
+  // half (ARRIVE_FRACTION) of the slot before its own, landing exactly at
+  // `start`, which is also the instant the card before it starts receding.
+  const arriveFrom = index === 0 ? -1 : start - slot * ARRIVE_FRACTION;
+  const arriveTo = index === 0 ? -0.999 : start;
 
-  useEffect(() => {
-    if (index === 0) return;
-    const el = stageRef.current;
-    if (!el) return;
-    // position:sticky only controls WHERE a box sits, not WHEN it's allowed
-    // to paint -- a not-yet-locked card is still a normal, fully painted box
-    // at its natural (pre-lock) scroll position, and because every later
-    // card carries a permanently higher z-index (see the li below), the
-    // moment any sliver of that box scrolls into the viewport it paints over
-    // the current card's own bg-bg frame, well before the intended snap-cover
-    // moment -- reads as a green gap with the next card's edge poking through
-    // it (caught live via a mid-scroll screenshot + getBoundingClientRect
-    // sampling, not just DOM math). A pull tall enough to avoid the OLD
-    // "neither card locked" gap (see TRACK_H/REVEAL_PULL comment) does
-    // nothing for this -- it's a completely different failure mode: too much
-    // paint, not too little layout.
-    // First attempt was a 0-size sentinel + IntersectionObserver with
-    // `rootMargin: "0px 0px -100% 0px"` (collapses the root to a 1px line at
-    // the viewport's top edge) -- edge-triggered, so it only fires while the
-    // sentinel is caught crossing that line at the moment the browser happens
-    // to check. A single instant `scrollTo` jump (or, live, a fast momentum
-    // flick) can carry a 1px target straight past a 1px line between two
-    // observations with zero overlap ever recorded, so it never fires at all
-    // -- worse than the bug it was fixing (verified: forced an instant jump
-    // past the lock point, `visibility` stayed "hidden" indefinitely).
-    // Fix: level-triggered instead of edge-triggered. Read this stage's own
-    // `getBoundingClientRect().top` directly on every scroll frame -- since
-    // it's the actual sticky element, that rect always reflects its current
-    // locked/unlocked position, however far or fast the scroll jumped to get
-    // there, so there's no crossing to miss. rAF-throttled so it costs at
-    // most one layout read per frame regardless of scroll event frequency.
-    let raf = 0;
-    const check = () => {
-      raf = 0;
-      setLocked(el.getBoundingClientRect().top <= 0.5);
-    };
-    const onScroll = () => {
-      if (raf) return;
-      raf = requestAnimationFrame(check);
-    };
-    check();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, [index]);
+  // 100vh, not some smaller nudge: the stage clips anything outside its own
+  // box (see Reel's `overflow-hidden` below), and only that guarantees full
+  // clipping regardless of how tall the padded card itself is -- caught
+  // live: an earlier 46vh offset left every not-yet-arrived card (not just
+  // the one actually arriving) peeking from the bottom edge at once, since
+  // 46vh wasn't enough to clear a card almost as tall as the stage.
+  const y = useTransform(progress, [arriveFrom, arriveTo], ["100vh", "0vh"], { clamp: true });
+  const rotate = useTransform(progress, [arriveFrom, arriveTo], [-5, 0], { clamp: true });
+  const scale = useTransform(progress, [start, 1], [1, MIN_SCALE], { clamp: true });
+  // A MotionValue written straight into `style`, not React state -- this
+  // updates on every scroll frame without a re-render, and framer-motion
+  // applies non-animatable string values (like "pointerEvents") as a plain
+  // assignment rather than trying to interpolate them.
+  const pointerEvents = useTransform(progress, (v) => (v >= start && v < nextStart ? "auto" : "none"));
+
+  // tabIndex/aria-hidden are real DOM attributes, not styles, so they can't
+  // ride a MotionValue directly -- mirror the same front/back test into
+  // React state, but only re-render on the two frames where it actually
+  // flips (React bails out a same-value setState), not every scroll frame.
+  const [interactive, setInteractive] = useState(index === 0);
+  useMotionValueEvent(progress, "change", (v) => {
+    const active = v >= start && v < nextStart;
+    setInteractive((prev) => (prev === active ? prev : active));
+  });
 
   return (
-    <li className={`relative ${TRACK_H} ${index === 0 ? "" : REVEAL_PULL}`} style={{ zIndex: index + 1 }}>
-      {/* The sticky stage itself stays exactly one viewport, edge to edge, no
-          padding -- that's what the cover mechanic above depends on: whichever
-          stage is on top must blank out 100% of the one under it with zero
-          gaps, or a sliver of whatever's behind shows through. An earlier
-          version put the visible margin here as padding/flex-centering on
-          THIS element, which shrank the card to less than the stage -- during
-          the transition, the incoming stage's own top margin and the outgoing
-          card's own bottom margin both exposed bg-bg at once, summing into a
-          visible hole between the two cards (caught live: a mid-scroll
-          screenshot showed the cards as two disconnected floating boxes, not
-          a clean cover). Moving the margin one level down, as padding inside
-          this always-full-stage wrapper, keeps the outer covering rectangle
-          exactly stage-sized at every scroll position while still framing the
-          card with real bg-bg space on all sides in the resting view -- the
-          margin is cosmetic padding now, not a gap between separate elements.
-          `visibility` (not opacity/display) hides it pre-lock: keeps its
-          layout box intact for the sticky math above, drops it from the a11y
-          tree and tab order while hidden (it wasn't reachable as a real card
-          yet anyway), and costs nothing extra to paint. */}
-      <div
-        ref={stageRef}
-        className={`sticky top-0 ${STAGE_H} bg-bg`}
-        style={{ visibility: locked ? "visible" : "hidden" }}
+    <motion.div
+      className="absolute inset-0 px-[3vw] py-[12vh] sm:px-[6vw] lg:px-[10vw]"
+      style={{ y, rotate, scale, pointerEvents, zIndex: index + 1 }}
+    >
+      <Link
+        href={`/work/${item.slug}`}
+        data-unit={`work:${item.slug}`}
+        tabIndex={interactive ? 0 : -1}
+        aria-hidden={!interactive}
+        className="group relative block h-full w-full cursor-none overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
+        onMouseMove={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          setCursor({ x: e.clientX - rect.left, y: e.clientY - rect.top, visible: true });
+        }}
+        onMouseLeave={() => setCursor((c) => ({ ...c, visible: false }))}
       >
-        <div className="h-[100svh] w-full bg-bg px-[3vw] py-[12vh] sm:px-[6vw] lg:px-[10vw]">
-          <Link
-            href={`/work/${item.slug}`}
-            data-unit={`work:${item.slug}`}
-            className="group relative block h-full w-full cursor-none overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
-            onMouseMove={(e) => {
-              const rect = e.currentTarget.getBoundingClientRect();
-              setCursor({ x: e.clientX - rect.left, y: e.clientY - rect.top, visible: true });
-            }}
-            onMouseLeave={() => setCursor((c) => ({ ...c, visible: false }))}
-          >
-            {contain ? (
-              <ContainCard item={item} tone={tone} index={index} />
-            ) : (
-              <CoverCard item={item} tone={tone} index={index} />
-            )}
-            <CardCursor x={cursor.x} y={cursor.y} visible={cursor.visible} />
-          </Link>
-        </div>
-      </div>
-    </li>
+        {contain ? (
+          <ContainCard item={item} tone={tone} index={index} />
+        ) : (
+          <CoverCard item={item} tone={tone} index={index} />
+        )}
+        <CardCursor x={cursor.x} y={cursor.y} visible={cursor.visible} />
+      </Link>
+    </motion.div>
   );
 }
 
-// Portfolio work, scroll-revealed like the B3 reference: real project cards
-// that stack as you scroll, each new one covering the last. Works the same
-// way on mobile and desktop -- sticky positioning needs no capability gate,
-// unlike the pointer-hover interactions elsewhere on the page.
+// Total scroll length the pin holds open, as a fraction of one viewport per
+// card. 145vh per card (1015vh total across 7 cards) keeps roughly the same
+// overall reel length the old TRACK_H(250vh)/REVEAL_PULL(-120vh) pair
+// produced (net ~130vh advance per card after the first), just expressed as
+// one number instead of two that had to stay in a specific relationship.
+const SLOT_VH = 145;
+
+function Reel({ items }: { items: WorkReelItem[] }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
+
+  return (
+    <div ref={containerRef} className="relative" style={{ height: `${items.length * SLOT_VH}vh` }}>
+      <div className="sticky top-0 h-[100svh] w-full overflow-hidden bg-bg">
+        {items.map((item, i) => (
+          <ReelCard key={item.slug} item={item} index={i} count={items.length} progress={scrollYProgress} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Touch / reduced-motion fallback: the pin + shared-progress mechanic above
+// is driven entirely by framer-motion reading scroll position in JS, unlike
+// the old per-card CSS-sticky version, which needed no capability gate at
+// all. Trading that away for the recede-behind-the-next-card look (only
+// possible with one shared stage, see ReelCard above) means picking it back
+// up here -- same convention StickyStack uses in Featured.tsx: no pin, no
+// scroll-linked transform, just the cards in plain document flow.
+function PlainStack({ items }: { items: WorkReelItem[] }) {
+  return (
+    <ol className="mt-10 list-none space-y-6 pl-0 sm:mt-16">
+      {items.map((item, i) => {
+        const tone = PILL_TONES[i % PILL_TONES.length];
+        const contain = CONTAIN_SLUGS.has(item.slug);
+        return (
+          <li key={item.slug} className="h-[80svh] w-full px-[3vw] sm:px-[6vw] lg:px-[10vw]">
+            <Link
+              href={`/work/${item.slug}`}
+              data-unit={`work:${item.slug}`}
+              className="group relative block h-full w-full overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
+            >
+              {contain ? (
+                <ContainCard item={item} tone={tone} index={i} />
+              ) : (
+                <CoverCard item={item} tone={tone} index={i} />
+              )}
+            </Link>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+// Portfolio work, scroll-revealed like the b3 reference: real project cards
+// that stack as you scroll, each new one arriving over the last and the
+// last one still visible, smaller, behind it -- not a hard cut.
 export default function WorkReel() {
+  const reduce = useReducedMotion();
+  const [animated, setAnimated] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+    setAnimated(mq.matches && !reduce);
+  }, [reduce]);
+
   return (
     <section
       id="work"
@@ -335,11 +362,13 @@ export default function WorkReel() {
       className="mx-auto w-full max-w-[1440px] scroll-mt-4 px-6 pt-16 pb-24 sm:pt-24 lg:px-10 lg:pb-32"
     >
       <WorkHead />
-      <ol className="relative mt-10 list-none pl-0 sm:mt-16">
-        {workReel.map((item, i) => (
-          <StackCard key={item.slug} item={item} index={i} />
-        ))}
-      </ol>
+      {animated ? (
+        <div className="mt-10 sm:mt-16">
+          <Reel items={workReel} />
+        </div>
+      ) : (
+        <PlainStack items={workReel} />
+      )}
     </section>
   );
 }
