@@ -56,18 +56,16 @@ const CONTAIN_SLUGS = new Set(["education-saas", "health-platform"]);
 function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
   const captionTone = PILL_TONES[(index + 1) % PILL_TONES.length];
   return (
-    // Full 100svh, not shrunk to leave room for the floating Dock: the Dock is
-    // position:fixed with its own z-50, it already floats above every card
-    // regardless of the card's own height. A shorter card here used to leave
-    // a bare strip of stage background exposed at the bottom -- during a
-    // transition, that strip was tall enough to still show the OUTGOING
-    // card's own bottom-rounded corner peeking through under the incoming
-    // card's top-rounded corner, reading as two different roundings stacked
-    // instead of one clean cover. Filling the full stage means neighbouring
-    // cards' rounded rects line up exactly, so only one is ever visible at a
-    // time. Dock clearance now lives on the text block's own bottom inset
-    // instead (see below).
-    <div className="relative h-[100svh] w-full">
+    // Card at 76svh, centered inside its 100svh stage by the stage's own
+    // flex centering (see StackCard) -- measured off the viens-la reference
+    // itself: their project card sits inset with a real, roughly even gap of
+    // page background above and below it (~10% of viewport height each
+    // side), not edge to edge. An earlier version filled the full 100svh to
+    // dodge the floating Dock, but that read as a different, flatter layout
+    // than the reference and wasn't what was being asked for -- the actual
+    // fix for the Dock was centering both sides evenly (a symmetric gap
+    // reads as deliberate framing) rather than removing the gap outright.
+    <div className="relative h-[76svh] w-full">
       <Image
         src={item.image.src}
         alt={item.image.alt}
@@ -87,11 +85,10 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
           blurb and case-study link stay in the DOM for a11y/SEO but fade in
           only on hover/focus -- viens-la's own cards never show body copy on
           the face at all, ours keeps it as a hover flourish instead of
-          dropping the content outright. */}
-      {/* bottom-[4.5rem] clears the Dock pill (measured ~58px tall + 12px
-          margin = ~70px live) with a little air to spare; sm bumps it further
-          since the pill itself grows on larger screens. */}
-      <div className="absolute inset-x-6 bottom-[4.5rem] sm:inset-x-10 sm:bottom-[5.5rem]">
+          dropping the content outright. No Dock-specific inset needed here
+          any more: the card itself now ends well above the Dock (see the
+          76svh height above), so ordinary bottom air is already clear of it. */}
+      <div className="absolute inset-x-6 bottom-10 sm:inset-x-10 sm:bottom-14">
         <h3 className="[font-family:var(--font-card-title)] text-[clamp(2.6rem,9vw,5.75rem)] leading-[0.9] tracking-[-0.01em] text-balance text-white uppercase">
           {item.title}
         </h3>
@@ -115,12 +112,8 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
 function ContainCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
   const captionTone = PILL_TONES[(index + 1) % PILL_TONES.length];
   return (
-    // Full 100svh for the same reason as CoverCard: the Dock floats above via
-    // its own position:fixed + z-50, so shrinking the card to dodge it was
-    // never necessary and only left a gap that exposed the previous card's
-    // rounded corner mid-transition. Dock clearance moves to the copy zone's
-    // own bottom padding instead.
-    <div className="flex h-[100svh] w-full flex-col">
+    // 76svh, centered in its stage -- same reasoning as CoverCard above.
+    <div className="flex h-[76svh] w-full flex-col">
       {/* Fixed height, not flex-1: these strips are ~7:1 (700x103/700x187), so
           object-contain already centers the raster inside its box, but a box
           that swallows every leftover pixel of the card leaves a huge dead
@@ -138,7 +131,7 @@ function ContainCard({ item, tone, index }: { item: WorkReelItem; tone: string; 
           {String(index + 1).padStart(2, "0")}
         </span>
       </div>
-      <div className="flex flex-1 flex-col justify-center bg-surface-2 p-6 pb-[4.5rem] sm:p-8 sm:pb-[5.5rem]">
+      <div className="flex flex-1 flex-col justify-center bg-surface-2 p-6 sm:p-8">
         <h3 className="[font-family:var(--font-card-title)] text-4xl leading-[0.9] tracking-[-0.01em] text-fg uppercase sm:text-6xl">
           {item.title}
         </h3>
@@ -217,15 +210,14 @@ function StackCard({ item, index }: { item: WorkReelItem; index: number }) {
 
   return (
     <li className={`relative ${TRACK_H} ${index === 0 ? "" : REVEAL_PULL}`} style={{ zIndex: index + 1 }}>
-      {/* No padding on any edge: the card sits flush with the stage's own
-          box on all four sides on purpose. A horizontal inset here (an
-          earlier px-1) left a permanent sliver of the stage's own bg-bg
-          (a dark green) running down both edges of every card, full
-          height -- visible as a thin green rectangle peeking out from
-          behind the card rather than a clean edge-to-edge cover. Removing
-          it makes the card exactly fill the stage, so no stage background
-          is ever exposed except through the card's own rounded corners. */}
-      <div className={`sticky top-0 ${STAGE_H} bg-bg`}>
+      {/* No horizontal padding here: an earlier px-1 left a permanent sliver
+          of the stage's own bg-bg (a dark green) running down both edges of
+          every card, full height. The vertical gap above/below the card is
+          real on purpose now (see CoverCard/ContainCard's 76svh height) --
+          flex-centering it here is what keeps that gap even on both sides,
+          matching how the viens-la reference frames its own project card
+          instead of running it edge to edge. */}
+      <div className={`sticky top-0 ${STAGE_H} flex items-center justify-center bg-bg`}>
         <Link
           href={`/work/${item.slug}`}
           data-unit={`work:${item.slug}`}
