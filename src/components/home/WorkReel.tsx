@@ -217,12 +217,15 @@ function StackCard({ item, index }: { item: WorkReelItem; index: number }) {
 
   return (
     <li className={`relative ${TRACK_H} ${index === 0 ? "" : REVEAL_PULL}`} style={{ zIndex: index + 1 }}>
-      {/* No top padding here: the card sits flush with the stage's own top
-          edge on purpose -- a gap here would show as a band of flat green
-          background before the card itself arrives. No bottom gap either
-          now: the card fills the full stage (see CoverCard/ContainCard),
-          Dock clearance lives on each variant's own inner padding instead. */}
-      <div className={`sticky top-0 ${STAGE_H} bg-bg px-1`}>
+      {/* No padding on any edge: the card sits flush with the stage's own
+          box on all four sides on purpose. A horizontal inset here (an
+          earlier px-1) left a permanent sliver of the stage's own bg-bg
+          (a dark green) running down both edges of every card, full
+          height -- visible as a thin green rectangle peeking out from
+          behind the card rather than a clean edge-to-edge cover. Removing
+          it makes the card exactly fill the stage, so no stage background
+          is ever exposed except through the card's own rounded corners. */}
+      <div className={`sticky top-0 ${STAGE_H} bg-bg`}>
         <Link
           href={`/work/${item.slug}`}
           data-unit={`work:${item.slug}`}
