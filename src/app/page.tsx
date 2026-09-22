@@ -7,7 +7,6 @@ import Hero from "@/components/home/Hero";
 import Dock from "@/components/home/Dock";
 import DirectoryHead from "@/components/home/DirectoryHead";
 import WorkReel from "@/components/home/WorkReel";
-import SmoothScroll from "@/components/home/SmoothScroll";
 
 export const metadata: Metadata = {
   title: "Rafii Manggala · Web apps, AI features, automation",
@@ -20,7 +19,6 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <main className="theme-green relative min-h-screen pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))]">
-      <SmoothScroll />
       <Hero />
 
       <WorkReel />
