@@ -10,6 +10,10 @@ export type WorkReelItem = {
   slug: string;
   title: string;
   blurb: string;
+  // Short factual highlight for the tilted sticker chip on the card art --
+  // same role as viens-la.com's "Partenaire digital de Maison Ferrand depuis
+  // 5 ans" caption: one concrete number or fact, not a restatement of blurb.
+  caption: string;
   image: {
     src: string;
     width: number;
@@ -24,6 +28,7 @@ export const workReel: WorkReelItem[] = [
     title: "AI Video Production at Scale",
     blurb:
       "600+ AI-generated and AI-edited video and image assets across 14 client accounts: UGC ad avatars, 2D and 3D character animation, cinematic b-roll, product film, and scripted scenes.",
+    caption: "600+ assets across 14 client accounts",
     image: {
       src: "/work/ai-video-production/10-scope-crowd.jpg",
       width: 960,
@@ -36,6 +41,7 @@ export const workReel: WorkReelItem[] = [
     title: "Content Automation Pipeline",
     blurb:
       "A self-hosted n8n instance that scrapes source content, generates video scripts and voiceover with AI, and publishes to TikTok and Instagram on a schedule.",
+    caption: "Self-hosted, zero manual posting",
     image: {
       src: "/work/content-automation-pipeline/01-video-workflow.png",
       width: 1600,
@@ -48,6 +54,7 @@ export const workReel: WorkReelItem[] = [
     title: "K-12 Education SaaS",
     blurb:
       "A curriculum-aligned learning platform for schools: quiz engine, AI-generated performance insights, and production debugging at scale.",
+    caption: "Live in production for real schools",
     image: {
       src: "/work/education-saas/quiz-engine-thumb.webp",
       width: 700,
@@ -60,6 +67,7 @@ export const workReel: WorkReelItem[] = [
     title: "Health Optimisation Platform",
     blurb:
       "A health web app that reconciles biomarkers, DNA, DEXA scans and wearables into one clinical scoring system, then explains it in plain English.",
+    caption: "4 data sources, one clinical score",
     image: {
       src: "/work/health-platform/score-panel-thumb.webp",
       width: 700,
@@ -72,6 +80,7 @@ export const workReel: WorkReelItem[] = [
     title: "Made-to-Measure Shopify Platform",
     blurb:
       "A body-measurement pattern-fitting system built into a Shopify theme, plus ten Klaviyo flows that replaced every default transactional email.",
+    caption: "10 Klaviyo flows, every default email replaced",
     image: {
       src: "/work/made-to-measure-shopify/storefront-collection.webp",
       width: 1600,
@@ -84,6 +93,7 @@ export const workReel: WorkReelItem[] = [
     title: "Spotter ELD",
     blurb:
       "Turning a regulated, error-prone task (truck route planning and Hours-of-Service logs) into one calm screen.",
+    caption: "Regulated compliance work, one calm screen",
     image: {
       src: "/work/spotter-eld/01-landing.png",
       width: 1280,
@@ -96,6 +106,7 @@ export const workReel: WorkReelItem[] = [
     title: "Streak",
     blurb:
       "Designing a warm, encouraging habit tracker: research, user flow, design system, and a clickable prototype.",
+    caption: "Research to clickable prototype, solo",
     image: {
       src: "/work/streak/d-home.png",
       width: 1340,

@@ -28,6 +28,18 @@ function WorkHead() {
 // Pastel index chip cycle, same tones the FAQ and orbit number pills use.
 const PILL_TONES = ["bg-sun", "bg-sky", "bg-rose", "bg-mint"] as const;
 
+// Tilted sticker caption, same role as viens-la.com's rotated pastel label
+// over its project photos: one concrete fact, not the title or blurb again.
+function CaptionChip({ text, tone }: { text: string; tone: string }) {
+  return (
+    <span
+      className={`absolute top-6 right-6 max-w-[15ch] -rotate-3 rounded-2xl px-4 py-2.5 text-xs font-semibold leading-snug text-pastel-ink shadow-[0_8px_20px_rgba(8,16,12,0.35)] sm:top-8 sm:right-8 sm:max-w-[18ch] sm:px-5 sm:py-3 sm:text-sm ${tone}`}
+    >
+      {text}
+    </span>
+  );
+}
+
 // education-saas and health-platform are pre-cropped thin strips, not full
 // screenshots -- a full-bleed cover crop would mangle them further, so those
 // two render on a padded surface zone with object-contain instead of the
@@ -38,8 +50,9 @@ const CONTAIN_SLUGS = new Set(["education-saas", "health-platform"]);
 // dark gradient over the image, same layout the viens-la.com reference uses
 // for its project cards.
 function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
+  const captionTone = PILL_TONES[(index + 1) % PILL_TONES.length];
   return (
-    <div className="relative aspect-[4/3] w-full sm:aspect-[16/10]">
+    <div className="relative h-[calc(100svh-6.5rem)] w-full sm:h-[calc(100svh-9rem)]">
       <Image
         src={item.image.src}
         alt={item.image.alt}
@@ -54,6 +67,7 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
       >
         {String(index + 1).padStart(2, "0")}
       </span>
+      <CaptionChip text={item.caption} tone={captionTone} />
       <div className="absolute inset-x-6 bottom-6 sm:inset-x-8 sm:bottom-8">
         <h3 className="font-display text-2xl leading-[1.05] text-white sm:text-4xl">{item.title}</h3>
         <p className="mt-3 max-w-[48ch] text-sm leading-relaxed text-white/80 sm:text-base">{item.blurb}</p>
@@ -69,8 +83,9 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
 // and uncropped on its own surface, copy sits below on a solid surface, no
 // gradient-over-photo trick needed since there's no full photo to gradient.
 function ContainCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
+  const captionTone = PILL_TONES[(index + 1) % PILL_TONES.length];
   return (
-    <div className="flex aspect-[4/3] w-full flex-col sm:aspect-[16/10]">
+    <div className="flex h-[calc(100svh-6.5rem)] w-full flex-col sm:h-[calc(100svh-9rem)]">
       <div className="relative flex-1 bg-surface-1 p-10 sm:p-14">
         <Image src={item.image.src} alt={item.image.alt} fill sizes="90vw" className="object-contain p-10 sm:p-14" />
         <span
@@ -78,6 +93,7 @@ function ContainCard({ item, tone, index }: { item: WorkReelItem; tone: string; 
         >
           {String(index + 1).padStart(2, "0")}
         </span>
+        <CaptionChip text={item.caption} tone={captionTone} />
       </div>
       <div className="bg-surface-2 p-6 sm:p-8">
         <h3 className="font-display text-2xl leading-[1.05] text-fg sm:text-4xl">{item.title}</h3>
@@ -116,7 +132,7 @@ function StackCard({ item, index }: { item: WorkReelItem; index: number }) {
       className={`relative ${TRACK_H} ${index === 0 ? "" : REVEAL_PULL}`}
       style={{ zIndex: index + 1 }}
     >
-      <div className={`sticky top-0 flex ${STAGE_H} items-center bg-bg px-1 py-6 sm:py-10`}>
+      <div className={`sticky top-0 ${STAGE_H} bg-bg px-1 pt-6 sm:pt-10`}>
         <Link
           href={`/work/${item.slug}`}
           data-unit={`work:${item.slug}`}
@@ -142,7 +158,7 @@ export default function WorkReel() {
     <section
       id="work"
       aria-labelledby="work-h"
-      className="mx-auto w-full max-w-[1120px] scroll-mt-4 px-6 pt-16 pb-24 sm:pt-24 lg:px-8 lg:pb-32"
+      className="mx-auto w-full max-w-[1440px] scroll-mt-4 px-6 pt-16 pb-24 sm:pt-24 lg:px-10 lg:pb-32"
     >
       <WorkHead />
       <ol className="relative mt-10 list-none pl-0 sm:mt-16">
