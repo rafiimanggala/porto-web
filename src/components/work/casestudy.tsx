@@ -2,12 +2,19 @@ import Link from "next/link";
 import Arrow from "@/components/ui/Arrow";
 import RoleSwap from "@/components/ui/RoleSwap";
 
-/* Shared case-study primitives. Rendered in the portfolio's dark theme so the
-   site stays cohesive; product screenshots carry each project's own identity. */
+/* Shared case-study primitives. Rendered in the homepage's theme-green
+   (racing-green/cream/#c94e12) so the site stays cohesive across a case
+   study and the directory it linked from; product screenshots and the
+   mockups they embed carry each project's own identity. Every color here
+   rides the --color-* tokens (bg/surface/line/fg/dim/mute/accent), so
+   wrapping in theme-green is the whole retheme -- no per-primitive edits
+   needed (confirmed via grep: this file's only literal color is the
+   video-letterbox bg-black in ReelGrid/WideReel/RangeStrip, which stays
+   black on purpose regardless of theme). */
 
 export function CaseShell({ children }: { children: React.ReactNode }) {
   return (
-    <main className="relative">
+    <main className="theme-green relative">
       <div
         className="pointer-events-none fixed inset-0 -z-10"
         style={{
