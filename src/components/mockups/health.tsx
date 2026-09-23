@@ -38,13 +38,30 @@ const P = {
   mute: "#7c9186",
 };
 
+// Band drives colour, not domain identity -- Cardiovascular and Metabolic
+// used to get arbitrary distinct hues regardless of score, so a "Good" 74
+// read as alarming red while an unrelated "Elite" domain read calm purple.
+// bandColor() below makes colour mean the same thing everywhere: amber for
+// the lowest band present, the site accent for the middle, mint for the
+// top. Matches how topic-accuracy and class-completion already colour by
+// value in education.tsx (t.v < 60 ? red : blue) -- DOMAINS was the one
+// place in either mockup still coding by identity instead of by number.
+// Two tiers, not three: every band here is a positive result, so the only
+// real signal is "Good" (still worth a glance) vs "Excellent or Elite" (no
+// concern) -- P.purple was tried as a third tier first but it's the site's
+// rust-orange accent, which reads as a warning next to true red markers
+// elsewhere on the same screen, not as a calm middle ground.
+function bandColor(band: string) {
+  return band === "Good" ? P.amber : P.mint;
+}
+
 const DOMAINS = [
-  { l: "Cardiovascular", v: 74, band: "Good", c: P.red },
-  { l: "Metabolic", v: 93, band: "Elite", c: P.mint },
-  { l: "Vitals & Fitness", v: 79, band: "Excellent", c: P.sky },
-  { l: "Inflammation", v: 81, band: "Excellent", c: P.amber },
-  { l: "Organ", v: 95, band: "Elite", c: P.purple },
-  { l: "Body Composition", v: 88, band: "Elite", c: P.pink },
+  { l: "Cardiovascular", v: 74, band: "Good" },
+  { l: "Metabolic", v: 93, band: "Elite" },
+  { l: "Vitals & Fitness", v: 79, band: "Excellent" },
+  { l: "Inflammation", v: 81, band: "Excellent" },
+  { l: "Organ", v: 95, band: "Elite" },
+  { l: "Body Composition", v: 88, band: "Elite" },
 ];
 
 const DEVICES = ["Readiness", "Resting HR", "HRV", "Sleep score", "Steps", "Active kcal"];
@@ -190,29 +207,38 @@ function SectionLabel({ icon, text, color, right }: { icon: string; text: string
 function DomainBars() {
   return (
     <div className="flex-1 space-y-[5px]">
-      {DOMAINS.map((d) => (
-        <div key={d.l}>
-          <div className="flex items-center gap-1">
-            <span className="h-1 w-1 rounded-full" style={{ background: d.c }} />
-            <span className="mono text-[5.5px]" style={{ color: P.fg }}>
-              {d.l}
-            </span>
-            <span className="mono text-[5px]" style={{ color: P.mute }}>
-              {d.band}
-            </span>
-            <span className="mono ml-auto text-[6px] font-semibold">{d.v}</span>
+      {DOMAINS.map((d) => {
+        const c = bandColor(d.band);
+        return (
+          <div key={d.l}>
+            <div className="flex items-center gap-1">
+              <span className="h-1 w-1 rounded-full" style={{ background: c }} />
+              <span className="mono text-[5.5px]" style={{ color: P.fg }}>
+                {d.l}
+              </span>
+              <span className="mono text-[5px]" style={{ color: P.mute }}>
+                {d.band}
+              </span>
+              <span className="mono ml-auto text-[6px] font-semibold">{d.v}</span>
+            </div>
+            <div className="mt-[2px] h-[3px] rounded-full" style={{ background: "rgba(28,58,47,0.12)" }}>
+              <div className="h-full rounded-full" style={{ width: `${d.v}%`, background: c }} />
+            </div>
           </div>
-          <div className="mt-[2px] h-[3px] rounded-full" style={{ background: "rgba(28,58,47,0.12)" }}>
-            <div className="h-full rounded-full" style={{ width: `${d.v}%`, background: `linear-gradient(90deg, ${d.c}, ${P.mint})` }} />
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
 
-/* Screen 1: the dashboard as it lands, blood-panel intake at the top and the
-   next cards running off the bottom of the viewport. */
+/* Screen 1: the dashboard as it lands. Dashboard Layout pattern (ux-patterns.md
+   `dashboard`): a primary KPI area first, supporting widgets after -- the
+   longevity score is the one number a returning user opens the app to
+   check, so it leads as an enlarged hero card (accent border, bigger ring)
+   with its immediate context (domain bars, goal stats) folded in, matching
+   Statistics Display's "supporting context" role. Blood results and the
+   trends table follow as a visibly calmer second tier (no border, warm
+   card2 fill) instead of four cards that all read as equally important. */
 export function HealthWeb1() {
   return (
     <Shell>
@@ -221,15 +247,53 @@ export function HealthWeb1() {
       <DeviceStrip />
       <Segmented active={1} />
       <div className="mt-1.5 flex-1 space-y-1.5 overflow-hidden px-3 pb-3">
-        <Card>
-          <SectionLabel icon={G.drop} text="NEW RESULTS &middot; 3 DAYS AGO" color={P.mint} />
-          <div className="mt-1 text-[12px] font-semibold tracking-tight">Your blood panel results are in</div>
-          <div className="mt-0.5 text-[7px]" style={{ color: P.dim }}>
+        <div className="rounded-xl p-3" style={{ background: P.card, border: `1.5px solid ${P.purple}` }}>
+          <SectionLabel icon={G.pulse} text="LONGEVITY SCORE" color={P.purple} />
+          <div className="mono mt-0.5 text-[5.5px]" style={{ color: P.mute }}>
+            Your overall health across all domains
+          </div>
+          <div className="mt-2 flex items-center gap-4">
+            <div className="relative grid h-[84px] w-[84px] shrink-0 place-items-center">
+              <svg viewBox="0 0 36 36" className="-rotate-90 h-[84px] w-[84px]">
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(28,58,47,0.12)" strokeWidth="3" />
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke={P.mint} strokeWidth="3" strokeLinecap="round" strokeDasharray="82 100" />
+              </svg>
+              <span className="absolute text-center">
+                <span className="mono block text-[23px] font-semibold leading-none">82</span>
+                <span className="mono block text-[5px] tracking-widest" style={{ color: P.mint }}>
+                  EXCELLENT
+                </span>
+              </span>
+            </div>
+            <DomainBars />
+          </div>
+          <div className="mt-2.5 grid grid-cols-3 gap-1.5 border-t pt-2" style={{ borderColor: P.line }}>
+            {[
+              { v: "6/9", l: "MARKERS IMPROVING" },
+              { v: "7", l: "GOALS" },
+              { v: "12%", l: "AVG IMPROVEMENT" },
+            ].map((t) => (
+              <div key={t.l} className="text-center">
+                <div className="mono text-[11px] font-semibold" style={{ color: P.purple }}>
+                  {t.v}
+                </div>
+                <div className="mono text-[5px]" style={{ color: P.mute }}>
+                  {t.l}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-xl p-2.5" style={{ background: P.card2 }}>
+          <SectionLabel icon={G.drop} text="NEW RESULTS &middot; 3 DAYS AGO" color={P.dim} />
+          <div className="mt-1 text-[10px] font-semibold tracking-tight">Your blood panel results are in</div>
+          <div className="mt-0.5 text-[6.5px]" style={{ color: P.dim }}>
             <span style={{ color: P.fg }}>78 markers</span> analysed. <span style={{ color: P.amber }}>12</span> flagged for follow-up.
           </div>
           <div className="mt-1.5 grid grid-cols-5 gap-1.5">
             {MARKERS.map((m) => (
-              <div key={m.l} className="rounded-lg border px-2 py-1.5 text-center" style={{ background: P.card2, borderColor: P.line }}>
+              <div key={m.l} className="rounded-lg px-2 py-1.5 text-center" style={{ background: P.card }}>
                 <div className="mono text-[11px] font-semibold" style={{ color: m.c }}>
                   {m.v}
                 </div>
@@ -245,10 +309,11 @@ export function HealthWeb1() {
           <span className="mono mt-2 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[6.5px]" style={{ background: P.purple, color: "#f8f6ee" }}>
             View full report &rarr;
           </span>
-        </Card>
+        </div>
 
-        <Card>
-          <SectionLabel icon={G.chart} text="RECENT TRENDS &middot; 7 DAYS" color={P.sky} />
+        {/* Runs off the bottom of the frame the way the real page scrolls. */}
+        <div className="rounded-xl p-2.5" style={{ background: P.card2 }}>
+          <SectionLabel icon={G.chart} text="RECENT TRENDS &middot; 7 DAYS" color={P.dim} />
           <div className="mono mt-1.5 grid grid-cols-[1.4fr_0.9fr_0.9fr_0.7fr] gap-1 border-b pb-1 text-[5px] uppercase tracking-wide" style={{ borderColor: P.line, color: P.mute }}>
             <span>Metric</span>
             <span>This week</span>
@@ -281,59 +346,7 @@ export function HealthWeb1() {
               </div>
             );
           })}
-        </Card>
-
-        <Card>
-          <SectionLabel
-            icon={G.chart}
-            text="GOAL TRACKING"
-            color={P.sky}
-            right={
-              <span className="mono rounded-full px-1.5 py-[2px] text-[5.5px]" style={{ background: "rgba(28,58,47,0.12)", color: P.dim }}>
-                View progress &rsaquo;
-              </span>
-            }
-          />
-          <div className="mt-1.5 grid grid-cols-3 gap-1.5">
-            {[
-              { v: "6/9", l: "MARKERS IMPROVING" },
-              { v: "7", l: "GOALS" },
-              { v: "12%", l: "AVG IMPROVEMENT" },
-            ].map((t) => (
-              <div key={t.l} className="rounded-lg border py-1.5 text-center" style={{ background: P.card2, borderColor: P.line }}>
-                <div className="mono text-[12px] font-semibold" style={{ color: P.sky }}>
-                  {t.v}
-                </div>
-                <div className="mono text-[5px]" style={{ color: P.mute }}>
-                  {t.l}
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* Runs off the bottom of the frame the way the real page scrolls. */}
-        <Card>
-          <SectionLabel icon={G.pulse} text="LONGEVITY SCORE" color={P.mint} />
-          <div className="mono mt-0.5 text-[5.5px]" style={{ color: P.mute }}>
-            Your overall health across all domains
-          </div>
-          <div className="mt-2 flex items-center gap-3">
-            <div className="relative grid h-[62px] w-[62px] shrink-0 place-items-center">
-              <svg viewBox="0 0 36 36" className="-rotate-90 h-[62px] w-[62px]">
-                <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(28,58,47,0.12)" strokeWidth="3.4" />
-                <circle cx="18" cy="18" r="15.5" fill="none" stroke={P.mint} strokeWidth="3.4" strokeLinecap="round" strokeDasharray="82 100" />
-              </svg>
-              <span className="absolute text-center">
-                <span className="mono block text-[17px] font-semibold leading-none">82</span>
-                <span className="mono block text-[4.5px] tracking-widest" style={{ color: P.mint }}>
-                  EXCELLENT
-                </span>
-              </span>
-            </div>
-            <DomainBars />
-          </div>
-        </Card>
+        </div>
       </div>
     </Shell>
   );
@@ -926,18 +939,21 @@ export function HealthMobile1() {
             </div>
           </div>
           <div className="mt-2 space-y-[5px]">
-            {DOMAINS.slice(0, 4).map((d) => (
-              <div key={d.l}>
-                <div className="flex items-center gap-1">
-                  <span className="h-1 w-1 rounded-full" style={{ background: d.c }} />
-                  <span className="mono text-[6px]">{d.l}</span>
-                  <span className="mono ml-auto text-[6px] font-semibold">{d.v}</span>
+            {DOMAINS.slice(0, 4).map((d) => {
+              const c = bandColor(d.band);
+              return (
+                <div key={d.l}>
+                  <div className="flex items-center gap-1">
+                    <span className="h-1 w-1 rounded-full" style={{ background: c }} />
+                    <span className="mono text-[6px]">{d.l}</span>
+                    <span className="mono ml-auto text-[6px] font-semibold">{d.v}</span>
+                  </div>
+                  <div className="mt-[2px] h-[3px] rounded-full" style={{ background: "rgba(28,58,47,0.12)" }}>
+                    <div className="h-full rounded-full" style={{ width: `${d.v}%`, background: c }} />
+                  </div>
                 </div>
-                <div className="mt-[2px] h-[3px] rounded-full" style={{ background: "rgba(28,58,47,0.12)" }}>
-                  <div className="h-full rounded-full" style={{ width: `${d.v}%`, background: d.c }} />
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
         <div className="grid grid-cols-2 gap-1.5">

@@ -5,14 +5,25 @@
    is exactly reproducible -- the same "update(t), zero real-time animation
    state" approach as the threejs-film skill, just for DOM instead of
    canvas. That determinism is what makes frame-by-frame screenshot capture
-   (see scripts/record-mockup-video.mjs) line up cleanly into a video: no
-   timer drift between the browser's real clock and the capture loop.
+   line up cleanly into a video: no timer drift between the browser's real
+   clock and the capture loop.
 
-   Reveal easing follows animista's `slide-in-fwd-bottom` (0.4s easeOutQuad):
-   translateY 8px->0 + opacity 0->1, staggered per row/tile. Numeric values
-   (marker readings, table deltas, progress-bar widths) count up inside the
-   same local window instead of popping in, so the loop reads as live data
-   refreshing rather than a static image fading in piece by piece. */
+   Mirrors health.tsx's HealthWeb1 and education.tsx's EduWeb4 after their
+   hero-KPI + supporting-tier restructure (2026-09-23 ui-improve pass) --
+   these two were an independent reimplementation, not a literal render of
+   those components, so they'd gone stale against the old 4-equal-card
+   layout. Rebuilt against the live hero card, band/threshold colour rules,
+   and BrowserWindow's fixed aspect-[16/10] crop (frame.tsx): everything
+   past what that box actually shows (RECENT TRENDS, quiz activity, subject
+   breakdown) is real content but sits below the visible crop, so it isn't
+   worth animating here.
+
+   Four distinct techniques carry the "more diverse" ask, not one repeated
+   reveal: a circular stroke draw-in for the score ring (ringDash below,
+   new to this file), a number count-up synced to it, a bar-width race for
+   domain/completion bars, and the original staggered card/row reveal.
+   Reveal easing follows animista's `slide-in-fwd-bottom` (0.4s
+   easeOutQuad): translateY 8px->0 + opacity 0->1, staggered per row/tile. */
 
 const easeOutQuad = (t: number) => t * (2 - t);
 
@@ -30,6 +41,11 @@ function reveal(local: number): React.CSSProperties {
   };
 }
 
+/** SVG stroke-dasharray for a ring gauge drawing in to `final` percent. */
+function ringDash(local: number, final: number) {
+  return `${(final * local).toFixed(1)} 100`;
+}
+
 const HP = {
   bg: "#f8f6ee",
   strip: "#f3f1e6",
@@ -40,11 +56,25 @@ const HP = {
   mint: "#2f9e6e",
   amber: "#d98f2f",
   red: "#d94f4f",
-  sky: "#2f8fd9",
   ink: "#1c3a2f",
   dim: "#4f6b5c",
   mute: "#7c9186",
 };
+
+// Same "band drives colour, not identity" rule as health.tsx's bandColor():
+// two tiers only, since every band present is a positive result.
+function healthBandColor(band: string) {
+  return band === "Good" ? HP.amber : HP.mint;
+}
+
+const HEALTH_DOMAINS = [
+  { l: "Cardiovascular", v: 74, band: "Good" },
+  { l: "Metabolic", v: 93, band: "Elite" },
+  { l: "Vitals & Fitness", v: 79, band: "Excellent" },
+  { l: "Inflammation", v: 81, band: "Excellent" },
+  { l: "Organ", v: 95, band: "Elite" },
+  { l: "Body Composition", v: 88, band: "Elite" },
+];
 
 const HEALTH_MARKERS = [
   { v: 5.4, l: "Total cholesterol", u: "mmol/L", c: HP.amber, dp: 1 },
@@ -54,11 +84,10 @@ const HEALTH_MARKERS = [
   { v: 0.34, l: "Uric acid", u: "mmol/L", c: HP.mint, dp: 2 },
 ];
 
-const HEALTH_TRENDS = [
-  { l: "HRV", u: "ms", now: 58, prev: 54 },
-  { l: "Resting HR", u: "bpm", now: 51, prev: 53 },
-  { l: "Sleep score", u: "", now: 84, prev: 79 },
-  { l: "Steps", u: "/day", now: 9240, prev: 8610 },
+const HEALTH_STATS = [
+  { v: "6/9", l: "MARKERS IMPROVING" },
+  { v: "7", l: "GOALS" },
+  { v: "12%", l: "AVG IMPROVEMENT" },
 ];
 
 /** Same header chrome as HealthWeb1 (TopStrip + Head + DeviceStrip +
@@ -112,31 +141,91 @@ function HealthChrome() {
 }
 
 export function HealthAnimatedCard({ progress }: { progress: number }) {
-  const headLocal = windowProgress(progress, 0.03, 0.1);
-  const tileLocal = HEALTH_MARKERS.map((_, i) => windowProgress(progress, 0.1 + i * 0.035, 0.1 + i * 0.035 + 0.06));
-  const flagLocal = windowProgress(progress, 0.28, 0.34);
-  const ctaLocal = windowProgress(progress, 0.34, 0.4);
-  const trendsHeadLocal = windowProgress(progress, 0.4, 0.44);
-  const rowLocal = HEALTH_TRENDS.map((_, i) => windowProgress(progress, 0.46 + i * 0.11, 0.46 + i * 0.11 + 0.09));
+  const headLocal = windowProgress(progress, 0.02, 0.08);
+  const ringLocal = windowProgress(progress, 0.06, 0.22);
+  const domainLocal = HEALTH_DOMAINS.map((_, i) => windowProgress(progress, 0.2 + i * 0.025, 0.2 + i * 0.025 + 0.05));
+  const statsLocal = windowProgress(progress, 0.38, 0.46);
+  const resultsHeadLocal = windowProgress(progress, 0.48, 0.56);
+  const flagLocal = windowProgress(progress, 0.5, 0.56);
+  const tileLocal = HEALTH_MARKERS.map((_, i) => windowProgress(progress, 0.56 + i * 0.045, 0.56 + i * 0.045 + 0.08));
+  const ctaLocal = windowProgress(progress, 0.82, 0.9);
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden" style={{ background: HP.bg, color: HP.ink }}>
       <HealthChrome />
       <div className="mt-1.5 flex-1 space-y-1.5 overflow-hidden px-3 pb-3">
-        <div className="rounded-xl border p-2.5" style={{ background: HP.card, borderColor: HP.line }}>
-          <div className="mono flex items-center gap-1 text-[6.5px] tracking-wide" style={{ color: HP.mint, ...reveal(headLocal) }}>
+        <div className="rounded-xl p-3" style={{ background: HP.card, border: `1.5px solid ${HP.accent}` }}>
+          <div className="mono flex items-center gap-1 text-[6.5px] tracking-wide" style={{ color: HP.accent, ...reveal(headLocal) }}>
+            LONGEVITY SCORE
+          </div>
+          <div className="mono mt-0.5 text-[5.5px]" style={{ color: HP.mute, ...reveal(headLocal) }}>
+            Your overall health across all domains
+          </div>
+          <div className="mt-2 flex items-center gap-4">
+            <div className="relative grid h-[84px] w-[84px] shrink-0 place-items-center">
+              <svg viewBox="0 0 36 36" className="-rotate-90 h-[84px] w-[84px]">
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(28,58,47,0.12)" strokeWidth="3" />
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke={HP.mint} strokeWidth="3" strokeLinecap="round" strokeDasharray={ringDash(ringLocal, 82)} />
+              </svg>
+              <span className="absolute text-center">
+                <span className="mono block text-[23px] font-semibold leading-none">{Math.round(82 * ringLocal)}</span>
+                <span className="mono block text-[5px] tracking-widest" style={{ color: HP.mint, opacity: ringLocal }}>
+                  EXCELLENT
+                </span>
+              </span>
+            </div>
+            <div className="flex-1 space-y-[5px]">
+              {HEALTH_DOMAINS.map((d, i) => {
+                const c = healthBandColor(d.band);
+                const local = domainLocal[i];
+                return (
+                  <div key={d.l} style={reveal(local)}>
+                    <div className="flex items-center gap-1">
+                      <span className="h-1 w-1 rounded-full" style={{ background: c }} />
+                      <span className="mono text-[5.5px]" style={{ color: HP.ink }}>
+                        {d.l}
+                      </span>
+                      <span className="mono text-[5px]" style={{ color: HP.mute }}>
+                        {d.band}
+                      </span>
+                      <span className="mono ml-auto text-[6px] font-semibold">{Math.round(d.v * local)}</span>
+                    </div>
+                    <div className="mt-[2px] h-[3px] rounded-full" style={{ background: "rgba(28,58,47,0.12)" }}>
+                      <div className="h-full rounded-full" style={{ width: `${d.v * local}%`, background: c }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div className="mt-2.5 grid grid-cols-3 gap-1.5 border-t pt-2" style={{ borderColor: HP.line }}>
+            {HEALTH_STATS.map((t) => (
+              <div key={t.l} className="text-center" style={reveal(statsLocal)}>
+                <div className="mono text-[11px] font-semibold" style={{ color: HP.accent }}>
+                  {t.v}
+                </div>
+                <div className="mono text-[5px]" style={{ color: HP.mute }}>
+                  {t.l}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-xl p-2.5" style={{ background: HP.card2 }}>
+          <div className="mono flex items-center gap-1 text-[6.5px] tracking-wide" style={{ color: HP.dim, ...reveal(resultsHeadLocal) }}>
             NEW RESULTS &middot; 3 DAYS AGO
           </div>
-          <div className="mt-1 text-[12px] font-semibold tracking-tight" style={reveal(headLocal)}>
+          <div className="mt-1 text-[10px] font-semibold tracking-tight" style={reveal(resultsHeadLocal)}>
             Your blood panel results are in
           </div>
-          <div className="mt-0.5 text-[7px]" style={{ color: HP.dim, ...reveal(headLocal) }}>
+          <div className="mt-0.5 text-[6.5px]" style={{ color: HP.dim, ...reveal(resultsHeadLocal) }}>
             <span style={{ color: HP.ink }}>78 markers</span> analysed.{" "}
             <span style={{ color: HP.amber, opacity: flagLocal }}>{Math.round(flagLocal * 12)}</span> flagged for follow-up.
           </div>
           <div className="mt-1.5 grid grid-cols-5 gap-1.5">
             {HEALTH_MARKERS.map((m, i) => (
-              <div key={m.l} className="rounded-lg border px-2 py-1.5 text-center" style={{ background: HP.card2, borderColor: HP.line, ...reveal(tileLocal[i]) }}>
+              <div key={m.l} className="rounded-lg px-2 py-1.5 text-center" style={{ background: HP.card, ...reveal(tileLocal[i]) }}>
                 <div className="mono text-[11px] font-semibold" style={{ color: m.c }}>
                   {(m.v * tileLocal[i]).toFixed(m.dp)}
                 </div>
@@ -156,42 +245,6 @@ export function HealthAnimatedCard({ progress }: { progress: number }) {
             View full report &rarr;
           </span>
         </div>
-
-        <div className="rounded-xl border p-2.5" style={{ background: HP.card, borderColor: HP.line }}>
-          <div className="mono flex items-center gap-1 text-[6.5px] tracking-wide" style={{ color: HP.sky, ...reveal(trendsHeadLocal) }}>
-            RECENT TRENDS &middot; 7 DAYS
-          </div>
-          <div className="mono mt-1.5 grid grid-cols-[1.4fr_0.9fr_0.9fr_0.7fr] gap-1 border-b pb-1 text-[5px] uppercase tracking-wide" style={{ borderColor: HP.line, color: HP.mute, ...reveal(trendsHeadLocal) }}>
-            <span>Metric</span>
-            <span>This week</span>
-            <span>Last week</span>
-            <span>Change</span>
-          </div>
-          {HEALTH_TRENDS.map((row, i) => {
-            const delta = row.now - row.prev;
-            const up = delta >= 0;
-            const local = rowLocal[i];
-            const shownNow = Math.round(row.now * local);
-            const shownDelta = Math.round(delta * local);
-            return (
-              <div key={row.l} className="mono grid grid-cols-[1.4fr_0.9fr_0.9fr_0.7fr] items-center gap-1 border-b py-[5px] text-[6px]" style={{ borderColor: HP.line, ...reveal(local) }}>
-                <span style={{ color: HP.ink }}>{row.l}</span>
-                <span style={{ color: HP.dim }}>
-                  {shownNow.toLocaleString()}
-                  {row.u}
-                </span>
-                <span style={{ color: HP.mute }}>
-                  {row.prev.toLocaleString()}
-                  {row.u}
-                </span>
-                <span style={{ color: up ? HP.mint : HP.red, fontWeight: 600 }}>
-                  {up ? "+" : ""}
-                  {shownDelta}
-                </span>
-              </div>
-            );
-          })}
-        </div>
       </div>
     </div>
   );
@@ -201,8 +254,10 @@ const EP = {
   headerTop: "#f3f1e6",
   body: "#f8f6ee",
   white: "#ffffff",
+  side: "#f3f1e6",
   line: "rgba(28,58,47,0.12)",
   accent: "#c94e12",
+  red: "#d94f4f",
   ink: "#1c3a2f",
   inkDim: "#4f6b5c",
 };
@@ -216,11 +271,17 @@ const EDU_CLASSES = [
   { l: "Class F", sub: "Physics 10", n: 25, done: 64, avg: 66 },
 ];
 
-const EDU_SUBJECTS = [
-  { l: "Biology", v: 76, c: "#2f9e6e" },
-  { l: "Chemistry", v: 69, c: "#2f8fd9" },
-  { l: "Physics", v: 66, c: "#8a5fd9" },
-  { l: "Forensics", v: 72, c: "#d94f4f" },
+const EDU_STATS = [
+  { v: "71%", l: "AVG COMPLETION" },
+  { v: "Punnett squares", l: "WEAKEST TOPIC" },
+  { v: "Class D", l: "NEEDS A NUDGE" },
+];
+
+// Same threshold rule as EduWeb4's topics/subjects arrays: colour by score,
+// not by a fixed per-item hue.
+const EDU_TOPICS = [
+  { l: "Punnett squares", v: 48 },
+  { l: "Sex-linked inheritance", v: 57 },
 ];
 
 function EduChrome() {
@@ -247,106 +308,124 @@ function EduChrome() {
 
 export function EducationAnimatedCard({ progress }: { progress: number }) {
   const headLocal = windowProgress(progress, 0.02, 0.08);
-  const rowLocal = EDU_CLASSES.map((_, i) => windowProgress(progress, 0.08 + i * 0.075, 0.08 + i * 0.075 + 0.065));
-  const summaryLocal = windowProgress(progress, 0.55, 0.62);
-  const activityLocal = windowProgress(progress, 0.62, 0.7);
-  const subjLocal = EDU_SUBJECTS.map((_, i) => windowProgress(progress, 0.72 + i * 0.06, 0.72 + i * 0.06 + 0.06));
+  const ringLocal = windowProgress(progress, 0.06, 0.22);
+  const insightLocal = windowProgress(progress, 0.22, 0.3);
+  const ctaLocal = windowProgress(progress, 0.3, 0.36);
+  const statsLocal = windowProgress(progress, 0.36, 0.44);
+  const classHeadLocal = windowProgress(progress, 0.46, 0.52);
+  const classRowLocal = EDU_CLASSES.map((_, i) => windowProgress(progress, 0.52 + i * 0.06, 0.52 + i * 0.06 + 0.09));
+  const topicHeadLocal = windowProgress(progress, 0.88, 0.93);
+  // Windows must resolve to local=1 by progress=1 (the clamped max input),
+  // not just approach it -- a window ending past 1 leaves its last item
+  // visibly short of its final value on the settle frame.
+  const topicRowLocal = EDU_TOPICS.map((_, i) => windowProgress(progress, 0.9 + i * 0.03, 0.9 + i * 0.03 + 0.06));
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden" style={{ background: EP.body, color: EP.ink }}>
       <EduChrome />
       <div className="flex flex-1 flex-col gap-2 overflow-hidden p-2.5">
-        <div className="flex items-start gap-2">
-          <div className="flex-[3] rounded-md p-2.5" style={{ background: EP.white }}>
-            <div className="flex items-baseline" style={reveal(headLocal)}>
-              <span className="text-[9px] font-semibold">Class performance</span>
-              <span className="mono ml-auto text-[6px]" style={{ color: EP.inkDim }}>
-                Fortnight to 21 Aug
+        <div className="rounded-md p-3" style={{ background: EP.white, border: `1.5px solid ${EP.accent}` }}>
+          <div className="flex items-baseline">
+            <span className="mono flex items-center gap-1 text-[6.5px] font-semibold uppercase tracking-wide" style={{ color: EP.accent, ...reveal(headLocal) }}>
+              Fortnight avg score
+            </span>
+            <span className="mono ml-auto text-[6px]" style={{ color: EP.inkDim, ...reveal(headLocal) }}>
+              Fortnight to 21 Aug
+            </span>
+          </div>
+          <div className="mt-2 flex items-center gap-4">
+            <div className="relative grid h-[72px] w-[72px] shrink-0 place-items-center">
+              <svg viewBox="0 0 36 36" className="-rotate-90 h-[72px] w-[72px]">
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(28,58,47,0.12)" strokeWidth="3" />
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke={EP.accent} strokeWidth="3" strokeLinecap="round" strokeDasharray={ringDash(ringLocal, 72)} />
+              </svg>
+              <span className="absolute text-center">
+                <span className="mono block text-[19px] font-semibold leading-none">{Math.round(72 * ringLocal)}</span>
+                <span className="mono block text-[4.5px] tracking-widest" style={{ color: EP.accent, opacity: ringLocal }}>
+                  ON TRACK
+                </span>
               </span>
             </div>
-            <div className="mono mt-2 grid grid-cols-[1.6fr_0.5fr_1.2fr_0.6fr] gap-1 border-b pb-1 text-[5.5px] uppercase tracking-wide" style={{ borderColor: EP.line, color: EP.inkDim, ...reveal(headLocal) }}>
-              <span>Class</span>
-              <span>Students</span>
-              <span>Quiz completion</span>
-              <span>Avg</span>
+            <div className="min-w-0 flex-1">
+              <div className="text-[7px] leading-relaxed" style={{ color: EP.ink, ...reveal(insightLocal) }}>
+                Two classes finished the Genetics unit ahead of pace. Punnett squares
+                is the weakest topic across all four groups, with the biggest gap in
+                Class B.
+              </div>
+              <div
+                className="mono mt-1.5 inline-flex w-fit items-center gap-1 rounded px-2 py-[4px] text-[6px]"
+                style={{ background: EP.accent, color: "#f8f6ee", ...reveal(ctaLocal) }}
+              >
+                Email this to my teachers
+              </div>
             </div>
-            {EDU_CLASSES.map((c, i) => {
-              const local = rowLocal[i];
-              const shownDone = Math.round(c.done * local);
-              return (
-                <div key={c.l} className="mono grid grid-cols-[1.6fr_0.5fr_1.2fr_0.6fr] items-center gap-1 border-b py-[5px] text-[6px]" style={{ borderColor: EP.line, ...reveal(local) }}>
-                  <span>
-                    {c.l} <span style={{ color: EP.inkDim }}>&middot; {c.sub}</span>
-                  </span>
-                  <span style={{ color: EP.inkDim }}>{c.n}</span>
-                  <span className="flex items-center gap-1">
-                    <span className="h-[4px] flex-1 rounded-full" style={{ background: EP.line }}>
-                      <span className="block h-full rounded-full" style={{ width: `${shownDone}%`, background: c.done < 50 ? "#d94f4f" : EP.accent }} />
-                    </span>
-                    <span style={{ color: EP.inkDim }}>{shownDone}%</span>
-                  </span>
-                  <span style={{ fontWeight: 600, color: c.avg === 0 ? EP.inkDim : EP.ink }}>{c.avg === 0 ? "no data yet" : Math.round(c.avg * local)}</span>
+          </div>
+          <div className="mt-2.5 grid grid-cols-3 gap-1.5 border-t pt-2" style={{ borderColor: EP.line }}>
+            {EDU_STATS.map((t) => (
+              <div key={t.l} className="text-center" style={reveal(statsLocal)}>
+                <div className="mono truncate text-[9px] font-semibold" style={{ color: EP.accent }}>
+                  {t.v}
                 </div>
-              );
-            })}
-          </div>
-
-          <div className="flex-[2] rounded-md p-2.5" style={{ background: EP.white, borderLeft: `3px solid ${EP.accent}`, ...reveal(summaryLocal) }}>
-            <div className="mono flex items-center gap-1 text-[6.5px] font-semibold uppercase tracking-wide" style={{ color: EP.accent }}>
-              Fortnightly summary
-            </div>
-            <div className="mt-1.5 text-[6.5px] leading-relaxed" style={{ color: EP.ink }}>
-              Two classes finished the Genetics unit ahead of pace. Punnett squares
-              is the weakest topic across all four groups, with the biggest gap in
-              Class B.
-            </div>
-            <div className="mono mt-2 flex items-center gap-1 rounded px-2 py-[4px] text-[6px]" style={{ background: EP.accent, color: "#f8f6ee" }}>
-              Email this to my teachers
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-md p-2.5" style={{ background: EP.white, ...reveal(activityLocal) }}>
-          <div className="mono text-[6px] uppercase tracking-wide" style={{ color: EP.inkDim }}>
-            Recent quiz activity
-          </div>
-          <div className="mt-1.5 grid grid-cols-4 gap-2">
-            {[
-              { c: "Class A", t: "Inheritance patterns", v: "24/28 submitted" },
-              { c: "Class C", t: "Punnett squares", v: "22/24 submitted" },
-              { c: "Class E", t: "Reaction rates", v: "19/27 submitted" },
-              { c: "Class F", t: "Forces and motion", v: "16/25 submitted" },
-            ].map((a) => (
-              <div key={a.c} className="rounded border px-2 py-1.5" style={{ borderColor: EP.line }}>
-                <div className="mono text-[6px] font-semibold">{a.c}</div>
-                <div className="mono mt-1 text-[6px]" style={{ color: EP.ink }}>
-                  {a.t}
-                </div>
-                <div className="mono text-[5.5px]" style={{ color: EP.inkDim }}>
-                  {a.v}
+                <div className="mono text-[5px]" style={{ color: EP.inkDim }}>
+                  {t.l}
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="rounded-md p-2.5" style={{ background: EP.white }}>
-          <div className="mono text-[6px] uppercase tracking-wide" style={{ color: EP.inkDim }}>
-            Subject breakdown &middot; avg quiz score
+        <div className="rounded-md p-2.5" style={{ background: EP.side }}>
+          <div className="flex items-baseline" style={reveal(classHeadLocal)}>
+            <span className="text-[8px] font-semibold">Class performance</span>
+            <span className="mono ml-auto text-[6px]" style={{ color: EP.inkDim }}>
+              Fortnight to 21 Aug
+            </span>
           </div>
-          <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1.5">
-            {EDU_SUBJECTS.map((s, i) => {
-              const local = subjLocal[i];
+          <div className="mono mt-1.5 grid grid-cols-[1.6fr_0.5fr_1.2fr_0.6fr] gap-1 border-b pb-1 text-[5.5px] uppercase tracking-wide" style={{ borderColor: EP.line, color: EP.inkDim, ...reveal(classHeadLocal) }}>
+            <span>Class</span>
+            <span>Students</span>
+            <span>Quiz completion</span>
+            <span>Avg</span>
+          </div>
+          {EDU_CLASSES.map((c, i) => {
+            const local = classRowLocal[i];
+            const shownDone = Math.round(c.done * local);
+            return (
+              <div key={c.l} className="mono grid grid-cols-[1.6fr_0.5fr_1.2fr_0.6fr] items-center gap-1 border-b py-[5px] text-[6px]" style={{ borderColor: EP.line, ...reveal(local) }}>
+                <span>
+                  {c.l} <span style={{ color: EP.inkDim }}>&middot; {c.sub}</span>
+                </span>
+                <span style={{ color: EP.inkDim }}>{c.n}</span>
+                <span className="flex items-center gap-1">
+                  <span className="h-[4px] flex-1 rounded-full" style={{ background: EP.line }}>
+                    <span className="block h-full rounded-full" style={{ width: `${shownDone}%`, background: c.done < 50 ? EP.red : EP.accent }} />
+                  </span>
+                  <span style={{ color: EP.inkDim }}>{shownDone}%</span>
+                </span>
+                <span style={{ fontWeight: 600, color: c.avg === 0 ? EP.inkDim : EP.ink }}>{c.avg === 0 ? "no data yet" : Math.round(c.avg * local)}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="rounded-md p-2.5" style={{ background: EP.side, ...reveal(topicHeadLocal) }}>
+          <div className="mono text-[6px] uppercase tracking-wide" style={{ color: EP.inkDim }}>
+            Topic accuracy across all classes
+          </div>
+          <div className="mt-1.5 space-y-1">
+            {EDU_TOPICS.map((t, i) => {
+              const local = topicRowLocal[i];
+              const c = t.v < 60 ? EP.red : EP.accent;
               return (
-                <div key={s.l} style={reveal(local)}>
+                <div key={t.l} style={reveal(local)}>
                   <div className="mono flex items-baseline text-[6px]">
-                    <span style={{ color: EP.ink }}>{s.l}</span>
-                    <span className="ml-auto font-semibold" style={{ color: s.c }}>
-                      {Math.round(s.v * local)}
+                    <span>{t.l}</span>
+                    <span className="ml-auto" style={{ color: t.v < 60 ? EP.red : EP.inkDim }}>
+                      {Math.round(t.v * local)}%
                     </span>
                   </div>
-                  <div className="mt-[3px] h-[4px] rounded-full" style={{ background: EP.line }}>
-                    <div className="h-full rounded-full" style={{ width: `${s.v * local}%`, background: s.c }} />
+                  <div className="mt-[2px] h-[4px] rounded-full" style={{ background: EP.line }}>
+                    <div className="h-full rounded-full" style={{ width: `${t.v * local}%`, background: c }} />
                   </div>
                 </div>
               );

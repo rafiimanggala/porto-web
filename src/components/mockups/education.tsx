@@ -260,6 +260,19 @@ export function EduWeb3() {
   );
 }
 
+/* Dashboard Layout pattern (ux-patterns.md `dashboard`): a hero KPI panel
+   first, supporting widgets after -- same anatomy as health.tsx's
+   HealthWeb1, so the two case-study mockups read as one design system
+   instead of two different layout languages. Fortnight avg score is the
+   number a teacher opens this for, so it leads as an enlarged accent-
+   bordered ring (matching HealthWeb1's ring) with the AI summary and CTA
+   folded in as its supporting context; the class table, quiz activity and
+   subject breakdown follow as a calmer second tier (no border, warm side
+   fill). Subject breakdown bars now reuse this file's own threshold rule
+   (score < 60 flags) instead of one arbitrary colour per subject -- the
+   old per-subject hues repeated the class-completion row's already-used
+   colours for no reason tied to the data, while topic accuracy and class
+   completion two panels over already colour by value, not identity. */
 export function EduWeb4() {
   const classes = [
     { l: "Class A", sub: "Science 10", n: 28, done: 86, avg: 74 },
@@ -275,19 +288,78 @@ export function EduWeb4() {
     { l: "Mutation and its effects", v: 63 },
     { l: "Dominant traits", v: 88 },
   ];
+  const subjects = [
+    { l: "Biology", v: 76 },
+    { l: "Chemistry", v: 69 },
+    { l: "Physics", v: 66 },
+    { l: "Forensics", v: 72 },
+  ];
+  const active = classes.filter((c) => c.avg > 0);
+  const avgScore = Math.round(active.reduce((s, c) => s + c.avg, 0) / active.length);
+  const avgCompletion = Math.round(classes.reduce((s, c) => s + c.done, 0) / classes.length);
   return (
     <Shell>
       <Head />
       <div className="flex flex-1 flex-col gap-2 overflow-hidden p-2.5">
-        <div className="flex items-start gap-2">
-        <div className="flex-[3] rounded-md p-2.5" style={{ background: P.white }}>
+        <div className="rounded-md p-3" style={{ background: P.white, border: `1.5px solid ${P.blue}` }}>
           <div className="flex items-baseline">
-            <span className="text-[9px] font-semibold">Class performance</span>
+            <span className="mono flex items-center gap-1 text-[6.5px] font-semibold uppercase tracking-wide" style={{ color: P.blueDark }}>
+              <Glyph d={G.spark} size={8} /> Fortnight avg score
+            </span>
             <span className="mono ml-auto text-[6px]" style={{ color: P.inkDim }}>
               Fortnight to 21 Aug
             </span>
           </div>
-          <div className="mono mt-2 grid grid-cols-[1.6fr_0.5fr_1.2fr_0.6fr] gap-1 border-b pb-1 text-[5.5px] uppercase tracking-wide" style={{ borderColor: "rgba(28,58,47,0.12)", color: P.inkDim }}>
+          <div className="mt-2 flex items-center gap-4">
+            <div className="relative grid h-[72px] w-[72px] shrink-0 place-items-center">
+              <svg viewBox="0 0 36 36" className="-rotate-90 h-[72px] w-[72px]">
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(28,58,47,0.12)" strokeWidth="3" />
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke={P.blue} strokeWidth="3" strokeLinecap="round" strokeDasharray={`${avgScore} 100`} />
+              </svg>
+              <span className="absolute text-center">
+                <span className="mono block text-[19px] font-semibold leading-none">{avgScore}</span>
+                <span className="mono block text-[4.5px] tracking-widest" style={{ color: P.blueDark }}>
+                  ON TRACK
+                </span>
+              </span>
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-[7px] leading-relaxed" style={{ color: P.ink }}>
+                Two classes finished the Genetics unit ahead of pace. Punnett squares
+                is the weakest topic across all four groups, with the biggest gap in
+                Class B.
+              </div>
+              <div className="mono mt-1.5 inline-flex w-fit items-center gap-1 rounded px-2 py-[4px] text-[6px]" style={{ background: P.blue, color: "#f8f6ee" }}>
+                <Glyph d={G.users} size={7} /> Email this to my teachers
+              </div>
+            </div>
+          </div>
+          <div className="mt-2.5 grid grid-cols-3 gap-1.5 border-t pt-2" style={{ borderColor: "rgba(28,58,47,0.12)" }}>
+            {[
+              { v: `${avgCompletion}%`, l: "AVG COMPLETION" },
+              { v: "Punnett squares", l: "WEAKEST TOPIC" },
+              { v: "Class D", l: "NEEDS A NUDGE" },
+            ].map((t) => (
+              <div key={t.l} className="text-center">
+                <div className="mono truncate text-[9px] font-semibold" style={{ color: P.blueDark }}>
+                  {t.v}
+                </div>
+                <div className="mono text-[5px]" style={{ color: P.inkDim }}>
+                  {t.l}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-md p-2.5" style={{ background: P.side }}>
+          <div className="flex items-baseline">
+            <span className="text-[8px] font-semibold">Class performance</span>
+            <span className="mono ml-auto text-[6px]" style={{ color: P.inkDim }}>
+              Fortnight to 21 Aug
+            </span>
+          </div>
+          <div className="mono mt-1.5 grid grid-cols-[1.6fr_0.5fr_1.2fr_0.6fr] gap-1 border-b pb-1 text-[5.5px] uppercase tracking-wide" style={{ borderColor: "rgba(28,58,47,0.12)", color: P.inkDim }}>
             <span>Class</span>
             <span>Students</span>
             <span>Quiz completion</span>
@@ -310,34 +382,11 @@ export function EduWeb4() {
           ))}
         </div>
 
-        <div className="flex-[2] rounded-md p-2.5" style={{ background: P.white, borderLeft: `3px solid ${P.blue}` }}>
-          <div className="mono flex items-center gap-1 text-[6.5px] font-semibold uppercase tracking-wide" style={{ color: P.blueDark }}>
-            <Glyph d={G.spark} size={8} /> Fortnightly summary
-          </div>
-          <div className="mt-1.5 text-[6.5px] leading-relaxed" style={{ color: P.ink }}>
-            Two classes finished the Genetics unit ahead of pace. Punnett squares
-            is the weakest topic across all four groups, with the biggest gap in
-            Class B.
-          </div>
-          <div className="mt-2 space-y-1">
-            {[
-              { l: "Weakest topic", v: "Punnett squares" },
-              { l: "Strongest topic", v: "Dominant traits" },
-              { l: "Needs a nudge", v: "Class D" },
-            ].map((r) => (
-              <div key={r.l} className="mono flex items-baseline text-[6px]">
-                <span style={{ color: P.inkDim }}>{r.l}</span>
-                <span className="ml-auto font-semibold">{r.v}</span>
-              </div>
-            ))}
-          </div>
-          <div className="mono mt-2 flex items-center gap-1 rounded px-2 py-[4px] text-[6px]" style={{ background: P.blue, color: "#f8f6ee" }}>
-            <Glyph d={G.users} size={7} /> Email this to my teachers
-          </div>
-          <div className="mono mt-2 border-t pt-1.5 text-[5.5px] uppercase tracking-wide" style={{ borderColor: "rgba(28,58,47,0.12)", color: P.inkDim }}>
+        <div className="rounded-md p-2.5" style={{ background: P.side }}>
+          <div className="mono text-[6px] uppercase tracking-wide" style={{ color: P.inkDim }}>
             Topic accuracy across all classes
           </div>
-          <div className="mt-1 space-y-1">
+          <div className="mt-1.5 space-y-1">
             {topics.map((t) => (
               <div key={t.l}>
                 <div className="mono flex items-baseline text-[6px]">
@@ -352,13 +401,9 @@ export function EduWeb4() {
               </div>
             ))}
           </div>
-          <div className="mono mt-2 text-[5.5px]" style={{ color: P.inkDim }}>
-            Generated every second Thursday from live quiz data.
-          </div>
-        </div>
         </div>
 
-        <div className="rounded-md p-2.5" style={{ background: P.white }}>
+        <div className="rounded-md p-2.5" style={{ background: P.side }}>
           <div className="mono text-[6px] uppercase tracking-wide" style={{ color: P.inkDim }}>
             Recent quiz activity
           </div>
@@ -369,7 +414,7 @@ export function EduWeb4() {
               { c: "Class E", t: "Reaction rates", s: "Level 1", v: "19/27 submitted" },
               { c: "Class F", t: "Forces and motion", s: "Level 2", v: "16/25 submitted" },
             ].map((a) => (
-              <div key={a.c} className="rounded border px-2 py-1.5" style={{ borderColor: "rgba(28,58,47,0.12)" }}>
+              <div key={a.c} className="rounded px-2 py-1.5" style={{ background: P.white }}>
                 <div className="mono flex items-center gap-1 text-[6px] font-semibold">
                   <span className="h-1 w-1 rounded-full" style={{ background: P.blue }} />
                   {a.c}
@@ -388,7 +433,7 @@ export function EduWeb4() {
           </div>
         </div>
 
-        <div className="rounded-md p-2.5" style={{ background: P.white }}>
+        <div className="rounded-md p-2.5" style={{ background: P.side }}>
           <div className="flex items-baseline">
             <div className="mono text-[6px] uppercase tracking-wide" style={{ color: P.inkDim }}>
               Subject breakdown &middot; avg quiz score
@@ -398,24 +443,22 @@ export function EduWeb4() {
             </div>
           </div>
           <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1.5">
-            {[
-              { l: "Biology", v: 76, c: "#2f9e6e" },
-              { l: "Chemistry", v: 69, c: P.green },
-              { l: "Physics", v: 66, c: "#8a5fd9" },
-              { l: "Forensics", v: 72, c: P.maroon },
-            ].map((s) => (
-              <div key={s.l}>
-                <div className="mono flex items-baseline text-[6px]">
-                  <span style={{ color: P.ink }}>{s.l}</span>
-                  <span className="ml-auto font-semibold" style={{ color: s.c }}>
-                    {s.v}
-                  </span>
+            {subjects.map((s) => {
+              const c = s.v < 60 ? "#d94f4f" : P.blue;
+              return (
+                <div key={s.l}>
+                  <div className="mono flex items-baseline text-[6px]">
+                    <span style={{ color: P.ink }}>{s.l}</span>
+                    <span className="ml-auto font-semibold" style={{ color: c }}>
+                      {s.v}
+                    </span>
+                  </div>
+                  <div className="mt-[3px] h-[4px] rounded-full" style={{ background: "rgba(28,58,47,0.12)" }}>
+                    <div className="h-full rounded-full" style={{ width: `${s.v}%`, background: c }} />
+                  </div>
                 </div>
-                <div className="mt-[3px] h-[4px] rounded-full" style={{ background: "rgba(28,58,47,0.12)" }}>
-                  <div className="h-full rounded-full" style={{ width: `${s.v}%`, background: s.c }} />
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

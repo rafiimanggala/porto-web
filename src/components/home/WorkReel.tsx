@@ -54,33 +54,39 @@ function FactPill({ text, tone }: { text: string; tone: string }) {
 
 // Rafii's call (23 Sep): every card should read as one family, card 1 and 2's
 // full-bleed treatment, not a split between that and a separate boxed-strip
-// +solid-copy-zone layout. All five of these are real product screenshots
-// (education-saas and health-platform got a proper re-shoot the same day --
-// see src/data/workReel.ts's header comment -- replacing two pre-cropped
-// thin strips) -- none survives a hard `object-cover` crop, since cropping a
-// screenshot cuts through real UI chrome (caught live: made-to-measure-
-// shopify's raw storefront crop left a sidebar icon peeking outside the
-// rounded corner). CONTAIN_SLUGS marks them so they render with
-// `object-contain` on a solid backdrop instead of `object-cover`, so nothing
-// gets cropped or stretched, while everything else about the card
-// (full-bleed shape, gradient title overlay, no separate copy zone) matches
-// card 1 and 2 exactly.
-const CONTAIN_SLUGS = new Set([
-  "education-saas",
-  "health-platform",
-  "made-to-measure-shopify",
-  "spotter-eld",
-  "streak",
-]);
+// +solid-copy-zone layout. CONTAIN_SLUGS marks screenshots that don't survive
+// a hard `object-cover` crop, since cropping cuts through real UI chrome
+// (caught live: made-to-measure-shopify's raw storefront crop left a sidebar
+// icon peeking outside the rounded corner) -- those get `object-contain` on
+// a solid backdrop instead, so nothing gets cropped or stretched.
+//
+// education-saas and health-platform came OFF this list the same day (23
+// Sep, "di zoom seperti card 1 dan 2"): their source is the illustrated
+// mockup itself (health.tsx / education.tsx via motion.tsx), not a captured
+// screenshot, so unlike the three below there's no risk of cropping through
+// chrome we don't control -- the crop is safe to zoom because it's already
+// composed the same way card 1 and 2 read (see mockup-preview/mockup-video's
+// own #shot-target crop, which captures the mockup's own device-frame bezel
+// edge to edge, not a browser tab around it).
+const CONTAIN_SLUGS = new Set(["made-to-measure-shopify", "spotter-eld", "streak"]);
 
 // The one card layout: full-bleed image/video, title + one pill on a dark
 // gradient over it, same language the viens-la.com reference uses for its
 // project cards. `contain` mode (see CONTAIN_SLUGS) is the only branch --
 // same overlay, same typography, just object-contain over a solid backdrop
 // instead of object-cover, for images a crop would mangle.
+// The two mockup slugs are a landscape 1624x1116 device-frame crop (see
+// CONTAIN_SLUGS's comment) -- close to the card's own aspect ratio, so
+// object-cover only trims a little off the top and bottom, but the hero
+// card these mockups lead with sits right at the top of that frame. Pinning
+// the crop to the top means whatever gets trimmed comes off the bottom
+// (empty card padding), not the hero.
+const TOP_ANCHOR_SLUGS = new Set(["education-saas", "health-platform"]);
+
 function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
   const captionTone = PILL_TONES[(index + 1) % PILL_TONES.length];
   const contain = CONTAIN_SLUGS.has(item.slug);
+  const topAnchor = TOP_ANCHOR_SLUGS.has(item.slug);
   // Reduced-motion still gets the card -- it just gets the poster frame,
   // not the loop. autoPlay is the only thing gated; the <video> element
   // itself renders either way so the poster still shows as a still image.
@@ -106,7 +112,7 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
           loop
           muted
           playsInline
-          className={`absolute inset-0 h-full w-full ${contain ? "object-contain object-top p-10 sm:p-16" : "object-cover"}`}
+          className={`absolute inset-0 h-full w-full ${contain ? "object-contain object-top p-10 sm:p-16" : topAnchor ? "object-cover object-top" : "object-cover"}`}
         />
       ) : (
         <Image
@@ -114,7 +120,7 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
           alt={item.image.alt}
           fill
           sizes="(min-width: 640px) 90vw, 100vw"
-          className={contain ? "object-contain object-top p-10 sm:p-16" : "object-cover"}
+          className={contain ? "object-contain object-top p-10 sm:p-16" : topAnchor ? "object-cover object-top" : "object-cover"}
           priority={index === 0}
         />
       )}
