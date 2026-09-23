@@ -8,34 +8,37 @@
    levelled topic tree, the quiz engine, and the fortnightly AI-generated
    class-performance summary. */
 
-// Near-black + single amber accent, same restraint as the rest of the site
-// (globals.css --color-accent). Was a light-mode UI matching the real
-// product's own colour family; inverted to the site's dark canvas on
-// purpose, with every distinct hue (subject categories, warning states)
-// collapsed to the one accent -- the site's literal single-accent language
-// over per-category or per-state differentiation.
+// Recoloured to fit the site's actual home theme (globals.css .theme-green):
+// a dark green-tinted surface stack instead of near-black, subject
+// categories and CTA fills pulled from the theme's real pastel family (sun,
+// sky, mint, plus two same-family extensions) instead of one collapsed
+// accent, and low-completion/low-accuracy warning states in rose. Still a
+// dark canvas (inverted from the real product's light-mode UI) -- only the
+// hue family changed, not the light/dark direction. Any solid pastel fill
+// pairs with "#152012" (--color-pastel-ink) for its text, matching
+// Contact.tsx's real CTA convention.
 const P = {
-  headerTop: "#16161a",
-  headerDark: "#0f0f12",
-  body: "#0a0a0b",
-  side: "#0f0f12",
-  white: "#16161a",
-  navy: "#1e1e24",
-  navyDeep: "#242429",
-  blue: "#ff6a12",
-  blueDark: "#ff6a12",
-  ink: "#ededef",
-  inkDim: "#9a9aa4",
-  green: "#ff6a12",
-  maroon: "#ff6a12",
+  headerTop: "#17251f",
+  headerDark: "#101d18",
+  body: "#0c1712",
+  side: "#101d18",
+  white: "#17251f",
+  navy: "#1f342a",
+  navyDeep: "#263b31",
+  blue: "#ffe375",
+  blueDark: "#ffe375",
+  ink: "#eef1ea",
+  inkDim: "#a7b6ac",
+  green: "#a6e8fa",
+  maroon: "#ffbf8f",
 };
 
 const SUBJECTS = [
-  { l: "Biology", lv: "Units 3 & 4", c: "#ff6a12", icon: "scope" as const },
-  { l: "Biology", lv: "Year 10", c: "#ff6a12", icon: "dna" as const },
+  { l: "Biology", lv: "Units 3 & 4", c: "#9cf0cb", icon: "scope" as const },
+  { l: "Biology", lv: "Year 10", c: "#9cf0cb", icon: "dna" as const },
   { l: "Chemistry", lv: "Units 1 & 2", c: P.green, icon: "flask" as const },
-  { l: "Physics", lv: "Year 10", c: "#ff6a12", icon: "atom" as const },
-  { l: "Biology", lv: "Year 11", c: "#ff6a12", icon: "cell" as const },
+  { l: "Physics", lv: "Year 10", c: "#c9baf5", icon: "atom" as const },
+  { l: "Biology", lv: "Year 11", c: "#9cf0cb", icon: "cell" as const },
   { l: "Chemistry", lv: "Year 10", c: P.green, icon: "flask" as const },
   { l: "Forensics", lv: "Year 10", c: P.maroon, icon: "scope" as const },
 ];
@@ -109,10 +112,10 @@ function Head({ full = true }: { full?: boolean }) {
         <span style={{ color: "rgba(255,255,255,0.8)" }}>
           <Glyph d={G.sound} size={9} />
         </span>
-        <span className="mono grid h-4 w-4 place-items-center rounded-full text-[6px] font-semibold" style={{ background: P.blue, color: "#ffffff" }}>
+        <span className="mono grid h-4 w-4 place-items-center rounded-full text-[6px] font-semibold" style={{ background: P.blue, color: "#152012" }}>
           ?
         </span>
-        <span className="mono grid h-4 w-4 place-items-center rounded-full text-[5.5px] font-semibold" style={{ background: "#ff6a12", color: "#ffffff" }}>
+        <span className="mono grid h-4 w-4 place-items-center rounded-full text-[5.5px] font-semibold" style={{ background: "#ffe375", color: "#152012" }}>
           AK
         </span>
       </div>
@@ -133,7 +136,7 @@ export function EduWeb1() {
         <div className="grid grid-cols-7 gap-2">
           {SUBJECTS.map((s, i) => (
             <div key={`${s.l}-${i}`} className="overflow-hidden rounded-md" style={{ background: s.c }}>
-              <div className="flex flex-col items-center gap-1 px-1 pb-1.5 pt-3" style={{ color: "#ffffff" }}>
+              <div className="flex flex-col items-center gap-1 px-1 pb-1.5 pt-3" style={{ color: "#152012" }}>
                 <Glyph d={G[s.icon]} size={20} w={1.4} />
                 <span className="mono mt-1 text-[7px] font-semibold uppercase tracking-wide">{s.l}</span>
               </div>
@@ -162,7 +165,7 @@ export function EduWeb2() {
       <Head />
       <div className="flex flex-1 overflow-hidden">
         <aside className="w-[22%] shrink-0 px-2 py-2" style={{ background: P.side }}>
-          <div className="flex items-center gap-1 rounded-full border px-1.5 py-1" style={{ background: P.white, borderColor: "#242429", color: P.inkDim }}>
+          <div className="flex items-center gap-1 rounded-full border px-1.5 py-1" style={{ background: P.white, borderColor: "#263b31", color: P.inkDim }}>
             <Glyph d={G.search} size={7} />
             <span className="mono text-[5.5px]">Search</span>
           </div>
@@ -187,16 +190,16 @@ export function EduWeb2() {
             <span className="mono rounded-t px-2 py-[3px] text-[6.5px] font-semibold" style={{ background: P.white, color: P.ink }}>
               Level 1
             </span>
-            <span className="mono rounded-t px-2 py-[3px] text-[6.5px]" style={{ background: "#1e1e24", color: P.inkDim }}>
+            <span className="mono rounded-t px-2 py-[3px] text-[6.5px]" style={{ background: "#1f342a", color: P.inkDim }}>
               Level 2
             </span>
             <span className="mx-auto" style={{ color: P.inkDim }}>
               <Glyph d={G.chevDD} size={8} w={2.2} />
             </span>
-            <span className="mono rounded px-2 py-[3px] text-[6.5px]" style={{ background: P.blue, color: "#ffffff" }}>
+            <span className="mono rounded px-2 py-[3px] text-[6.5px]" style={{ background: P.blue, color: "#152012" }}>
               Tasks
             </span>
-            <span className="mono rounded px-2 py-[3px] text-[6.5px]" style={{ background: P.blue, color: "#ffffff" }}>
+            <span className="mono rounded px-2 py-[3px] text-[6.5px]" style={{ background: P.blue, color: "#152012" }}>
               Quiz
             </span>
           </div>
@@ -225,13 +228,13 @@ export function EduWeb3() {
   return (
     <Shell>
       <Head />
-      <div className="shrink-0 px-3 py-1.5" style={{ background: "#16161a" }}>
+      <div className="shrink-0 px-3 py-1.5" style={{ background: "#17251f" }}>
         <span className="mono text-[6px]" style={{ color: P.inkDim }}>
           Genetics &rsaquo; Inheritance patterns &rsaquo; Level 1
         </span>
       </div>
       <div className="flex flex-1 items-center justify-center" style={{ background: P.white }}>
-        <div className="w-[46%] rounded-lg px-3 py-2.5" style={{ background: P.blue, color: "#ffffff" }}>
+        <div className="w-[46%] rounded-lg px-3 py-2.5" style={{ background: P.blue, color: "#152012" }}>
           <div className="flex items-center justify-between">
             <span className="mono text-[8px] font-semibold">Q1/10</span>
             <span className="mono text-[8px] font-semibold tracking-wide">LEVEL 1</span>
@@ -282,21 +285,21 @@ export function EduWeb4() {
               Fortnight to 21 Aug
             </span>
           </div>
-          <div className="mono mt-2 grid grid-cols-[1.6fr_0.5fr_1.2fr_0.6fr] gap-1 border-b pb-1 text-[5.5px] uppercase tracking-wide" style={{ borderColor: "#242429", color: P.inkDim }}>
+          <div className="mono mt-2 grid grid-cols-[1.6fr_0.5fr_1.2fr_0.6fr] gap-1 border-b pb-1 text-[5.5px] uppercase tracking-wide" style={{ borderColor: "#263b31", color: P.inkDim }}>
             <span>Class</span>
             <span>Students</span>
             <span>Quiz completion</span>
             <span>Avg</span>
           </div>
           {classes.map((c) => (
-            <div key={c.l} className="mono grid grid-cols-[1.6fr_0.5fr_1.2fr_0.6fr] items-center gap-1 border-b py-[5px] text-[6px]" style={{ borderColor: "#242429" }}>
+            <div key={c.l} className="mono grid grid-cols-[1.6fr_0.5fr_1.2fr_0.6fr] items-center gap-1 border-b py-[5px] text-[6px]" style={{ borderColor: "#263b31" }}>
               <span>
                 {c.l} <span style={{ color: P.inkDim }}>&middot; {c.sub}</span>
               </span>
               <span style={{ color: P.inkDim }}>{c.n}</span>
               <span className="flex items-center gap-1">
-                <span className="h-[4px] flex-1 rounded-full" style={{ background: "#242429" }}>
-                  <span className="block h-full rounded-full" style={{ width: `${c.done}%`, background: c.done < 50 ? "#ff6a12" : P.blue }} />
+                <span className="h-[4px] flex-1 rounded-full" style={{ background: "#263b31" }}>
+                  <span className="block h-full rounded-full" style={{ width: `${c.done}%`, background: c.done < 50 ? "#ffa9a9" : P.blue }} />
                 </span>
                 <span style={{ color: P.inkDim }}>{c.done}%</span>
               </span>
@@ -326,10 +329,10 @@ export function EduWeb4() {
               </div>
             ))}
           </div>
-          <div className="mono mt-2 flex items-center gap-1 rounded px-2 py-[4px] text-[6px]" style={{ background: P.blue, color: "#ffffff" }}>
+          <div className="mono mt-2 flex items-center gap-1 rounded px-2 py-[4px] text-[6px]" style={{ background: P.blue, color: "#152012" }}>
             <Glyph d={G.users} size={7} /> Email this to my teachers
           </div>
-          <div className="mono mt-2 border-t pt-1.5 text-[5.5px] uppercase tracking-wide" style={{ borderColor: "#242429", color: P.inkDim }}>
+          <div className="mono mt-2 border-t pt-1.5 text-[5.5px] uppercase tracking-wide" style={{ borderColor: "#263b31", color: P.inkDim }}>
             Topic accuracy across all classes
           </div>
           <div className="mt-1 space-y-1">
@@ -337,12 +340,12 @@ export function EduWeb4() {
               <div key={t.l}>
                 <div className="mono flex items-baseline text-[6px]">
                   <span>{t.l}</span>
-                  <span className="ml-auto" style={{ color: t.v < 60 ? "#ff6a12" : P.inkDim }}>
+                  <span className="ml-auto" style={{ color: t.v < 60 ? "#ffa9a9" : P.inkDim }}>
                     {t.v}%
                   </span>
                 </div>
-                <div className="mt-[2px] h-[4px] rounded-full" style={{ background: "#242429" }}>
-                  <div className="h-full rounded-full" style={{ width: `${t.v}%`, background: t.v < 60 ? "#ff6a12" : P.blue }} />
+                <div className="mt-[2px] h-[4px] rounded-full" style={{ background: "#263b31" }}>
+                  <div className="h-full rounded-full" style={{ width: `${t.v}%`, background: t.v < 60 ? "#ffa9a9" : P.blue }} />
                 </div>
               </div>
             ))}
@@ -364,11 +367,11 @@ export function EduWeb4() {
               { c: "Class E", t: "Reaction rates", s: "Level 1", v: "19/27 submitted" },
               { c: "Class F", t: "Forces and motion", s: "Level 2", v: "16/25 submitted" },
             ].map((a) => (
-              <div key={a.c} className="rounded border px-2 py-1.5" style={{ borderColor: "#242429" }}>
+              <div key={a.c} className="rounded border px-2 py-1.5" style={{ borderColor: "#263b31" }}>
                 <div className="mono flex items-center gap-1 text-[6px] font-semibold">
                   <span className="h-1 w-1 rounded-full" style={{ background: P.blue }} />
                   {a.c}
-                  <span className="ml-auto rounded px-1 py-[1px] text-[5px]" style={{ background: "#1e1e24", color: P.inkDim }}>
+                  <span className="ml-auto rounded px-1 py-[1px] text-[5px]" style={{ background: "#1f342a", color: P.inkDim }}>
                     {a.s}
                   </span>
                 </div>
@@ -400,7 +403,7 @@ function PhoneHead({ title }: { title: string }) {
         <span className="text-[8px] font-semibold" style={{ color: "#ffffff" }}>
           {title}
         </span>
-        <span className="mono ml-auto grid h-4 w-4 place-items-center rounded-full text-[5.5px] font-semibold" style={{ background: "#ff6a12", color: "#ffffff" }}>
+        <span className="mono ml-auto grid h-4 w-4 place-items-center rounded-full text-[5.5px] font-semibold" style={{ background: "#ffe375", color: "#152012" }}>
           AK
         </span>
       </div>
@@ -416,7 +419,7 @@ export function EduMobile1() {
         <div className="grid grid-cols-2 gap-2">
           {SUBJECTS.slice(0, 6).map((s, i) => (
             <div key={`${s.l}-${i}`} className="overflow-hidden rounded-md" style={{ background: s.c }}>
-              <div className="flex flex-col items-center gap-1 px-1 pb-1.5 pt-3" style={{ color: "#ffffff" }}>
+              <div className="flex flex-col items-center gap-1 px-1 pb-1.5 pt-3" style={{ color: "#152012" }}>
                 <Glyph d={G[s.icon]} size={22} w={1.4} />
                 <span className="mono mt-1 text-[7px] font-semibold uppercase tracking-wide">{s.l}</span>
               </div>
@@ -435,7 +438,7 @@ export function EduMobile2() {
   return (
     <Shell>
       <PhoneHead title="Genetics" />
-      <div className="shrink-0 px-2.5 py-1.5" style={{ background: "#16161a" }}>
+      <div className="shrink-0 px-2.5 py-1.5" style={{ background: "#17251f" }}>
         <span className="mono text-[5.5px]" style={{ color: P.inkDim }}>
           SCIENCE 10 &rsaquo; Genetics
         </span>
@@ -444,10 +447,10 @@ export function EduMobile2() {
         <span className="mono rounded px-2 py-[3px] text-[6.5px] font-semibold" style={{ background: P.white, color: P.ink }}>
           Level 1
         </span>
-        <span className="mono rounded px-2 py-[3px] text-[6.5px]" style={{ background: "#1e1e24", color: P.inkDim }}>
+        <span className="mono rounded px-2 py-[3px] text-[6.5px]" style={{ background: "#1f342a", color: P.inkDim }}>
           Level 2
         </span>
-        <span className="mono ml-auto rounded px-2 py-[3px] text-[6.5px]" style={{ background: P.blue, color: "#ffffff" }}>
+        <span className="mono ml-auto rounded px-2 py-[3px] text-[6.5px]" style={{ background: P.blue, color: "#152012" }}>
           Quiz
         </span>
       </div>
@@ -470,13 +473,13 @@ export function EduMobile3() {
   return (
     <Shell>
       <PhoneHead title="Quiz" />
-      <div className="shrink-0 px-2.5 py-1.5" style={{ background: "#16161a" }}>
+      <div className="shrink-0 px-2.5 py-1.5" style={{ background: "#17251f" }}>
         <span className="mono text-[5.5px]" style={{ color: P.inkDim }}>
           Genetics &rsaquo; Inheritance patterns &rsaquo; Level 1
         </span>
       </div>
       <div className="flex flex-1 items-center justify-center px-2.5" style={{ background: P.white }}>
-        <div className="w-full rounded-lg px-2.5 py-2.5" style={{ background: P.blue, color: "#ffffff" }}>
+        <div className="w-full rounded-lg px-2.5 py-2.5" style={{ background: P.blue, color: "#152012" }}>
           <div className="flex items-center justify-between">
             <span className="mono text-[8px] font-semibold">Q1/10</span>
             <span className="mono text-[8px] font-semibold tracking-wide">LEVEL 1</span>

@@ -7,25 +7,30 @@
    the cross-domain longevity score, the biological-age model, and the AI
    insight feed. */
 
-// Near-black + single amber accent, same restraint as the rest of the site
-// (globals.css --color-accent). The 6 domain/marker colors below all
-// collapsed to one hue on purpose -- a deliberate call to match the site's
-// literal single-accent language over per-category differentiation.
+// Recoloured to fit the site's actual home theme (globals.css .theme-green):
+// a dark green-tinted surface stack instead of near-black, and the 6
+// domain/marker hues each pulled from the theme's real pastel family (sun,
+// sky, rose, mint, plus two same-family extensions) instead of collapsing to
+// one accent -- differentiation reads better at this card's small scale than
+// the old single-hue restraint did. Any solid pastel fill pairs with
+// "#152012" (--color-pastel-ink) for its text, matching Contact.tsx's real
+// CTA convention; translucent `${P.x}26`-style tints keep P.x as their own
+// text colour, unaffected.
 const P = {
-  bg: "#0a0a0b",
-  strip: "#0f0f12",
-  card: "#16161a",
-  card2: "#1e1e24",
-  line: "#242429",
-  purple: "#ff6a12",
-  mint: "#ff6a12",
-  amber: "#ff6a12",
-  red: "#ff6a12",
-  sky: "#ff6a12",
-  pink: "#ff6a12",
-  fg: "#ededef",
-  dim: "#9a9aa4",
-  mute: "#74747f",
+  bg: "#0c1712",
+  strip: "#101d18",
+  card: "#17251f",
+  card2: "#1f342a",
+  line: "#263b31",
+  purple: "#ffe375",
+  mint: "#9cf0cb",
+  amber: "#ffbf8f",
+  red: "#ffa9a9",
+  sky: "#a6e8fa",
+  pink: "#c9baf5",
+  fg: "#eef1ea",
+  dim: "#a7b6ac",
+  mute: "#7e9186",
 };
 
 const DOMAINS = [
@@ -101,7 +106,7 @@ function Head({ active = 0 }: { active?: number }) {
   return (
     <div className="flex shrink-0 items-center gap-3 px-3 py-2">
       {/* Anonymous mark: no client wordmark is reproduced. */}
-      <span className="grid h-5 w-5 shrink-0 place-items-center rounded-md" style={{ background: `linear-gradient(140deg, ${P.purple}, ${P.mint})`, color: "#0b0918" }}>
+      <span className="grid h-5 w-5 shrink-0 place-items-center rounded-md" style={{ background: `linear-gradient(140deg, ${P.purple}, ${P.mint})`, color: "#152012" }}>
         <Glyph d={G.pulse} size={11} w={2.2} />
       </span>
       <div className="mx-auto flex items-center gap-0.5">
@@ -192,7 +197,7 @@ function DomainBars() {
             </span>
             <span className="mono ml-auto text-[6px] font-semibold">{d.v}</span>
           </div>
-          <div className="mt-[2px] h-[3px] rounded-full" style={{ background: "#242429" }}>
+          <div className="mt-[2px] h-[3px] rounded-full" style={{ background: "#263b31" }}>
             <div className="h-full rounded-full" style={{ width: `${d.v}%`, background: `linear-gradient(90deg, ${d.c}, ${P.mint})` }} />
           </div>
         </div>
@@ -232,7 +237,7 @@ export function HealthWeb1() {
               </div>
             ))}
           </div>
-          <span className="mono mt-2 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[6.5px]" style={{ background: P.purple, color: "#0b0918" }}>
+          <span className="mono mt-2 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[6.5px]" style={{ background: P.purple, color: "#152012" }}>
             View full report &rarr;
           </span>
         </Card>
@@ -243,7 +248,7 @@ export function HealthWeb1() {
             text="GOAL TRACKING"
             color={P.sky}
             right={
-              <span className="mono rounded-full px-1.5 py-[2px] text-[5.5px]" style={{ background: "#242429", color: P.dim }}>
+              <span className="mono rounded-full px-1.5 py-[2px] text-[5.5px]" style={{ background: "#263b31", color: P.dim }}>
                 View progress &rsaquo;
               </span>
             }
@@ -275,7 +280,7 @@ export function HealthWeb1() {
           <div className="mt-2 flex items-center gap-3">
             <div className="relative grid h-[62px] w-[62px] shrink-0 place-items-center">
               <svg viewBox="0 0 36 36" className="-rotate-90 h-[62px] w-[62px]">
-                <circle cx="18" cy="18" r="15.5" fill="none" stroke="#242429" strokeWidth="3.4" />
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke="#263b31" strokeWidth="3.4" />
                 <circle cx="18" cy="18" r="15.5" fill="none" stroke={P.mint} strokeWidth="3.4" strokeLinecap="round" strokeDasharray="82 100" />
               </svg>
               <span className="absolute text-center">
@@ -309,7 +314,7 @@ export function HealthWeb2() {
           <div className="mt-2 flex items-center gap-2.5">
             <div className="relative grid h-[68px] w-[68px] shrink-0 place-items-center">
               <svg viewBox="0 0 36 36" className="-rotate-90 h-[68px] w-[68px]">
-                <circle cx="18" cy="18" r="15.5" fill="none" stroke="#242429" strokeWidth="3.4" />
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke="#263b31" strokeWidth="3.4" />
                 <circle cx="18" cy="18" r="15.5" fill="none" stroke={P.mint} strokeWidth="3.4" strokeLinecap="round" strokeDasharray="82 100" />
               </svg>
               <span className="absolute text-center">
@@ -324,7 +329,7 @@ export function HealthWeb2() {
           <div className="mono mt-2 text-[5.5px]" style={{ color: P.dim }}>
             <span style={{ color: P.amber }}>&#9679;</span> Priority: <span style={{ color: P.fg }}>Cardiovascular</span> optimisation
           </div>
-          <div className="mono mt-1.5 rounded-md py-1 text-center text-[6px]" style={{ background: "#242429", color: P.dim }}>
+          <div className="mono mt-1.5 rounded-md py-1 text-center text-[6px]" style={{ background: "#263b31", color: P.dim }}>
             See all insights
           </div>
         </Card>
@@ -339,7 +344,7 @@ export function HealthWeb2() {
               { l: "Magnesium before bed", done: false },
             ].map((t) => (
               <div key={t.l} className="flex items-center gap-1.5 rounded-md border px-1.5 py-1" style={{ background: P.card2, borderColor: P.line }}>
-                <span className="grid h-3 w-3 place-items-center rounded-full" style={{ background: t.done ? `${P.mint}26` : "#242429", color: t.done ? P.mint : P.mute }}>
+                <span className="grid h-3 w-3 place-items-center rounded-full" style={{ background: t.done ? `${P.mint}26` : "#263b31", color: t.done ? P.mint : P.mute }}>
                   <Glyph d={G.check} size={6} w={2.6} />
                 </span>
                 <span className="mono text-[6px]" style={{ color: t.done ? P.dim : P.fg }}>
@@ -442,7 +447,7 @@ export function HealthWeb2() {
             <div className="mt-1 flex items-center gap-3">
               <div className="relative grid h-[44px] w-[44px] shrink-0 place-items-center">
                 <svg viewBox="0 0 36 36" className="-rotate-90 h-[44px] w-[44px]">
-                  <circle cx="18" cy="18" r="15.5" fill="none" stroke="#242429" strokeWidth="3.6" />
+                  <circle cx="18" cy="18" r="15.5" fill="none" stroke="#263b31" strokeWidth="3.6" />
                   <circle cx="18" cy="18" r="15.5" fill="none" stroke={P.sky} strokeWidth="3.6" strokeLinecap="round" strokeDasharray="70 100" />
                 </svg>
                 <span className="mono absolute text-[9px] font-semibold">0.91x</span>
@@ -496,9 +501,9 @@ export function HealthWeb2() {
 /* Screen 3: the AI insight feed. */
 export function HealthWeb3() {
   const stats = [
-    { v: "12", l: "Total insights", from: "#ff6a12", to: "#ff6a12", icon: G.chart },
-    { v: "6", l: "Act now", from: "#ff6a12", to: "#ff6a12", icon: G.spark },
-    { v: "82", l: "Longevity score", from: "#ff6a12", to: "#ff6a12", icon: G.pulse },
+    { v: "12", l: "Total insights", from: "#ffe375", to: "#ffe375", icon: G.chart },
+    { v: "6", l: "Act now", from: "#ffa9a9", to: "#ffa9a9", icon: G.spark },
+    { v: "82", l: "Longevity score", from: "#9cf0cb", to: "#9cf0cb", icon: G.pulse },
   ];
   const rows = [
     { t: "Keep Zone 2 cardio at 150 minutes weekly", s: "Lipids, metabolic health, cardiovascular resilience", tags: ["Low priority", "Fitness", "Ongoing"], c: P.mint, badge: "On track" },
@@ -520,7 +525,7 @@ export function HealthWeb3() {
         </div>
         <div className="grid grid-cols-3 gap-1.5">
           {stats.map((s) => (
-            <div key={s.l} className="flex items-center gap-2 rounded-lg px-2.5 py-1.5" style={{ background: `linear-gradient(120deg, ${s.from}, ${s.to})`, color: "#08160f" }}>
+            <div key={s.l} className="flex items-center gap-2 rounded-lg px-2.5 py-1.5" style={{ background: `linear-gradient(120deg, ${s.from}, ${s.to})`, color: "#152012" }}>
               <Glyph d={s.icon} size={12} />
               <div>
                 <div className="mono text-[12px] font-semibold leading-none">{s.v}</div>
@@ -534,7 +539,7 @@ export function HealthWeb3() {
             <span
               key={c}
               className="mono rounded-full border px-1.5 py-[2px] text-[5.5px]"
-              style={i === 0 ? { background: P.purple, borderColor: P.purple, color: "#0b0918" } : { borderColor: P.line, color: P.dim }}
+              style={i === 0 ? { background: P.purple, borderColor: P.purple, color: "#152012" } : { borderColor: P.line, color: P.dim }}
             >
               {c}
             </span>
@@ -578,7 +583,7 @@ export function HealthWeb3() {
                 <span className="mono flex items-center gap-1 rounded-full border px-1.5 py-[2px] text-[5px]" style={{ borderColor: P.line, color: P.dim }}>
                   <Glyph d={G.bell} size={5} /> Remind me
                 </span>
-                <span className="mono flex items-center gap-1 rounded-full px-1.5 py-[2px] text-[5px]" style={{ background: P.purple, color: "#0b0918" }}>
+                <span className="mono flex items-center gap-1 rounded-full px-1.5 py-[2px] text-[5px]" style={{ background: P.purple, color: "#152012" }}>
                   <Glyph d={G.chat} size={5} /> Ask AI
                 </span>
               </div>
@@ -671,7 +676,7 @@ export function HealthWeb4() {
                       p{s.p}
                     </span>
                   </div>
-                  <div className="mt-[3px] h-[3px] rounded-full" style={{ background: "#242429" }}>
+                  <div className="mt-[3px] h-[3px] rounded-full" style={{ background: "#263b31" }}>
                     <div className="h-full rounded-full" style={{ width: `${s.p}%`, background: s.c }} />
                   </div>
                 </div>
@@ -683,7 +688,7 @@ export function HealthWeb4() {
             <div className="mt-1.5 flex items-center gap-1">
               {["Upload PDF", "Parse regions", "Auto-crop", "Score vs cohort"].map((s, i) => (
                 <span key={s} className="mono flex items-center gap-1 text-[5.5px]" style={{ color: i < 3 ? P.mint : P.dim }}>
-                  <span className="grid h-3 w-3 place-items-center rounded-full" style={{ background: i < 3 ? `${P.mint}26` : "#242429", color: i < 3 ? P.mint : P.mute }}>
+                  <span className="grid h-3 w-3 place-items-center rounded-full" style={{ background: i < 3 ? `${P.mint}26` : "#263b31", color: i < 3 ? P.mint : P.mute }}>
                     <Glyph d={G.check} size={6} w={2.4} />
                   </span>
                   {s}
@@ -708,7 +713,7 @@ export function HealthWeb4() {
               { r: "Trunk", f: "20.1", l: "26.2", d: "-0.4" },
               { r: "Android", f: "22.4", l: "5.1", d: "-0.2" },
             ].map((row) => (
-              <div key={row.r} className="mono grid grid-cols-[1.2fr_repeat(3,0.8fr)] gap-1 border-b py-[4px] text-[6px]" style={{ borderColor: "#242429" }}>
+              <div key={row.r} className="mono grid grid-cols-[1.2fr_repeat(3,0.8fr)] gap-1 border-b py-[4px] text-[6px]" style={{ borderColor: "#263b31" }}>
                 <span style={{ color: P.fg }}>{row.r}</span>
                 <span style={{ color: P.dim }}>{row.f}</span>
                 <span style={{ color: P.dim }}>{row.l}</span>
@@ -781,7 +786,7 @@ export function HealthWeb5() {
               </div>
             ))}
           </div>
-          <div className="mono mt-2 flex items-center justify-center gap-1 rounded-md py-1 text-[6px]" style={{ background: P.purple, color: "#0b0918" }}>
+          <div className="mono mt-2 flex items-center justify-center gap-1 rounded-md py-1 text-[6px]" style={{ background: P.purple, color: "#152012" }}>
             <Glyph d={G.chat} size={6} /> Ask AI about this pairing
           </div>
         </Card>
@@ -805,7 +810,7 @@ export function HealthWeb5() {
                     {g.v}
                   </span>
                 </div>
-                <div className="mt-[2px] h-[3px] rounded-full" style={{ background: "#242429" }}>
+                <div className="mt-[2px] h-[3px] rounded-full" style={{ background: "#263b31" }}>
                   <div className="h-full rounded-full" style={{ width: `${g.v}%`, background: g.c }} />
                 </div>
               </div>
@@ -825,7 +830,7 @@ function PhoneHead({ title }: { title: string }) {
     <div className="shrink-0" style={{ background: P.strip }}>
       <div className="h-4" />
       <div className="flex items-center gap-2 px-3 pb-2">
-        <span className="grid h-4 w-4 place-items-center rounded" style={{ background: `linear-gradient(140deg, ${P.purple}, ${P.mint})`, color: "#0b0918" }}>
+        <span className="grid h-4 w-4 place-items-center rounded" style={{ background: `linear-gradient(140deg, ${P.purple}, ${P.mint})`, color: "#152012" }}>
           <Glyph d={G.pulse} size={9} />
         </span>
         <span className="text-[8px] font-semibold">{title}</span>
@@ -868,7 +873,7 @@ export function HealthMobile1() {
           <div className="mt-1.5 grid place-items-center">
             <div className="relative grid h-[74px] w-[74px] place-items-center">
               <svg viewBox="0 0 36 36" className="-rotate-90 h-[74px] w-[74px]">
-                <circle cx="18" cy="18" r="15.5" fill="none" stroke="#242429" strokeWidth="3.4" />
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke="#263b31" strokeWidth="3.4" />
                 <circle cx="18" cy="18" r="15.5" fill="none" stroke={P.mint} strokeWidth="3.4" strokeLinecap="round" strokeDasharray="82 100" />
               </svg>
               <span className="absolute text-center">
@@ -887,7 +892,7 @@ export function HealthMobile1() {
                   <span className="mono text-[6px]">{d.l}</span>
                   <span className="mono ml-auto text-[6px] font-semibold">{d.v}</span>
                 </div>
-                <div className="mt-[2px] h-[3px] rounded-full" style={{ background: "#242429" }}>
+                <div className="mt-[2px] h-[3px] rounded-full" style={{ background: "#263b31" }}>
                   <div className="h-full rounded-full" style={{ width: `${d.v}%`, background: d.c }} />
                 </div>
               </div>
@@ -944,7 +949,7 @@ export function HealthMobile2() {
             </div>
           ))}
         </div>
-        <div className="mono rounded-full py-1.5 text-center text-[7px]" style={{ background: P.purple, color: "#0b0918" }}>
+        <div className="mono rounded-full py-1.5 text-center text-[7px]" style={{ background: P.purple, color: "#152012" }}>
           View full report
         </div>
       </div>
@@ -970,7 +975,7 @@ export function HealthMobile3() {
           <span
             key={c}
             className="mono rounded-full border px-1.5 py-[2px] text-[5.5px]"
-            style={i === 0 ? { background: P.purple, borderColor: P.purple, color: "#0b0918" } : { borderColor: P.line, color: P.dim }}
+            style={i === 0 ? { background: P.purple, borderColor: P.purple, color: "#152012" } : { borderColor: P.line, color: P.dim }}
           >
             {c}
           </span>
