@@ -23,9 +23,12 @@ export type WorkReelItem = {
     alt: string;
   };
   // Optional looping preview clip, muted/no controls, shown instead of the
-  // static image where a real clip exists (only ai-video-production has
-  // one -- the others are screenshots of software, not footage, so a still
-  // image is the honest preview for them). `image` stays as the <video>'s
+  // static image where one exists. ai-video-production's is real footage;
+  // health-platform's and education-saas's are the SAME illustrated mockup
+  // component (src/components/mockups/motion.tsx) rendered frame-by-frame
+  // at increasing `progress` and stitched into an mp4, not real product
+  // footage -- still an honest preview since it's the same mockup the case
+  // study page itself uses, just animated. `image` stays as the <video>'s
   // poster frame either way.
   video?: string;
 };
@@ -70,6 +73,7 @@ export const workReel: WorkReelItem[] = [
       height: 1116,
       alt: "The fortnightly class-insights dashboard from the curriculum-aligned learning platform: completion, topic accuracy and which class needs a nudge.",
     },
+    video: "/work/education-saas/insights-card.mp4",
   },
   {
     slug: "health-platform",
@@ -83,6 +87,7 @@ export const workReel: WorkReelItem[] = [
       height: 1116,
       alt: "The dashboard of the health optimisation platform, showing connected wearables, flagged blood markers and the six-domain longevity score.",
     },
+    video: "/work/health-platform/dashboard-card.mp4",
   },
   {
     slug: "made-to-measure-shopify",
