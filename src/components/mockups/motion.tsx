@@ -37,13 +37,29 @@ function windowProgress(progress: number, start: number, end: number) {
 function reveal(local: number): React.CSSProperties {
   return {
     opacity: local,
-    transform: `translateY(${(1 - local) * 8}px)`,
+    transform: `translateY(${(1 - local) * 14}px)`,
   };
 }
 
 /** SVG stroke-dasharray for a ring gauge drawing in to `final` percent. */
 function ringDash(local: number, final: number) {
   return `${(final * local).toFixed(1)} 100`;
+}
+
+// A one-shot reveal finishes and then just sits there -- most of these cards
+// are done revealing well before the loop ends (see HealthAnimatedCard/
+// EducationAnimatedCard's own windows), so a glance that lands in that back
+// half of the loop reads the card as a still image even though earlier
+// frames genuinely differ (confirmed by diffing the rendered frames
+// directly). `pulse` is the fix: a small continuously-breathing opacity,
+// independent of any one-shot window, gated on `after` so it only starts
+// once its anchor label has faded in -- gives a glance-length "this is
+// live" cue no matter where in the loop it lands, instead of relying on
+// catching the reveal itself.
+function pulse(progress: number, after: number, period = 0.16) {
+  if (progress < after) return 0;
+  const t = (progress - after) / period;
+  return 0.5 + 0.5 * Math.abs(Math.sin(t * Math.PI));
 }
 
 const HP = {
@@ -149,6 +165,7 @@ export function HealthAnimatedCard({ progress }: { progress: number }) {
   const flagLocal = windowProgress(progress, 0.5, 0.56);
   const tileLocal = HEALTH_MARKERS.map((_, i) => windowProgress(progress, 0.56 + i * 0.045, 0.56 + i * 0.045 + 0.08));
   const ctaLocal = windowProgress(progress, 0.82, 0.9);
+  const livePulse = pulse(progress, 0.1);
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden" style={{ background: HP.bg, color: HP.ink }}>
@@ -156,6 +173,7 @@ export function HealthAnimatedCard({ progress }: { progress: number }) {
       <div className="mt-1.5 flex-1 space-y-1.5 overflow-hidden px-3 pb-3">
         <div className="rounded-xl p-3" style={{ background: HP.card, border: `1.5px solid ${HP.accent}` }}>
           <div className="mono flex items-center gap-1 text-[6.5px] tracking-wide" style={{ color: HP.accent, ...reveal(headLocal) }}>
+            <span className="h-[3px] w-[3px] rounded-full" style={{ background: HP.mint, opacity: livePulse }} />
             LONGEVITY SCORE
           </div>
           <div className="mono mt-0.5 text-[5.5px]" style={{ color: HP.mute, ...reveal(headLocal) }}>
@@ -319,6 +337,7 @@ export function EducationAnimatedCard({ progress }: { progress: number }) {
   // not just approach it -- a window ending past 1 leaves its last item
   // visibly short of its final value on the settle frame.
   const topicRowLocal = EDU_TOPICS.map((_, i) => windowProgress(progress, 0.9 + i * 0.03, 0.9 + i * 0.03 + 0.06));
+  const livePulse = pulse(progress, 0.1);
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden" style={{ background: EP.body, color: EP.ink }}>
@@ -327,6 +346,7 @@ export function EducationAnimatedCard({ progress }: { progress: number }) {
         <div className="rounded-md p-3" style={{ background: EP.white, border: `1.5px solid ${EP.accent}` }}>
           <div className="flex items-baseline">
             <span className="mono flex items-center gap-1 text-[6.5px] font-semibold uppercase tracking-wide" style={{ color: EP.accent, ...reveal(headLocal) }}>
+              <span className="h-[3px] w-[3px] rounded-full" style={{ background: EP.accent, opacity: livePulse }} />
               Fortnight avg score
             </span>
             <span className="mono ml-auto text-[6px]" style={{ color: EP.inkDim, ...reveal(headLocal) }}>
