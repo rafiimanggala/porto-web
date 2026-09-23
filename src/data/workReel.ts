@@ -1,10 +1,12 @@
 // The scroll-linked work gallery on the homepage (#work). Single source of
 // truth for its 7 rows: slug, title and blurb are copied straight from each
 // case study's own <Metadata> in src/app/work/<slug>/page.tsx, not rewritten
-// here. Real dimensions matter: two of the images below (education-saas,
-// health-platform) are pre-cropped thin strips, not full screenshots, which
-// is why WorkReel renders every image with object-fit: contain instead of
-// cover -- cropping them further would make them illegible.
+// here. education-saas and health-platform are NDA client work with no real
+// screenshots to show -- their images are captures of the same illustrated
+// mockup components (src/components/mockups/health.tsx, education.tsx) the
+// case study pages themselves render, shot via src/app/mockup-preview/
+// (?project=health|education&screen=N) at the same width the case study
+// article uses, so nothing is stretched or empty at the bottom.
 
 export type WorkReelItem = {
   slug: string;
@@ -63,10 +65,10 @@ export const workReel: WorkReelItem[] = [
       "A curriculum-aligned learning platform for schools: quiz engine, AI-generated performance insights, and production debugging at scale.",
     caption: "Live in production for real schools",
     image: {
-      src: "/work/education-saas/quiz-engine-thumb.webp",
-      width: 638,
-      height: 143,
-      alt: "A strip of the quiz engine interface from the curriculum-aligned learning platform.",
+      src: "/work/education-saas/insights-card.webp",
+      width: 1624,
+      height: 1116,
+      alt: "The fortnightly class-insights dashboard from the curriculum-aligned learning platform: completion, topic accuracy and which class needs a nudge.",
     },
   },
   {
@@ -76,10 +78,10 @@ export const workReel: WorkReelItem[] = [
       "A health web app that reconciles biomarkers, DNA, DEXA scans and wearables into one clinical scoring system, then explains it in plain English.",
     caption: "4 data sources, one clinical score",
     image: {
-      src: "/work/health-platform/score-panel-thumb.webp",
-      width: 700,
-      height: 103,
-      alt: "A strip of the clinical scoring panel that reconciles biomarkers, DNA, DEXA scans and wearables.",
+      src: "/work/health-platform/dashboard-card.webp",
+      width: 1624,
+      height: 1116,
+      alt: "The dashboard of the health optimisation platform, showing connected wearables, flagged blood markers and the six-domain longevity score.",
     },
   },
   {

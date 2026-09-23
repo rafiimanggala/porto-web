@@ -54,18 +54,17 @@ function FactPill({ text, tone }: { text: string; tone: string }) {
 
 // Rafii's call (23 Sep): every card should read as one family, card 1 and 2's
 // full-bleed treatment, not a split between that and a separate boxed-strip
-// +solid-copy-zone layout. Two of these five were pre-cropped thin strips
-// (education-saas, health-platform, ~7:1) and three were real product
-// screenshots on a white/cream UI background (made-to-measure-shopify,
-// spotter-eld, streak) -- neither survives a hard `object-cover` crop:
-// cropping a thin strip either blows it up illegibly or throws away most of
-// it, and cropping a screenshot cuts through real UI chrome (caught live:
-// made-to-measure-shopify's raw storefront crop left a sidebar icon peeking
-// outside the rounded corner). CONTAIN_SLUGS still marks them, just for a
-// narrower reason now: they render with `object-contain` on a solid backdrop
-// instead of `object-cover`, so nothing gets cropped or stretched, while
-// everything else about the card (full-bleed shape, gradient title overlay,
-// no separate copy zone) matches card 1 and 2 exactly.
+// +solid-copy-zone layout. All five of these are real product screenshots
+// (education-saas and health-platform got a proper re-shoot the same day --
+// see src/data/workReel.ts's header comment -- replacing two pre-cropped
+// thin strips) -- none survives a hard `object-cover` crop, since cropping a
+// screenshot cuts through real UI chrome (caught live: made-to-measure-
+// shopify's raw storefront crop left a sidebar icon peeking outside the
+// rounded corner). CONTAIN_SLUGS marks them so they render with
+// `object-contain` on a solid backdrop instead of `object-cover`, so nothing
+// gets cropped or stretched, while everything else about the card
+// (full-bleed shape, gradient title overlay, no separate copy zone) matches
+// card 1 and 2 exactly.
 const CONTAIN_SLUGS = new Set([
   "education-saas",
   "health-platform",
