@@ -344,11 +344,17 @@ function PlainStack({ items }: { items: WorkReelItem[] }) {
 // that stack as you scroll, each new one arriving over the last and the
 // last one still visible, smaller, behind it -- not a hard cut.
 export default function WorkReel() {
+  // Touch devices used to fall back to PlainStack (see the old hover/
+  // pointer-fine gate this replaced) on the assumption that pinned-scroll
+  // physics is a desktop-only trick. Rafii's call (23 Sep, "tidak bisa
+  // animasi scroll down" on his phone): he wants the same arrive/cover/
+  // recede reel on touch too, not a plain list -- framer-motion's
+  // useScroll tracks any scroll container, touch included, so the only
+  // real gate needed is prefers-reduced-motion.
   const reduce = useReducedMotion();
   const [animated, setAnimated] = useState(false);
   useEffect(() => {
-    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
-    setAnimated(mq.matches && !reduce);
+    setAnimated(!reduce);
   }, [reduce]);
 
   return (
