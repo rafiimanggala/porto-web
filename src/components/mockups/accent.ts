@@ -1,13 +1,11 @@
-/* Was collapsed to one accent site-wide (mint/violet/amber all the same
-   hex) to match the near-black theme's single-accent restraint. Recoloured
-   to the same pastel family as health.tsx/education.tsx's own palettes, so
-   this outer chrome tint (BrowserWindow's label pill) reads as part of the
-   same system instead of the old orange island. Keys kept so existing
+/* Matches health.tsx/education.tsx's bright light-mode jewel-tone palette,
+   so this outer chrome tint (BrowserWindow's label pill) reads as part of
+   the same system as the screen content it wraps. Keys kept so existing
    `accent: "violet"` call sites don't need touching. */
 export const ACCENT = {
-  mint: "#9cf0cb",
-  violet: "#c9baf5",
-  amber: "#ffe375",
+  mint: "#2f9e6e",
+  violet: "#8a5fd9",
+  amber: "#d98f2f",
 } as const;
 
 export type AccentKey = keyof typeof ACCENT;
