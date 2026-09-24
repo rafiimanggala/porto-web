@@ -1,12 +1,5 @@
 import type { Metadata } from "next";
-import {
-  CaseShell,
-  CaseHero,
-  Section,
-  Lead,
-  Callout,
-  NextCase,
-} from "@/components/work/casestudy";
+import { Section, Lead, Callout, NextCase } from "@/components/work/casestudy";
 import ResultNumbers from "@/components/work/ResultNumbers";
 import { PhoneRow, ScreenBoard } from "@/components/mockups/frame";
 import { ACCENT } from "@/components/mockups/accent";
@@ -19,6 +12,18 @@ import {
   EduMobile2,
   EduMobile3,
 } from "@/components/mockups/education";
+import type { ReactNode } from "react";
+import WideCaseShell from "@/components/work/scene/WideCaseShell";
+import EduVariantsScene from "@/components/work/scene/EduVariantsScene";
+import EduTreeScene from "@/components/work/scene/EduTreeScene";
+import EduQuizScene from "@/components/work/scene/EduQuizScene";
+import EduInsightsScene from "@/components/work/scene/EduInsightsScene";
+import EduDebugScene from "@/components/work/scene/EduDebugScene";
+import EduPhoneScene from "@/components/work/scene/EduPhoneScene";
+import { SceneIcon, type SceneIconName } from "@/components/work/scene/SceneIcon";
+import { BookIcon } from "@/components/work/scene/EduVariantsSceneIcons";
+import { QuizSheetIcon } from "@/components/work/scene/EduQuizSceneIcons";
+import { EnvelopeIcon } from "@/components/work/scene/EduDebugSceneIcons";
 
 export const metadata: Metadata = {
   title: "K-12 Education SaaS · Engineering case study · Rafii Manggala",
@@ -28,28 +33,73 @@ export const metadata: Metadata = {
 
 const accent = ACCENT.amber;
 
+const BREAK_ICON = "h-7 w-7 shrink-0 text-fg sm:h-9 sm:w-9";
+
+function FeatureBreak({ n, title, icon }: { n: string; title: string; icon: SceneIconName | ReactNode }) {
+  return (
+    <div id={`feature-${n}`} className="mx-auto flex w-full max-w-[1180px] items-center gap-4 px-4 pb-6 pt-16 sm:px-8 sm:pt-24">
+      <span className="mono shrink-0 text-[11px] uppercase tracking-[0.14em] text-accent">Feature {n}</span>
+      <span className="h-px flex-1 bg-line-strong" />
+      {typeof icon === "string" ? <SceneIcon name={icon as SceneIconName} size={36} className="h-7 w-7 sm:h-9 sm:w-9" /> : icon}
+      <span className="mono shrink-0 text-[11px] uppercase tracking-[0.14em] text-dim">{title}</span>
+    </div>
+  );
+}
+
 export default function EducationSaasCase() {
   return (
-    <CaseShell>
-      <CaseHero
-        eyebrow="EdTech · Engineering case study"
-        title="K-12 Education SaaS"
-        subtitle="A curriculum-aligned learning platform used by real schools: subject-mapped content, a quiz engine, and AI-generated performance insights, running against a production database of 995 schools."
-        meta={[
-          { label: "Role", value: "Full-stack + AI features" },
-          { label: "Client", value: "AU education-tech company" },
-          { label: "Scale", value: "995 schools / 12,495 users" },
-          { label: "Tools", value: ".NET 9, Angular, PostgreSQL, MAUI" },
-        ]}
-      />
+    <WideCaseShell>
+      <header className="mx-auto w-full max-w-[860px] px-6 pt-14 sm:pt-20">
+        <div className="flex items-center gap-3 border-y border-line py-2.5">
+          <span className="h-2 w-2 shrink-0 rounded-full bg-accent" />
+          <span className="mono text-[11px] tracking-[0.14em] text-dim uppercase">
+            EdTech &middot; Engineering case study
+          </span>
+        </div>
+        <h1 className="t-hero mt-8 text-[clamp(2.6rem,8vw,5.5rem)] leading-[0.95]">
+          K-12 Education
+          <br />
+          SaaS.
+        </h1>
+        <p className="t-lead mt-6 max-w-[56ch] text-dim">
+          One curriculum-aligned platform used by real schools: subject-mapped
+          content, a quiz engine and AI performance insights, running against a
+          production database of 995 schools.
+        </p>
+        <dl className="mt-8 flex flex-wrap gap-x-8 gap-y-4">
+          {[
+            { label: "Role", value: "Full-stack + AI features" },
+            { label: "Client", value: "AU education-tech company" },
+            { label: "Scale", value: "995 schools / 12,495 users" },
+            { label: "Tools", value: ".NET 9, Angular, PostgreSQL, MAUI" },
+          ].map((m) => (
+            <div key={m.label}>
+              <dt className="eyebrow">{m.label}</dt>
+              <dd className="mt-1 text-sm text-fg">{m.value}</dd>
+            </div>
+          ))}
+        </dl>
+        <p className="mono mt-10 text-[11px] motion-reduce:hidden tracking-[0.14em] text-mute uppercase">
+          Scroll to watch it work. Or hold.
+        </p>
+      </header>
 
-      <Callout title="Note on these mockups">
-        This is an NDA client engagement. The screens on this page are an
-        illustrated recreation of the product&apos;s features, not real
-        screenshots. No product name, logo, school, teacher, or
-        student data is reproduced anywhere.
-      </Callout>
+      <div className="mt-6 sm:mt-10">
+        <FeatureBreak n="01" title="Course variants" icon={<svg aria-hidden viewBox="-12 -12 24 24" className={BREAK_ICON}><BookIcon /></svg>} />
+        <EduVariantsScene />
+        <FeatureBreak n="02" title="Content tree" icon="sync" />
+        <EduTreeScene />
+        <FeatureBreak n="03" title="Quiz engine" icon={<QuizSheetIcon className={BREAK_ICON} />} />
+        <EduQuizScene />
+        <FeatureBreak n="04" title="AI insights" icon="insight" />
+        <EduInsightsScene />
+        <FeatureBreak n="05" title="Production debugging" icon={<EnvelopeIcon className={BREAK_ICON} />} />
+        <EduDebugScene />
+        <FeatureBreak n="06" title="On the phone" icon="device-phone" />
+        <EduPhoneScene />
+      </div>
 
+      <article className="mx-auto w-full max-w-[860px] px-6 pb-32">
       <div className="mt-8">
         <ScreenBoard
           accent={accent}
@@ -82,6 +132,18 @@ export default function EducationSaasCase() {
         />
       </div>
 
+        <p className="mt-6 max-w-[64ch] text-sm text-mute">
+          An illustrated recreation of the product, not real screenshots. This
+          is an NDA client engagement: the screens follow the real layout so
+          the work is legible, while no product name, logo, school, teacher or
+          student data is reproduced anywhere.
+        </p>
+
+        <details className="group mt-16 border-y border-line">
+          <summary className="mono flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-[11px] uppercase tracking-[0.14em] text-dim transition-colors hover:text-fg [&::-webkit-details-marker]:hidden">
+            <span>Read the full write-up</span>
+            <span aria-hidden className="text-accent transition-transform group-open:rotate-45">+</span>
+          </summary>
       <Section n="01" kicker="Problem" title="One curriculum, a dozen course variants.">
         <Lead>
           Schools don&apos;t all teach the same syllabus. A single subject
@@ -154,6 +216,8 @@ export default function EducationSaasCase() {
         </div>
       </Section>
 
+        </details>
+
       <Section n="07" kicker="Outcome" title="Live, serving real schools.">
         <Lead>
           All 18 features are live in production. The system now runs
@@ -178,6 +242,7 @@ export default function EducationSaasCase() {
         label="Next case study"
         title="Content Automation Pipeline"
       />
-    </CaseShell>
+    </article>
+    </WideCaseShell>
   );
 }
