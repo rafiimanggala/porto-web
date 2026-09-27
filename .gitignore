@@ -40,3 +40,14 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .gstack/
+
+# scene development scratch -- prototype variants and capture debris kept
+# around during a scene's own build/iteration, never wired into a real page.
+# Same exclusion list deploy.sh already rsyncs around; codified here so it
+# doesn't have to be re-decided by hand at every commit.
+/src/app/scene-lab/
+/src/components/work/prototypes/
+/src/app/work/health-platform/proto-*/
+/public/icons/health/raw/
+/frame_*.png
+/wr-health.png

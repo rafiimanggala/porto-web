@@ -41,7 +41,7 @@ function Stage({ p }: { p: MV }) {
   );
 }
 
-function Visual({ p }: { p: MV }) {
+export function EduDebugVisual({ p }: { p: MV }) {
   return (
     <div className="absolute inset-0 [container-type:size]">
       <div className="absolute inset-0 flex flex-col overflow-hidden rounded-xl border border-line-strong bg-surface-1 shadow-[0_18px_40px_-24px_rgba(0,0,0,0.6)]">
@@ -74,7 +74,7 @@ export default function EduDebugScene() {
     <ScrollScene
       captions={CAPTIONS}
       chapters={CHAPTERS}
-      render={(p) => <Visual p={p} />}
+      render={(p) => <EduDebugVisual p={p} />}
       readout={(p) => <Readout p={p} />}
       heightClass="h-[240svh] sm:h-[280svh]"
     />

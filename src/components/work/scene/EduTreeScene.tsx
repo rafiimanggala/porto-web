@@ -54,7 +54,7 @@ function Body({ p }: { p: MV }) {
   );
 }
 
-function Visual({ p }: { p: MV }) {
+export function EduTreeVisual({ p }: { p: MV }) {
   return (
     <div className="absolute inset-0 [container-type:size]">
       <div style={VARS} className="absolute inset-0">
@@ -89,7 +89,7 @@ export default function EduTreeScene() {
     <ScrollScene
       captions={CAPTIONS}
       chapters={CHAPTERS}
-      render={(p) => <Visual p={p} />}
+      render={(p) => <EduTreeVisual p={p} />}
       readout={(p) => <Readout p={p} />}
       heightClass="h-[240svh] sm:h-[280svh]"
     />

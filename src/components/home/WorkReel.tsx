@@ -5,13 +5,14 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   motion,
-  useMotionValueEvent,
+  useMotionValue,
   useReducedMotion,
   useScroll,
   useTransform,
   type MotionValue,
 } from "framer-motion";
 import { workReel, type WorkReelItem } from "@/data/workReel";
+import ReelChapterFan from "@/components/work/ReelChapterFan";
 
 // Header block, same language as DirectoryHead.tsx: a sun pastel label chip,
 // a Titan One heading in the accent color, and a dim one-line intro.
@@ -68,22 +69,57 @@ function FactPill({ text, tone }: { text: string; tone: string }) {
 // composed the same way card 1 and 2 read (see mockup-preview/mockup-video's
 // own #shot-target crop, which captures the mockup's own device-frame bezel
 // edge to edge, not a browser tab around it).
-const CONTAIN_SLUGS = new Set(["made-to-measure-shopify", "spotter-eld", "streak"]);
+// made-to-measure-shopify came off the same way on 27 Sep, once its card
+// switched from a raw storefront screenshot to a captured render of its own
+// real scroll scene (MtmFitScene, same #shot-target crop as the mockups
+// above) -- spotter-eld and streak stay, since they're still raw screenshots
+// with no scroll scene of their own to capture instead.
+const CONTAIN_SLUGS = new Set(["spotter-eld", "streak"]);
 
 // The one card layout: full-bleed image/video, title + one pill on a dark
 // gradient over it, same language the viens-la.com reference uses for its
 // project cards. `contain` mode (see CONTAIN_SLUGS) is the only branch --
 // same overlay, same typography, just object-contain over a solid backdrop
 // instead of object-cover, for images a crop would mangle.
-// The two mockup slugs are a landscape 1624x1116 device-frame crop (see
+// All four are the same 862x588 #shot-target scene-capture crop (see
 // CONTAIN_SLUGS's comment) -- close to the card's own aspect ratio, so
 // object-cover only trims a little off the top and bottom, but the hero
-// card these mockups lead with sits right at the top of that frame. Pinning
+// content each scene leads with sits right at the top of that frame. Pinning
 // the crop to the top means whatever gets trimmed comes off the bottom
 // (empty card padding), not the hero.
-const TOP_ANCHOR_SLUGS = new Set(["education-saas", "health-platform"]);
+const TOP_ANCHOR_SLUGS = new Set([
+  "education-saas",
+  "health-platform",
+  "content-automation-pipeline",
+  "made-to-measure-shopify",
+]);
 
-function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
+// The 3 case studies with their own multi-scene reel (see `chapters` on
+// WorkReelItem) get a second card layout: text in a normal flow column on
+// the left, the reel video plus its chapter-node wire fan-out on the right
+// (ReelChapterFan), instead of the full-bleed photo-with-scrim treatment
+// every other card uses. Converged on via reel-card-lab (27 Sep): sketch ->
+// "per bab animasi nanti muncul satu" -> "spawn card baru terpisah di kanan
+// bukan seperti itu" -> "apa bisa dibuat lebih smooth".
+function hasChapterFan(item: WorkReelItem) {
+  return Boolean(item.video && item.chapters?.length);
+}
+
+function CoverCard({
+  item,
+  tone,
+  index,
+  active = true,
+}: {
+  item: WorkReelItem;
+  tone: string;
+  index: number;
+  // Whether THIS card is the current front-of-stack one (see ReelCard's
+  // `interactive` below). Gates the chapter-fan overlay's visibility --
+  // PlainStack (no pinned-stack, no overlap) never needs to gate it, so it
+  // defaults to always-on there.
+  active?: boolean;
+}) {
   const captionTone = PILL_TONES[(index + 1) % PILL_TONES.length];
   const contain = CONTAIN_SLUGS.has(item.slug);
   const topAnchor = TOP_ANCHOR_SLUGS.has(item.slug);
@@ -91,6 +127,77 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
   // not the loop. autoPlay is the only thing gated; the <video> element
   // itself renders either way so the poster still shows as a still image.
   const reduce = useReducedMotion();
+
+  // Split layout: the chapter-fan cards are meant to spawn OUTSIDE this
+  // card's own edge, in the page's gutter beside it (Rafii, 28 Sep, marked
+  // up a screenshot: "cardnya itu keluar dari card utama... di kanan yang
+  // kosong ini nanti muncul card-card baru"). Two pieces, both rendered by
+  // ReelCard's overflow-VISIBLE Link (see below) instead of one clipped
+  // panel:
+  //  1. This clipped "card body" -- text + an empty spacer where the video
+  //     visually sits -- keeps its own rounded corners/border/shadow, since
+  //     the outer Link no longer clips anything for these 3 items.
+  //  2. An unclipped overlay, positioned to align with that same spacer,
+  //     holding the REAL video + fan (ReelChapterFan). Because it isn't
+  //     clipped, the fan cascade spills straight past the card body's edge
+  //     into the gutter; the video itself stays inside that same aligned
+  //     slot so it still reads as part of the card.
+  // The overlay only exists in the unclipped gutter, which no card's own
+  // opaque body ever covers via z-index (unlike the main stage, where a
+  // later card's full-bleed body naturally hides an earlier one) -- so
+  // without gating, EVERY stacked card's escaped fan would stay visible at
+  // once, bleeding through exactly like the very first version of this did.
+  // `active` (this card's own front-of-stack state, already tracked by
+  // ReelCard for pointer-events) fades the whole overlay out the instant a
+  // later card takes over, closing that gap regardless of how little this
+  // card has visually receded yet.
+  if (hasChapterFan(item)) {
+    return (
+      <>
+        <div className="relative flex h-full w-full flex-col overflow-hidden rounded-[1.75rem] border border-line bg-surface-1 shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem] xl:flex-row">
+          <div className="flex w-full flex-col justify-center gap-5 p-8 sm:gap-6 sm:p-10 xl:w-[42%] xl:shrink-0 xl:p-14">
+            <span
+              className={`nums inline-flex h-9 w-11 items-center justify-center rounded-full text-[13px] font-semibold text-pastel-ink ${tone}`}
+            >
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <h3 className="[font-family:var(--font-card-title)] text-[clamp(1.8rem,4vw,3.2rem)] leading-[0.95] tracking-[-0.01em] text-balance text-fg uppercase">
+              {item.title}
+            </h3>
+            <p className="max-w-[36ch] text-sm leading-relaxed text-dim sm:text-base">{item.blurb}</p>
+            <div>
+              <FactPill text={item.caption} tone={captionTone} />
+            </div>
+            <span className="mono mt-1 inline-flex w-fit items-center gap-1.5 text-xs font-semibold text-accent opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
+              View case study <span aria-hidden="true">&rarr;</span>
+            </span>
+          </div>
+          {/* Empty on purpose -- the real video renders in the unclipped
+              overlay below, aligned to this same slot. bg-bg keeps the
+              panel's own resting color right up until the overlay fades in. */}
+          <div className="relative hidden flex-1 bg-bg xl:block" aria-hidden="true" />
+        </div>
+        {/* Hidden below xl, same reasoning as before: below that width the
+            right column isn't reliably wide enough for the video itself to
+            read at a sane size. */}
+        <div
+          className="pointer-events-none absolute inset-y-0 right-0 hidden w-[58%] items-center justify-center p-8 transition-opacity duration-300 ease-out xl:flex xl:p-12"
+          style={{ opacity: active ? 1 : 0 }}
+          aria-hidden="true"
+        >
+          <ReelChapterFan
+            src={item.video!}
+            poster={item.image.src}
+            imgWidth={item.image.width}
+            imgHeight={item.image.height}
+            chapters={item.chapters!}
+            active={active}
+          />
+        </div>
+      </>
+    );
+  }
+
   return (
     // Fills its wrapper exactly -- see ReelCard's padded wrapper div for
     // where the visible margin around this card actually comes from now.
@@ -233,7 +340,8 @@ function ReelCard({
 
   const slot = 1 / count;
   const start = index * slot;
-  const nextStart = index === count - 1 ? 1 : (index + 1) * slot;
+  const isLast = index === count - 1;
+  const nextStart = isLast ? 1 : (index + 1) * slot;
   // Card 0 has nothing to arrive from -- it's the resting state from the
   // very first frame of the pin. Every other card eases in across the back
   // half (ARRIVE_FRACTION) of the slot before its own, landing exactly at
@@ -250,21 +358,74 @@ function ReelCard({
   const y = useTransform(progress, [arriveFrom, arriveTo], ["100vh", "0vh"], { clamp: true });
   const rotate = useTransform(progress, [arriveFrom, arriveTo], [-5, 0], { clamp: true });
   const scale = useTransform(progress, [start, 1], [1, MIN_SCALE], { clamp: true });
+
+  // Last card's own upper bound (review workflow, 28 Sep, high-severity
+  // finding): `scrollYProgress` reads exactly 1 at the very bottom of this
+  // section's pinned scroll range -- the natural resting spot once the last
+  // card has fully arrived -- so the plain `v < nextStart=1` test every
+  // other card uses made the LAST card go non-interactive at exactly the
+  // moment a user finishes scrolling to it. The fix isn't just dropping the
+  // upper bound, though: `v` stays clamped at 1 for all further scrolling
+  // too, including well after this whole section has scrolled off the top
+  // of the screen (the sticky stage un-pins and scrolls away as one block
+  // past that point) -- an unconditional `v >= start` would leave the last
+  // card's link permanently tabbable/clickable, invisible, for the rest of
+  // the page. Gating on genuine on-screen visibility (IntersectionObserver)
+  // instead of a second progress threshold covers both: interactive through
+  // the true end of the scroll range, not before or indefinitely after.
+  const linkRef = useRef<HTMLAnchorElement>(null);
+  // 1/0, not a boolean: useTransform's multi-value overload requires every
+  // input MotionValue to share one primitive type (number[] or string[]).
+  const lastVisible = useMotionValue(1);
+  useEffect(() => {
+    const el = linkRef.current;
+    if (!isLast || !el) return;
+    const io = new IntersectionObserver(([entry]) => lastVisible.set(entry.isIntersecting ? 1 : 0), {
+      threshold: 0,
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [isLast, lastVisible]);
+
+  const isWithinSlot = (v: number, visible: number) => (isLast ? v >= start && visible === 1 : v >= start && v < nextStart);
+
   // A MotionValue written straight into `style`, not React state -- this
   // updates on every scroll frame without a re-render, and framer-motion
   // applies non-animatable string values (like "pointerEvents") as a plain
-  // assignment rather than trying to interpolate them.
-  const pointerEvents = useTransform(progress, (v) => (v >= start && v < nextStart ? "auto" : "none"));
+  // assignment rather than trying to interpolate them. Combining two
+  // MotionValues (not just reading `lastVisible` in a closure) is what
+  // makes this re-fire correctly when visibility flips independently of a
+  // scroll-driven progress change.
+  const pointerEvents = useTransform([progress, lastVisible], ([v, visible]: number[]) =>
+    isWithinSlot(v, visible) ? "auto" : "none",
+  );
 
   // tabIndex/aria-hidden are real DOM attributes, not styles, so they can't
   // ride a MotionValue directly -- mirror the same front/back test into
-  // React state, but only re-render on the two frames where it actually
-  // flips (React bails out a same-value setState), not every scroll frame.
+  // React state, but only re-render on the frames where it actually flips
+  // (React bails out a same-value setState), not every scroll frame.
   const [interactive, setInteractive] = useState(index === 0);
-  useMotionValueEvent(progress, "change", (v) => {
-    const active = v >= start && v < nextStart;
-    setInteractive((prev) => (prev === active ? prev : active));
-  });
+  useEffect(() => {
+    const recompute = () => {
+      const active = isWithinSlot(progress.get(), lastVisible.get());
+      setInteractive((prev) => (prev === active ? prev : active));
+    };
+    recompute();
+    const unsubProgress = progress.on("change", recompute);
+    const unsubVisible = lastVisible.on("change", recompute);
+    return () => {
+      unsubProgress();
+      unsubVisible();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [progress, lastVisible, isLast, start, nextStart]);
+
+  // The chapter-fan cards (pipeline/edu/mtm) need their escaping cascade to
+  // reach past this Link's own edge into the padded gutter around it, so
+  // for those 3 items the Link itself stops clipping/rounding -- CoverCard's
+  // own "card body" div carries the rounded border/shadow instead (see its
+  // comment). Every other card keeps clipping here, unchanged.
+  const chapterFan = hasChapterFan(item);
 
   return (
     <motion.div
@@ -272,18 +433,23 @@ function ReelCard({
       style={{ y, rotate, scale, pointerEvents, zIndex: index + 1 }}
     >
       <Link
+        ref={linkRef}
         href={`/work/${item.slug}`}
         data-unit={`work:${item.slug}`}
         tabIndex={interactive ? 0 : -1}
         aria-hidden={!interactive}
-        className="group relative block h-full w-full cursor-none overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
+        className={
+          chapterFan
+            ? "group relative block h-full w-full cursor-none"
+            : "group relative block h-full w-full cursor-none overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
+        }
         onMouseMove={(e) => {
           const rect = e.currentTarget.getBoundingClientRect();
           setCursor({ x: e.clientX - rect.left, y: e.clientY - rect.top, visible: true });
         }}
         onMouseLeave={() => setCursor((c) => ({ ...c, visible: false }))}
       >
-        <CoverCard item={item} tone={tone} index={index} />
+        <CoverCard item={item} tone={tone} index={index} active={interactive} />
         <CardCursor x={cursor.x} y={cursor.y} visible={cursor.visible} />
       </Link>
     </motion.div>
@@ -324,12 +490,17 @@ function PlainStack({ items }: { items: WorkReelItem[] }) {
     <ol className="mt-10 list-none space-y-6 pl-0 sm:mt-16">
       {items.map((item, i) => {
         const tone = PILL_TONES[i % PILL_TONES.length];
+        const chapterFan = hasChapterFan(item);
         return (
           <li key={item.slug} className="h-[80svh] w-full px-[3vw] sm:px-[6vw] lg:px-[10vw]">
             <Link
               href={`/work/${item.slug}`}
               data-unit={`work:${item.slug}`}
-              className="group relative block h-full w-full overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
+              className={
+                chapterFan
+                  ? "group relative block h-full w-full"
+                  : "group relative block h-full w-full overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
+              }
             >
               <CoverCard item={item} tone={tone} index={i} />
             </Link>

@@ -23,14 +23,32 @@ export type WorkReelItem = {
     alt: string;
   };
   // Optional looping preview clip, muted/no controls, shown instead of the
-  // static image where one exists. ai-video-production's is real footage;
-  // health-platform's and education-saas's are the SAME illustrated mockup
-  // component (src/components/mockups/motion.tsx) rendered frame-by-frame
-  // at increasing `progress` and stitched into an mp4, not real product
-  // footage -- still an honest preview since it's the same mockup the case
-  // study page itself uses, just animated. `image` stays as the <video>'s
+  // static image where one exists. ai-video-production's is real footage.
+  // health-platform's is the illustrated mockup component (src/components/
+  // mockups/motion.tsx) rendered frame-by-frame at increasing `progress` and
+  // stitched into an mp4, not real product footage -- still an honest
+  // preview since it's the same mockup the case study page itself uses.
+  // education-saas, health-platform, content-automation-pipeline and
+  // made-to-measure-shopify go a step further: the REAL scroll scene
+  // component(s) from each case study page, driven the same way (see each
+  // *ScenePreview.tsx / *ReelPreview.tsx + the matching branch in
+  // src/app/mockup-video/page.tsx), so the homepage card plays the exact
+  // animation a visitor sees on the page itself, not a lookalike (Rafii's
+  // call, 27 Sep: "kenapa cuma 1 animasi saya igin semuanya"). Pipeline,
+  // made-to-measure and education cycle through EVERY chapter scene in
+  // sequence, not just one ("maksud saya semua animasi bukan 1 bab doang")
+  // -- health-platform is already one continuous scene, so its single
+  // capture already covers the whole story. `image` stays as the <video>'s
   // poster frame either way.
   video?: string;
+  // Bab/chapter labels, in the SAME order as that case study's *_REEL_SCENES
+  // array (PipeReelPreview.tsx / EduReelPreview.tsx / MtmReelPreview.tsx) --
+  // present only for the multi-scene reels. Drives the chapter-node wire
+  // fan-out on the homepage card (see ReelChapterFan.tsx): one small card
+  // spawns per bab as playback reaches it (Rafii, 27 Sep sketch + "per bab
+  // animasi nanti muncul satu", then "spawn card baru terpisah di kanan").
+  // health-platform has none: it's one continuous scene, nothing to cycle.
+  chapters?: string[];
 };
 
 export const workReel: WorkReelItem[] = [
@@ -55,11 +73,13 @@ export const workReel: WorkReelItem[] = [
       "A self-hosted n8n instance that scrapes source content, generates video scripts and voiceover with AI, and publishes to TikTok and Instagram on a schedule.",
     caption: "Self-hosted, zero manual posting",
     image: {
-      src: "/work/content-automation-pipeline/01-video-workflow.png",
-      width: 1600,
-      height: 1000,
-      alt: "The n8n workflow that scrapes content, scripts and voices it with AI, then publishes on a schedule.",
+      src: "/work/content-automation-pipeline/workflow-reel-scene.webp",
+      width: 862,
+      height: 588,
+      alt: "The pipeline's own scroll scenes in sequence: sources scanned, script drafted, voiced, rendered, published, isolated from the scraper, and reused for Shorts.",
     },
+    video: "/work/content-automation-pipeline/workflow-reel-scene.mp4",
+    chapters: ["Sources", "Script", "Voice", "Render", "Publish", "Isolation", "Shorts"],
   },
   {
     slug: "education-saas",
@@ -68,12 +88,17 @@ export const workReel: WorkReelItem[] = [
       "A curriculum-aligned learning platform for schools: quiz engine, AI-generated performance insights, and production debugging at scale.",
     caption: "Live in production for real schools",
     image: {
-      src: "/work/education-saas/insights-card.webp",
-      width: 1624,
-      height: 1116,
-      alt: "The fortnightly class-insights dashboard from the curriculum-aligned learning platform: completion, topic accuracy and which class needs a nudge.",
+      src: "/work/education-saas/insights-reel-scene.webp",
+      width: 862,
+      height: 588,
+      alt: "The education platform's own scroll scenes in sequence: quiz variants, the curriculum tree, the hex quiz map, class insights, production debugging and the phone reflow.",
     },
-    video: "/work/education-saas/insights-card.mp4",
+    // All 6 real scroll scenes from the case study page in their own order
+    // (Variants, Tree, Quiz, Insights, Debug, Phone), not just Insights --
+    // Rafii's correction (27 Sep): "maksud saya semua animasi bukan 1 bab
+    // doang". See EduReelPreview.tsx + mockup-video's edu-reel branch.
+    video: "/work/education-saas/insights-reel-scene.mp4",
+    chapters: ["Variants", "Tree", "Quiz", "Insights", "Debug", "Phone"],
   },
   {
     slug: "health-platform",
@@ -82,12 +107,12 @@ export const workReel: WorkReelItem[] = [
       "A health web app that reconciles biomarkers, DNA, DEXA scans and wearables into one clinical scoring system, then explains it in plain English.",
     caption: "4 data sources, one clinical score",
     image: {
-      src: "/work/health-platform/dashboard-card.webp",
-      width: 1624,
-      height: 1116,
-      alt: "The dashboard of the health optimisation platform, showing connected wearables, flagged blood markers and the six-domain longevity score.",
+      src: "/work/health-platform/panels-card-scene.webp",
+      width: 862,
+      height: 588,
+      alt: "The four source plates (blood, DNA, DEXA, wearable) registering into the health platform's six-domain longevity score.",
     },
-    video: "/work/health-platform/dashboard-card.mp4",
+    video: "/work/health-platform/panels-card-scene.mp4",
   },
   {
     slug: "made-to-measure-shopify",
@@ -96,11 +121,13 @@ export const workReel: WorkReelItem[] = [
       "A body-measurement pattern-fitting system built into a Shopify theme, plus ten Klaviyo flows that replaced every default transactional email.",
     caption: "10 Klaviyo flows, every default email replaced",
     image: {
-      src: "/work/made-to-measure-shopify/storefront-collection.webp",
-      width: 1600,
-      height: 953,
-      alt: "The Shopify storefront collection page for the made-to-measure pattern-fitting platform.",
+      src: "/work/made-to-measure-shopify/theme-reel-scene.webp",
+      width: 862,
+      height: 588,
+      alt: "The Shopify theme's own scroll scenes in sequence: fit measurements, the pattern editor, the add-to-cart gate, production debugging, an email flow and the phone view.",
     },
+    video: "/work/made-to-measure-shopify/theme-reel-scene.mp4",
+    chapters: ["Fit", "Editor", "Gate", "Debug", "Email", "Phone"],
   },
   {
     slug: "spotter-eld",

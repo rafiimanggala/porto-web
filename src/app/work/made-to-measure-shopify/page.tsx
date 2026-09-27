@@ -1,13 +1,6 @@
 import type { Metadata } from "next";
-import {
-  CaseShell,
-  CaseHero,
-  Section,
-  Lead,
-  Figure,
-  Callout,
-  NextCase,
-} from "@/components/work/casestudy";
+import type { ReactNode } from "react";
+import { Section, Lead, Figure, Callout, NextCase } from "@/components/work/casestudy";
 import ResultNumbers from "@/components/work/ResultNumbers";
 import { PhoneRow, ScreenBoard } from "@/components/mockups/frame";
 import { ACCENT } from "@/components/mockups/accent";
@@ -20,6 +13,15 @@ import {
   ShopifyMobile2,
   ShopifyMobile3,
 } from "@/components/mockups/shopify";
+import WideCaseShell from "@/components/work/scene/WideCaseShell";
+import MtmFitScene from "@/components/work/scene/MtmFitScene";
+import MtmEditorScene from "@/components/work/scene/MtmEditorScene";
+import MtmGateScene from "@/components/work/scene/MtmGateScene";
+import MtmDebugScene from "@/components/work/scene/MtmDebugScene";
+import MtmEmailScene from "@/components/work/scene/MtmEmailScene";
+import MtmPhoneScene from "@/components/work/scene/MtmPhoneScene";
+import { SceneIcon, type SceneIconName } from "@/components/work/scene/SceneIcon";
+import { MtmGlyph, type MtmGlyphName } from "@/components/work/scene/MtmKitGlyphs";
 
 export const metadata: Metadata = {
   title: "Made-to-Measure Shopify Platform · Case study · Rafii Manggala",
@@ -29,6 +31,24 @@ export const metadata: Metadata = {
 
 const accent = ACCENT.mint;
 const B = "/work/made-to-measure-shopify";
+
+const BREAK_ICON = "h-7 w-7 shrink-0 text-fg sm:h-9 sm:w-9";
+
+/* MtmGlyph paints an inline width and height (24px by default). An empty size drops that, so the class sets the size. */
+function BreakGlyph({ name }: { name: MtmGlyphName }) {
+  return <MtmGlyph name={name} size="" className={BREAK_ICON} />;
+}
+
+function FeatureBreak({ n, title, icon }: { n: string; title: string; icon: SceneIconName | ReactNode }) {
+  return (
+    <div id={`feature-${n}`} className="mx-auto flex w-full max-w-[1180px] items-center gap-4 px-4 pb-6 pt-16 sm:px-8 sm:pt-24">
+      <span className="mono shrink-0 text-[11px] uppercase tracking-[0.14em] text-accent">Feature {n}</span>
+      <span className="h-px flex-1 bg-line-strong" />
+      {typeof icon === "string" ? <SceneIcon name={icon as SceneIconName} size={36} className="h-7 w-7 sm:h-9 sm:w-9" /> : icon}
+      <span className="mono shrink-0 text-[11px] uppercase tracking-[0.14em] text-dim">{title}</span>
+    </div>
+  );
+}
 
 /* ---- small in-page diagram + system bits (presentational, no client screenshots) ---- */
 
@@ -78,66 +98,87 @@ function Mini({ title, body }: { title: string; body: string }) {
   );
 }
 
+/* Both storefront captures share one crop window so the proof block stays short (the home capture is a full page tall). */
+const CROP = "[&_img]:aspect-[1600/953] [&_img]:object-cover [&_img]:object-top";
+
 export default function MadeToMeasureShopifyCase() {
   return (
-    <CaseShell>
-      <CaseHero
-        eyebrow="Shopify · Engineering case study"
-        title="Made-to-Measure Shopify Platform"
-        subtitle="A body-measurement pattern-fitting system built into a Shopify theme, plus a full email-automation program that replaced every default transactional email with ten custom, on-brand flows."
-        meta={[
-          { label: "Role", value: "Shopify theme dev + email automation" },
-          { label: "Client", value: "AU made-to-measure fashion brand" },
-          { label: "Platform", value: "Shopify · Liquid (live)" },
-          { label: "Tools", value: "Liquid, JS, Klaviyo API, Shopify CLI" },
-        ]}
-      />
+    <WideCaseShell>
+      <header className="mx-auto w-full max-w-[860px] px-6 pt-14 sm:pt-20">
+        <div className="flex items-center gap-3 border-y border-line py-2.5">
+          <span className="h-2 w-2 shrink-0 rounded-full bg-accent" />
+          <span className="mono text-[11px] tracking-[0.14em] text-dim uppercase">
+            Shopify &middot; Engineering case study
+          </span>
+        </div>
+        <h1 className="t-hero mt-8 text-[clamp(1.6rem,6.4vw,4.4rem)] leading-[0.95]">
+          <span className="whitespace-nowrap">Made-to-Measure</span>
+          <br />
+          <span className="whitespace-nowrap">Shopify Platform.</span>
+        </h1>
+        <p className="t-lead mt-6 max-w-[56ch] text-dim">
+          A body-measurement pattern-fitting system built into a Shopify theme,
+          plus a full email-automation program that replaced every default
+          transactional email with ten custom, on-brand flows.
+        </p>
+        <dl className="mt-8 flex flex-wrap gap-x-8 gap-y-4">
+          {[
+            { label: "Role", value: "Shopify theme dev + email automation" },
+            { label: "Client", value: "AU made-to-measure fashion brand" },
+            { label: "Platform", value: "Shopify · Liquid (live)" },
+            { label: "Tools", value: "Liquid, JS, Klaviyo API, Shopify CLI" },
+          ].map((m) => (
+            <div key={m.label}>
+              <dt className="eyebrow">{m.label}</dt>
+              <dd className="mt-1 text-sm text-fg">{m.value}</dd>
+            </div>
+          ))}
+        </dl>
+        <p className="mono mt-10 text-[11px] motion-reduce:hidden tracking-[0.14em] text-mute uppercase">
+          Scroll to watch it work. Or hold.
+        </p>
+      </header>
 
-      <Figure
-        src={`${B}/storefront-home.webp`}
-        alt="Live storefront home page: full-bleed hero and stacked collection tiles, brand marks removed"
-        caption="The live storefront, captured from production. The client is shown anonymously: the wordmark is hidden and the collection codes are blurred out."
-      />
+      <div className="mt-6 sm:mt-10">
+        <FeatureBreak n="01" title="Fit data" icon="sync" />
+        <MtmFitScene />
+        <FeatureBreak n="02" title="Pattern editor" icon={<BreakGlyph name="pencil" />} />
+        <MtmEditorScene />
+        <FeatureBreak n="03" title="Cart gating" icon={<BreakGlyph name="lock" />} />
+        <MtmGateScene />
+        <FeatureBreak n="04" title="Theme debugging" icon={<BreakGlyph name="layers" />} />
+        <MtmDebugScene />
+        <FeatureBreak n="05" title="Email flows" icon="send" />
+        <MtmEmailScene />
+        <FeatureBreak n="06" title="On the phone" icon="device-phone" />
+        <MtmPhoneScene />
+      </div>
 
-      <Section n="01" kicker="Problem" title="A generic theme can't fit a made-to-measure product.">
-        <Lead>
-          The brand sells made-to-measure shirts and suits. A customer&apos;s
-          fit data (band, cup, height, sleeve, collar, and more) lives in a
-          separate pattern-matching service, not in Shopify. The stock theme
-          had no concept of it: no way to show a customer their saved
-          patterns, edit one, or stop an add-to-cart that had no valid fit
-          data behind it.
-        </Lead>
-        <Callout title="The constraint">
-          Every read and write had to go through an external REST API the
-          theme didn&apos;t control, inside a pure Liquid + vanilla-JS theme
-          with no build pipeline. No React, no bundler, no shortcuts.
-        </Callout>
-      </Section>
+      <article className="mx-auto w-full max-w-[860px] px-6 pb-32">
+        <div className="mt-16 sm:mt-24">
+          <div className="flex items-baseline gap-4">
+            <span className="eyebrow">Proof</span>
+            <span className="mono text-xs text-mute">The live storefront</span>
+          </div>
+          <div className="grid gap-x-6 sm:grid-cols-2">
+            <div className={CROP}>
+              <Figure
+                src={`${B}/storefront-home.webp`}
+                alt="Live storefront home page: full-bleed hero and stacked collection tiles, brand marks removed"
+                caption="The live storefront, captured from production and cropped to the first screen. The client is shown anonymously: the wordmark is hidden and the collection codes are blurred out."
+              />
+            </div>
+            <div className={CROP}>
+              <Figure
+                src={`${B}/storefront-collection.webp`}
+                alt="Live collection grid: product cards with variant swatches and prices, collection codes removed"
+                caption="The production collection grid the fitting flow starts from. Collection codes blurred, the rest is the live theme."
+              />
+            </div>
+          </div>
+        </div>
 
-      <Section n="02" kicker="Goal" title="Turn a stock theme into a fitting workstation.">
-        <Lead>
-          The editor had to live inline on the product page, not in a
-          separate app tab, and had to survive real customer behaviour:
-          renaming a pattern, cloning one instead of overwriting it, bailing
-          out mid-edit, and switching between a saved pattern and a fresh
-          fitting without ever showing a broken state.
-        </Lead>
-        <Figure
-          src={`${B}/storefront-collection.webp`}
-          alt="Live collection grid: product cards with variant swatches and prices, collection codes removed"
-          caption="The production collection grid the fitting flow starts from. Collection codes blurred, the rest is the live theme."
-        />
-      </Section>
-
-      <Section n="03" kicker="Editor" title="An inline pattern editor, wired to an external API.">
-        <Lead>
-          The flow below is the spine of the feature: a customer gets fitted
-          once, then can reopen, tweak, rename, or clone that pattern
-          straight from the product page.
-        </Lead>
-        <PatternFlow />
-        <div className="mt-8">
+        <div className="mt-16">
           <ScreenBoard
             bleed={false}
             accent={accent}
@@ -168,104 +209,149 @@ export default function MadeToMeasureShopifyCase() {
               },
             ]}
           />
-          <p className="mt-3 text-sm text-mute">
-            An illustrated recreation of the editor, not a screenshot. It sits
-            behind a customer login and holds real fit data, so the flow is
-            redrawn rather than captured.
-          </p>
         </div>
-        <Columns2>
-          <Mini
-            title="Save As New, not overwrite"
-            body="Cloning a pattern auto-renames it (date-stamped, with an incrementing suffix) instead of silently overwriting the original submission."
-          />
-          <Mini
-            title="Gender filter that never blocks"
-            body="Patterns are filtered to the product's gender when a match exists, but fall back to showing everything rather than hiding the editor when the account has none. A stricter version shipped first and was rolled back after it hid the dropdown too aggressively."
-          />
-        </Columns2>
-      </Section>
 
-      <Section n="04" kicker="Debugging" title="The theme bugs were in the small print.">
-        <Lead>
-          A login redirect bug traced back to three copies of the same
-          broken helper function layered on top of each other in the theme
-          layout, each fighting the others with <code>!important</code>{" "}
-          overrides. A &quot;preferred store&quot; menu going blank turned
-          out to be a metafield-only lookup with no fallback, fixed with a
-          local-storage read the profile page was already writing to.
-        </Lead>
-        <Callout title="Trust the deployed bytes, not your browser">
-          A font-size change looked stuck at 12px in the browser no matter
-          what shipped. Rather than chase a phantom CSS bug, the fix was
-          verified against a raw pull of the live theme and the CDN asset
-          bytes directly. It was rendering correctly. The browser&apos;s
-          local rendering was the outlier, not the deploy.
-        </Callout>
-      </Section>
+        <p className="mt-6 max-w-[64ch] text-sm text-mute">
+          An illustrated recreation of the editor, not a screenshot. It sits
+          behind a customer login and holds real fit data, so the flow is
+          redrawn rather than captured. The screens follow the real layout so
+          the work is legible, while no client name, logo or customer data is
+          reproduced anywhere.
+        </p>
 
-      <Section n="05" kicker="Email automation" title="Ten Klaviyo flows replaced Shopify's defaults.">
-        <Lead>
-          Order confirmation, shipping, delivery, in-store collection, store
-          pickup ready, password reset, welcome, account activation, and two
-          appointment flows, all rebuilt as dynamic templates mapped to real
-          Shopify order and customer data: line items, addresses, payment
-          method, and per-item variant options like collar and cuff style.
-        </Lead>
-        <FlowStatus
-          flows={[
-            "Order Confirmation",
-            "Shipping Notification",
-            "Delivery Confirmation",
-            "Order Collected",
-            "Store Collection Ready",
-            "Welcome Email",
-            "Account Activation",
-            "Password Reset",
-            "Appointment Confirmation",
-            "Appointment Reminder",
-          ]}
-        />
-      </Section>
+        <details className="group mt-16 border-y border-line">
+          <summary className="mono flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-[11px] uppercase tracking-[0.14em] text-dim transition-colors hover:text-fg [&::-webkit-details-marker]:hidden">
+            <span>Read the full write-up</span>
+            <span aria-hidden className="text-accent transition-transform group-open:rotate-45">+</span>
+          </summary>
 
-      <Section n="06" kicker="On the phone" title="Get fitted from a phone, not just a desk.">
-        <Lead>
-          Most customers start the fitting flow on mobile. The configurator
-          and collection grid both reflow to a single column, with the same
-          add-to-cart gating logic underneath.
-        </Lead>
-        <div className="mt-8">
-          <PhoneRow
-            bleed={false}
-            accent={accent}
-            items={[
-              { key: "m1", label: "storefront", screen: <ShopifyMobile1 accent={accent} />, note: "The collection grid, single column." },
-              { key: "m2", label: "get fitted", screen: <ShopifyMobile3 accent={accent} />, note: "The configurator, with the same add-to-cart gating." },
-              { key: "m3", label: "product", screen: <ShopifyMobile2 accent={accent} />, note: "Product detail with the fitting entry point." },
+          <Section n="01" kicker="Problem" title="A generic theme can't fit a made-to-measure product.">
+            <Lead>
+              The brand sells made-to-measure shirts and suits. A customer&apos;s
+              fit data (band, cup, height, sleeve, collar, and more) lives in a
+              separate pattern-matching service, not in Shopify. The stock theme
+              had no concept of it: no way to show a customer their saved
+              patterns, edit one, or stop an add-to-cart that had no valid fit
+              data behind it.
+            </Lead>
+            <Callout title="The constraint">
+              Every read and write had to go through an external REST API the
+              theme didn&apos;t control, inside a pure Liquid + vanilla-JS theme
+              with no build pipeline. No React, no bundler, no shortcuts.
+            </Callout>
+          </Section>
+
+          <Section n="02" kicker="Goal" title="Turn a stock theme into a fitting workstation.">
+            <Lead>
+              The editor had to live inline on the product page, not in a
+              separate app tab, and had to survive real customer behaviour:
+              renaming a pattern, cloning one instead of overwriting it, bailing
+              out mid-edit, and switching between a saved pattern and a fresh
+              fitting without ever showing a broken state.
+            </Lead>
+          </Section>
+
+          <Section n="03" kicker="Editor" title="An inline pattern editor, wired to an external API.">
+            <Lead>
+              The flow below is the spine of the feature: a customer gets fitted
+              once, then can reopen, tweak, rename, or clone that pattern
+              straight from the product page.
+            </Lead>
+            <PatternFlow />
+            <Columns2>
+              <Mini
+                title="Save As New, not overwrite"
+                body="Cloning a pattern auto-renames it (date-stamped, with an incrementing suffix) instead of silently overwriting the original submission."
+              />
+              <Mini
+                title="Gender filter that never blocks"
+                body="Patterns are filtered to the product's gender when a match exists, but fall back to showing everything rather than hiding the editor when the account has none. A stricter version shipped first and was rolled back after it hid the dropdown too aggressively."
+              />
+            </Columns2>
+          </Section>
+
+          <Section n="04" kicker="Debugging" title="The theme bugs were in the small print.">
+            <Lead>
+              A login redirect bug traced back to three copies of the same
+              broken helper function layered on top of each other in the theme
+              layout, each fighting the others with <code>!important</code>{" "}
+              overrides. A &quot;preferred store&quot; menu going blank turned
+              out to be a metafield-only lookup with no fallback, fixed with a
+              local-storage read the profile page was already writing to.
+            </Lead>
+            <Callout title="Trust the deployed bytes, not your browser">
+              A font-size change looked stuck at 12px in the browser no matter
+              what shipped. Rather than chase a phantom CSS bug, the fix was
+              verified against a raw pull of the live theme and the CDN asset
+              bytes directly. It was rendering correctly. The browser&apos;s
+              local rendering was the outlier, not the deploy.
+            </Callout>
+          </Section>
+
+          <Section n="05" kicker="Email automation" title="Ten Klaviyo flows replaced Shopify's defaults.">
+            <Lead>
+              Order confirmation, shipping, delivery, in-store collection, store
+              pickup ready, password reset, welcome, account activation, and two
+              appointment flows, all rebuilt as dynamic templates mapped to real
+              Shopify order and customer data: line items, addresses, payment
+              method, and per-item variant options like collar and cuff style.
+            </Lead>
+            <FlowStatus
+              flows={[
+                "Order Confirmation",
+                "Shipping Notification",
+                "Delivery Confirmation",
+                "Order Collected",
+                "Store Collection Ready",
+                "Welcome Email",
+                "Account Activation",
+                "Password Reset",
+                "Appointment Confirmation",
+                "Appointment Reminder",
+              ]}
+            />
+          </Section>
+
+          <Section n="06" kicker="On the phone" title="Get fitted from a phone, not just a desk.">
+            <Lead>
+              Most customers start the fitting flow on mobile. The configurator
+              and collection grid both reflow to a single column, with the same
+              add-to-cart gating logic underneath.
+            </Lead>
+            <div className="mt-8">
+              <PhoneRow
+                bleed={false}
+                accent={accent}
+                items={[
+                  { key: "m1", label: "storefront", screen: <ShopifyMobile1 accent={accent} />, note: "The collection grid, single column." },
+                  { key: "m2", label: "get fitted", screen: <ShopifyMobile3 accent={accent} />, note: "The configurator, with the same add-to-cart gating." },
+                  { key: "m3", label: "product", screen: <ShopifyMobile2 accent={accent} />, note: "Product detail with the fitting entry point." },
+                ]}
+              />
+            </div>
+          </Section>
+        </details>
+
+        <Section n="07" kicker="Outcome" title="Shipped, live, and still evolving.">
+          <Lead>
+            The fitting editor and all ten email flows are live in production.
+            Every theme push went out behind a full backup and a git tag, so
+            every round of client feedback could ship the same day without
+            risking the storefront. It&apos;s an ongoing engagement: new
+            rounds of fixes and refinements still come in and go out the same
+            way.
+          </Lead>
+          <ResultNumbers
+            caption="Outcome in numbers"
+            stats={[
+              { value: "10", label: "Klaviyo flows live, replacing every default transactional email" },
+              { value: "3", label: "stacked copies of one broken login helper, untangled" },
             ]}
           />
-        </div>
-      </Section>
+        </Section>
 
-      <Section n="07" kicker="Outcome" title="Shipped, live, and still evolving.">
-        <Lead>
-          The fitting editor and all ten email flows are live in production.
-          Every theme push went out behind a full backup and a git tag, so
-          every round of client feedback could ship the same day without
-          risking the storefront. It&apos;s an ongoing engagement: new
-          rounds of fixes and refinements still come in and go out the same
-          way.
-        </Lead>
-        <ResultNumbers
-          caption="Outcome in numbers"
-          stats={[
-            { value: "10", label: "Klaviyo flows live, replacing every default transactional email" },
-            { value: "3", label: "stacked copies of one broken login helper, untangled" },
-          ]}
-        />
-      </Section>
-
-      <NextCase href="/work/spotter-eld" label="Next case study" title="Spotter ELD" />
-    </CaseShell>
+        <NextCase href="/work/spotter-eld" label="Next case study" title="Spotter ELD" />
+      </article>
+    </WideCaseShell>
   );
 }

@@ -30,7 +30,10 @@ const DIM_VALS = [0, 0, 1, 1, 0];
 const RING_KEYS = [T.lines[2][0], T.lines[2][0] + 0.015, T.back[0], T.back[1]];
 const RING_VALS = [0, 1, 1, 0];
 
-function Visual({ p }: { p: MV }) {
+/* Exported so the WorkReel card preview (mockup-video route) can drive this
+   same visual directly with a manually-set progress value, instead of the
+   old static mockup animation: one real scene, two places it plays. */
+export function EduInsightsVisual({ p }: { p: MV }) {
   const dim = useKeys(p, DIM_KEYS, DIM_VALS);
   const ring = useKeys(p, RING_KEYS, RING_VALS);
   const stripOp = useKeys(p, [CHAPTERS[1], T.head[0], T.expand[0], T.expand[1]], [1, STRIP_DIM, STRIP_DIM, BACK_DIM], linear);
@@ -60,7 +63,7 @@ export default function EduInsightsScene() {
     <ScrollScene
       captions={CAPTIONS}
       chapters={CHAPTERS}
-      render={(p) => <Visual p={p} />}
+      render={(p) => <EduInsightsVisual p={p} />}
       heightClass="h-[240svh] sm:h-[280svh]"
       stillAt={1}
     />

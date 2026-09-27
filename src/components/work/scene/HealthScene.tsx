@@ -69,6 +69,48 @@ function CaptionView({ cap, opacity }: { cap: (typeof CAPTIONS)[number]; opacity
   );
 }
 
+/* Exported so the WorkReel card preview (mockup-video route) can drive the
+   same panels, registration pulse and payoff directly with a manually-set
+   progress value, instead of a fake mockup animation: one real scene, two
+   places it plays. There's no pointer here, so `reg` (plate registration)
+   comes from scroll alone -- the "hold to register" interaction is a
+   viewer-only affordance, not part of what the animation itself shows -- and
+   px/py (pointer-driven misregistration drift) sit at their rest value. */
+export function HealthVisual({ p }: { p: MV }) {
+  const reg = useSeg(p, 0.44, 0.56, easeOutCubic);
+  const conv = useSeg(p, 0.46, 0.62);
+  const px = useMotionValue(0);
+  const py = useMotionValue(0);
+  return (
+    <div className="relative h-full w-full">
+      <Backdrop p={p} />
+      <span aria-hidden className={`${MONO} absolute left-0 top-0 text-xs text-mute`}>
+        +
+      </span>
+      <span aria-hidden className={`${MONO} absolute right-0 top-0 text-xs text-mute`}>
+        +
+      </span>
+      <span aria-hidden className={`${MONO} absolute bottom-0 left-0 text-xs text-mute`}>
+        +
+      </span>
+      <span aria-hidden className={`${MONO} absolute bottom-0 right-0 text-xs text-mute`}>
+        +
+      </span>
+      <div
+        aria-hidden
+        className="absolute inset-0 grid grid-cols-2 grid-rows-[auto_auto] content-center gap-2 px-3 pb-9 pt-3 sm:gap-3 sm:px-5 sm:pt-5"
+      >
+        {PANELS.map((panel, i) => (
+          <PanelView key={panel.key} panel={panel} idx={i} p={p} reg={reg} px={px} py={py} conv={conv} />
+        ))}
+      </div>
+      <RegPulse p={p} />
+      <PayoffView p={p} />
+      <ScoreView p={p} />
+    </div>
+  );
+}
+
 export default function HealthScene() {
   const track = useRef<HTMLDivElement>(null);
   const { scrollYProgress: raw } = useScroll({ target: track, offset: ["start 56px", "end end"] });

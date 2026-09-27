@@ -56,7 +56,7 @@ function Leader({ p }: { p: MV }) {
   );
 }
 
-function Visual({ p }: { p: MV }) {
+export function EduQuizVisual({ p }: { p: MV }) {
   const k = useSeg(p, T.shrink[0], T.shrink[1], easeInOutCubic);
   const lift = useTransform([useSeg(p, T.scan[0], T.scan[1], easeInOutCubic), k], ([s, v]: number[]) => s * (1 - v));
   const shift = useTransform(lift, (v) => `translateY(calc(var(--shift) * ${v.toFixed(4)}))`);
@@ -80,5 +80,5 @@ function Visual({ p }: { p: MV }) {
 }
 
 export default function EduQuizScene() {
-  return <ScrollScene captions={CAPTIONS} chapters={CHAPTERS} render={(p) => <Visual p={p} />} heightClass="h-[240svh] sm:h-[280svh]" />;
+  return <ScrollScene captions={CAPTIONS} chapters={CHAPTERS} render={(p) => <EduQuizVisual p={p} />} heightClass="h-[240svh] sm:h-[280svh]" />;
 }

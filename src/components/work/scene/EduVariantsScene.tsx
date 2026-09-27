@@ -34,7 +34,7 @@ function Readout({ p }: { p: MV }) {
   return <motion.span>{text}</motion.span>;
 }
 
-function Visual({ p }: { p: MV }) {
+export function EduVariantsVisual({ p }: { p: MV }) {
   const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
   const ids: WipeIds = { old: `edu-old-${uid}`, next: `edu-new-${uid}`, band: `edu-band-${uid}`, line: `edu-line-${uid}` };
   const { sy, narrow, ref } = useStretch();
@@ -76,7 +76,7 @@ export default function EduVariantsScene() {
     <ScrollScene
       captions={CAPTIONS}
       chapters={CHAPTERS}
-      render={(p) => <Visual p={p} />}
+      render={(p) => <EduVariantsVisual p={p} />}
       readout={(p) => <Readout p={p} />}
       heightClass="h-[240svh] sm:h-[280svh]"
       stillAt={STILL_AT}

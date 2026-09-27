@@ -23,7 +23,7 @@ import { QuizPage } from "./EduPhoneSceneQuizPage";
 
 const THREE = [0, 1, 2] as const;
 
-function Visual({ p: scroll }: { p: MV }) {
+export function EduPhoneVisual({ p: scroll }: { p: MV }) {
   const p = useTransform(scroll, [...WARP.p], [...WARP.q]);
   const flow = useTransform(p, flowAt);
   const type = useType(p);
@@ -65,7 +65,7 @@ export default function EduPhoneScene() {
     <ScrollScene
       captions={CAPTIONS}
       chapters={CHAPTERS}
-      render={(p) => <Visual p={p} />}
+      render={(p) => <EduPhoneVisual p={p} />}
       heightClass="h-[240svh] sm:h-[280svh]"
     />
   );
