@@ -41,14 +41,14 @@ export type WorkReelItem = {
   // capture already covers the whole story. `image` stays as the <video>'s
   // poster frame either way.
   video?: string;
-  // Bab/chapter labels, in the SAME order as that case study's *_REEL_SCENES
-  // array (PipeReelPreview.tsx / EduReelPreview.tsx / MtmReelPreview.tsx) --
-  // present only for the multi-scene reels. Drives the chapter-node wire
-  // fan-out on the homepage card (see ReelChapterFan.tsx): one small card
-  // spawns per bab as playback reaches it (Rafii, 27 Sep sketch + "per bab
-  // animasi nanti muncul satu", then "spawn card baru terpisah di kanan").
-  // health-platform has none: it's one continuous scene, nothing to cycle.
-  chapters?: string[];
+  // Only the multi-scene reels set this. Each *ReelPreview capture recipe
+  // packs one whole scene into ~1.2s of video, which Rafii found too fast
+  // (28 Sep: "animasinya apa bisa di perlambat itu terlalu kencang"), so
+  // these play at half speed instead of needing a new capture. They used to
+  // sit beside a chapter-card fan-out (ReelChapterFan, 27-28 Sep) until
+  // Rafii dropped it again on 29 Sep ("tidak jadi ada branchnya"); the slow
+  // rate was its own request and stays.
+  playbackRate?: number;
 };
 
 export const workReel: WorkReelItem[] = [
@@ -79,7 +79,7 @@ export const workReel: WorkReelItem[] = [
       alt: "The pipeline's own scroll scenes in sequence: sources scanned, script drafted, voiced, rendered, published, isolated from the scraper, and reused for Shorts.",
     },
     video: "/work/content-automation-pipeline/workflow-reel-scene.mp4",
-    chapters: ["Sources", "Script", "Voice", "Render", "Publish", "Isolation", "Shorts"],
+    playbackRate: 0.5,
   },
   {
     slug: "education-saas",
@@ -98,7 +98,7 @@ export const workReel: WorkReelItem[] = [
     // Rafii's correction (27 Sep): "maksud saya semua animasi bukan 1 bab
     // doang". See EduReelPreview.tsx + mockup-video's edu-reel branch.
     video: "/work/education-saas/insights-reel-scene.mp4",
-    chapters: ["Variants", "Tree", "Quiz", "Insights", "Debug", "Phone"],
+    playbackRate: 0.5,
   },
   {
     slug: "health-platform",
@@ -127,7 +127,7 @@ export const workReel: WorkReelItem[] = [
       alt: "The Shopify theme's own scroll scenes in sequence: fit measurements, the pattern editor, the add-to-cart gate, production debugging, an email flow and the phone view.",
     },
     video: "/work/made-to-measure-shopify/theme-reel-scene.mp4",
-    chapters: ["Fit", "Editor", "Gate", "Debug", "Email", "Phone"],
+    playbackRate: 0.5,
   },
   {
     slug: "spotter-eld",
