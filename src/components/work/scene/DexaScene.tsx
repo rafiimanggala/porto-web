@@ -38,7 +38,7 @@ function Zone({ at, children }: { at: ZoneKey; children: ReactNode }) {
   return <g transform={`translate(0 ${(extra * ZONE[at]).toFixed(1)})`}>{children}</g>;
 }
 
-function Visual({ p }: { p: MV }) {
+export function DexaVisual({ p }: { p: MV }) {
   const ref = useRef<SVGSVGElement>(null);
   const stage = useStageExtra(ref);
   return (
@@ -102,7 +102,7 @@ export default function DexaScene() {
     <DexaSceneShell
       captions={CAPTIONS}
       chapters={CHAPTERS}
-      render={(p) => <Visual p={p} />}
+      render={(p) => <DexaVisual p={p} />}
       readout={(p) => <Readout p={p} />}
       heightClass="h-[380svh] sm:h-[420svh]"
     />

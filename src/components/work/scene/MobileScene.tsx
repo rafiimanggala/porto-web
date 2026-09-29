@@ -106,7 +106,7 @@ function Cards({ p }: { p: MV }) {
   );
 }
 
-function Visual({ p }: { p: MV }) {
+export function MobileVisual({ p }: { p: MV }) {
   return (
     <Stage p={p}>
       <Frame p={p} />
@@ -128,7 +128,7 @@ export default function MobileScene() {
     <ScrollScene
       captions={CAPTIONS}
       chapters={CHAPTERS}
-      render={(p) => <Visual p={p} />}
+      render={(p) => <MobileVisual p={p} />}
       heightClass="h-[400svh] sm:h-[440svh]"
     />
   );

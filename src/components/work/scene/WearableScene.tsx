@@ -73,7 +73,7 @@ function Slot({ p, night, statNight }: { p: MV; night: MV; statNight: MV }) {
   );
 }
 
-function Visual({ p }: { p: MV }) {
+export function WearableVisual({ p }: { p: MV }) {
   const cur = useTransform(p, cursorAt);
   const night = useTransform(cur, nightOf);
   const sweep = useSeg(p, T.sweep[0], T.sweep[1]);
@@ -131,7 +131,7 @@ export default function WearableScene() {
     <WearableSceneShell
       captions={CAPTIONS}
       chapters={CH}
-      render={(p) => <Visual p={p} />}
+      render={(p) => <WearableVisual p={p} />}
       readout={(p) => <Readout p={p} />}
       heightClass="h-[480svh] sm:h-[520svh]"
       stillAt={1}

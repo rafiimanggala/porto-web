@@ -20,7 +20,7 @@ function Readout({ p }: { p: MV }) {
   return <motion.span>{text}</motion.span>;
 }
 
-function Visual({ p }: { p: MV }) {
+export function ChatVisual({ p }: { p: MV }) {
   return (
     <div className="absolute inset-0 [container-type:size]">
       <div className="absolute inset-x-0 top-1/2 flex h-[min(100%,504px)] -translate-y-1/2 flex-col overflow-hidden rounded-xl border border-line-strong bg-surface-1 shadow-[0_18px_40px_-24px_rgba(0,0,0,0.6)] @[30rem]:h-[min(100%,600px)]">
@@ -46,7 +46,7 @@ export default function ChatScene() {
     <ChatSceneShell
       captions={CAPTIONS}
       chapters={CHAPTERS}
-      render={(p) => <Visual p={p} />}
+      render={(p) => <ChatVisual p={p} />}
       readout={(p) => <Readout p={p} />}
       heightClass="h-[420svh] sm:h-[460svh]"
       stillAt={STILL_AT}

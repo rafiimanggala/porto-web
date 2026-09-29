@@ -107,7 +107,7 @@ function BloodLayer({ p }: { p: MV }) {
   );
 }
 
-function Visual({ p }: { p: MV }) {
+export function GeneticsVisual({ p }: { p: MV }) {
   const rain = useSeg(p, 0, RAIN_END, easeOutSine);
   const restOp = useTransform(p, [...REST_FADE], [1, 0.55, 0]);
   const halo = useSeg(p, HALO[0], HALO[1]);
@@ -137,7 +137,7 @@ export default function GeneticsScene() {
     <GeneticsSceneShell
       captions={CAPTIONS}
       chapters={CHAPTERS}
-      render={(p) => <Visual p={p} />}
+      render={(p) => <GeneticsVisual p={p} />}
       readout={(p) => <Readout p={p} />}
       heightClass="h-[480svh] sm:h-[520svh]"
     />

@@ -9,6 +9,7 @@ import MtmFitScenePreview from "@/components/work/scene/MtmFitScenePreview";
 import PipeReelPreview from "@/components/work/scene/PipeReelPreview";
 import MtmReelPreview from "@/components/work/scene/MtmReelPreview";
 import EduReelPreview from "@/components/work/scene/EduReelPreview";
+import HealthReelPreview from "@/components/work/scene/HealthReelPreview";
 
 // Same belt-and-suspenders as mockup-preview: internal tool, not linked,
 // not in sitemap.ts, noindexed.
@@ -118,6 +119,17 @@ export default async function MockupVideo({
         <div id="shot-target" className="mx-auto w-fit">
           <BrowserWindow accent={ACCENT.amber} label="class insights">
             <EduReelPreview sceneIndex={sceneIndex} localProgress={p} width={812} height={680} />
+          </BrowserWindow>
+        </div>
+      </div>
+    );
+  }
+  if (project === "health-reel") {
+    return (
+      <div className="theme-green inline-block bg-bg p-10">
+        <div id="shot-target" className="mx-auto w-fit">
+          <BrowserWindow accent={ACCENT.amber} label="dashboard">
+            <HealthReelPreview sceneIndex={sceneIndex} localProgress={p} width={812} height={680} />
           </BrowserWindow>
         </div>
       </div>

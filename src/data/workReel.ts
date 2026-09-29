@@ -34,12 +34,12 @@ export type WorkReelItem = {
   // *ScenePreview.tsx / *ReelPreview.tsx + the matching branch in
   // src/app/mockup-video/page.tsx), so the homepage card plays the exact
   // animation a visitor sees on the page itself, not a lookalike (Rafii's
-  // call, 27 Sep: "kenapa cuma 1 animasi saya igin semuanya"). Pipeline,
-  // made-to-measure and education cycle through EVERY chapter scene in
-  // sequence, not just one ("maksud saya semua animasi bukan 1 bab doang")
-  // -- health-platform is already one continuous scene, so its single
-  // capture already covers the whole story. `image` stays as the <video>'s
-  // poster frame either way.
+  // call, 27 Sep: "kenapa cuma 1 animasi saya igin semuanya"). All four
+  // cycle through EVERY chapter scene in sequence, not just one ("maksud
+  // saya semua animasi bukan 1 bab doang"). health-platform only caught up
+  // on 29 Sep: its card had played the registration scene alone, as if that
+  // covered the story, while the six feature scenes below it were left out.
+  // `image` stays as the <video>'s poster frame either way.
   video?: string;
   // Only the multi-scene reels set this. Each *ReelPreview capture recipe
   // packs one whole scene into ~1.2s of video, which Rafii found too fast
@@ -107,12 +107,16 @@ export const workReel: WorkReelItem[] = [
       "A health web app that reconciles biomarkers, DNA, DEXA scans and wearables into one clinical scoring system, then explains it in plain English.",
     caption: "4 data sources, one clinical score",
     image: {
-      src: "/work/health-platform/panels-card-scene.webp",
+      src: "/work/health-platform/panels-reel-scene.webp",
       width: 862,
       height: 588,
-      alt: "The four source plates (blood, DNA, DEXA, wearable) registering into the health platform's six-domain longevity score.",
+      alt: "The health platform's own scroll scenes in sequence: four source plates registering into one score, the DEXA scan, genetics, wearables, the evidence-cited chat, the plan and the phone view.",
     },
-    video: "/work/health-platform/panels-card-scene.mp4",
+    // All 7 scroll scenes in the case study's own order (registration, DEXA,
+    // genetics, wearables, chat, plan, mobile). See HealthReelPreview.tsx +
+    // mockup-video's health-reel branch.
+    video: "/work/health-platform/panels-reel-scene.mp4",
+    playbackRate: 0.5,
   },
   {
     slug: "made-to-measure-shopify",

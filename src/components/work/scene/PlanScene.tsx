@@ -78,7 +78,7 @@ function Stage({ p }: { p: MV }) {
   );
 }
 
-function Visual({ p }: { p: MV }) {
+export function PlanVisual({ p }: { p: MV }) {
   return (
     <div className="@container absolute inset-0">
       <Stage p={p} />
@@ -116,7 +116,7 @@ export default function PlanScene() {
       captions={CAPTIONS}
       chapters={CHAPTERS}
       jumps={JUMPS}
-      render={(p) => <Visual p={p} />}
+      render={(p) => <PlanVisual p={p} />}
       readout={(p) => <Readout p={p} />}
       heightClass="h-[440svh] sm:h-[520svh]"
     />
