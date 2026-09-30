@@ -58,73 +58,159 @@ function FactPill({ text, tone }: { text: string; tone: string }) {
 // a hard `object-cover` crop, since cropping cuts through real UI chrome
 // (caught live: made-to-measure-shopify's raw storefront crop left a sidebar
 // icon peeking outside the rounded corner) -- those get `object-contain` on
-// a solid backdrop instead, so nothing gets cropped or stretched.
-//
-// education-saas and health-platform came OFF this list the same day (23
-// Sep, "di zoom seperti card 1 dan 2"): their source is the illustrated
-// mockup itself (health.tsx / education.tsx via motion.tsx), not a captured
-// screenshot, so unlike the three below there's no risk of cropping through
-// chrome we don't control -- the crop is safe to zoom because it's already
-// composed the same way card 1 and 2 read (see mockup-preview/mockup-video's
-// own #shot-target crop, which captures the mockup's own device-frame bezel
-// edge to edge, not a browser tab around it).
-// made-to-measure-shopify came off the same way on 27 Sep, once its card
-// switched from a raw storefront screenshot to a captured render of its own
-// real scroll scene (MtmFitScene, same #shot-target crop as the mockups
-// above) -- spotter-eld and streak stay, since they're still raw screenshots
-// with no scroll scene of their own to capture instead.
+// a solid backdrop instead, so nothing gets cropped or stretched. spotter-eld
+// and streak are the two left, since they're still raw screenshots with no
+// scroll scene of their own to capture instead.
 const CONTAIN_SLUGS = new Set(["spotter-eld", "streak"]);
 
-// The one card layout: full-bleed image/video, title + one pill on a dark
-// gradient over it, same language the viens-la.com reference uses for its
-// project cards. `contain` mode (see CONTAIN_SLUGS) is the only branch --
-// same overlay, same typography, just object-contain over a solid backdrop
-// instead of object-cover, for images a crop would mangle.
-// All four are the same 862x588 #shot-target scene-capture crop (see
-// CONTAIN_SLUGS's comment) -- close to the card's own aspect ratio, so
-// object-cover only trims a little off the top and bottom, but the hero
-// content each scene leads with sits right at the top of that frame. Pinning
-// the crop to the top means whatever gets trimmed comes off the bottom
-// (empty card padding), not the hero.
-const TOP_ANCHOR_SLUGS = new Set([
+// The four cards whose clip is a capture of the case study's own scroll
+// scenes (see workReel.ts). They were full-bleed too, zoomed to fill the
+// card (23 Sep, "di zoom seperti card 1 dan 2"), back when each played a
+// single mockup. Once every clip grew into a whole multi-scene reel of dense
+// UI, that treatment buried it (Rafii, 30 Sep: "kontennya kurang keliatan di
+// card tersebut"): the cover crop cut the sides off on any card taller than
+// the clip (a third of the width survived on a phone), the full-height scrim
+// dimmed most of what was left, and the title ran right across its middle.
+// SceneCard gives these clips a zone of their own instead: the whole
+// capture, uncropped and undimmed, above the caption rather than under it.
+// Same chip, same caption, same corner for the title -- only the media
+// stops being a backdrop.
+const SCENE_SLUGS = new Set([
   "education-saas",
   "health-platform",
   "content-automation-pipeline",
   "made-to-measure-shopify",
 ]);
 
-function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
+// Corner radius of the BrowserWindow frame baked into every scene capture
+// (rounded-2xl, 16px at the capture's 862px CSS width), plus 2px so the clip
+// also swallows the antialiased page-color wedges outside that corner.
+const SCENE_FRAME_RADIUS = 18;
+
+// See `playbackRate` on WorkReelItem. defaultPlaybackRate too, not just
+// playbackRate: the media load algorithm resets playbackRate to the
+// default on every (re)load, which would silently snap the clip back to 1x.
+function useClipRate(rate: number | undefined) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el || !rate) return;
+    el.defaultPlaybackRate = rate;
+    el.playbackRate = rate;
+  }, [rate]);
+  return videoRef;
+}
+
+function IndexChip({ index, tone }: { index: number; tone: string }) {
+  return (
+    <span
+      className={`nums absolute top-6 left-6 inline-flex h-9 w-11 items-center justify-center rounded-full text-[13px] font-semibold text-pastel-ink sm:top-8 sm:left-8 ${tone}`}
+    >
+      {String(index + 1).padStart(2, "0")}
+    </span>
+  );
+}
+
+// Resting state matches the b3 reference: title + one pill only. No blurb on
+// the face at all -- matches viens-la's own cards, which never show body copy
+// over the photo either (the blurb still exists, just on the case-study page
+// itself). The case-study link stays in the DOM for a11y/SEO but fades in
+// only on hover/focus, beside the pill rather than on a row of its own, so it
+// costs the card no height while it's invisible.
+// The title came down from clamp(2.6rem,9vw,5.75rem) on 30 Sep: at that size
+// it ran two lines on most cards, which is what left a scene reel no room
+// above it (see SCENE_SLUGS). One line on desktop now, on every card, so the
+// family still matches.
+function CardCaption({ item, index }: { item: WorkReelItem; index: number }) {
   const captionTone = PILL_TONES[(index + 1) % PILL_TONES.length];
-  const contain = CONTAIN_SLUGS.has(item.slug);
-  const topAnchor = TOP_ANCHOR_SLUGS.has(item.slug);
+  return (
+    <>
+      {/* The scrim under each caption handles most backdrops fine; the
+          drop-shadow on the text itself is a second, independent guarantee:
+          near-invisible against an already-dark backdrop, decisive against a
+          bright one (made-to-measure-shopify's old storefront shot sat close
+          enough to white behind the title to read as borderline). */}
+      <h3 className="[font-family:var(--font-card-title)] [text-shadow:0_4px_24px_rgba(0,0,0,0.6)] text-[clamp(2.25rem,5.4vw,4rem)] leading-[0.9] tracking-[-0.01em] text-balance text-white uppercase">
+        {item.title}
+      </h3>
+      <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3">
+        <FactPill text={item.caption} tone={captionTone} />
+        <span className="mono inline-flex items-center gap-1.5 text-xs font-semibold text-sun opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
+          View case study <span aria-hidden="true">&rarr;</span>
+        </span>
+      </div>
+    </>
+  );
+}
+
+// Media zone over caption zone, instead of media under caption (see
+// SCENE_SLUGS). The zone is a size container so the frame can be sized the
+// way object-contain would size it -- min(zone width, zone height x clip
+// aspect) -- but as a real box, which a letterboxed <video> never is: that
+// box is what carries the rounded clip matching the capture's own window
+// corners. Centered both ways: on a phone the clip is width-bound and floats
+// mid-zone with the index chip clear above it; on a wide laptop card it's
+// height-bound and gets even side margins instead. The sm: padding keeps it
+// off the card's own top border (otherwise the window's title bar sits
+// flush against it, two frame lines stacked) and, on the 1920 desktop where
+// it's width-bound again, far enough in that the index chip lands beside
+// the window rather than on top of its traffic lights.
+function SceneCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
+  const reduce = useReducedMotion();
+  const videoRef = useClipRate(item.playbackRate);
+  const { width, height } = item.image;
+  const frame = {
+    aspectRatio: `${width} / ${height}`,
+    width: `min(100cqw, ${((100 * width) / height).toFixed(2)}cqh)`,
+    borderRadius: `min(${((100 * SCENE_FRAME_RADIUS) / width).toFixed(3)}cqw, ${((100 * SCENE_FRAME_RADIUS) / height).toFixed(3)}cqh)`,
+  };
+  return (
+    <div className="relative flex h-full w-full flex-col bg-surface-1">
+      <div className="relative min-h-0 flex-1 sm:mx-20 sm:mt-8 [container-type:size]">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="relative overflow-hidden" style={frame}>
+            <video
+              ref={videoRef}
+              src={item.video}
+              poster={item.image.src}
+              autoPlay={!reduce}
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          </div>
+        </div>
+      </div>
+      <IndexChip index={index} tone={tone} />
+      <div className="relative bg-gradient-to-t from-black/85 via-black/50 to-transparent px-6 pt-4 pb-10 sm:px-10 sm:pb-14">
+        <CardCaption item={item} index={index} />
+      </div>
+    </div>
+  );
+}
+
+// Every other card: full-bleed image/video, title + one pill on a dark
+// gradient over it, same language the viens-la.com reference uses for its
+// project cards. `contain` mode (see CONTAIN_SLUGS) is the only branch --
+// same overlay, same typography, just object-contain over a solid backdrop
+// instead of object-cover, for images a crop would mangle.
+function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; index: number }) {
+  // object-top (contain mode only) pins the image to the top of its box
+  // instead of centering it -- centered, a short-and-wide strip lands right
+  // in the middle of the card, exactly where the title sits, and the two
+  // overlap illegibly. Pinning it up top keeps the bottom band clear for the
+  // title, no per-image tuning needed.
+  const fit = CONTAIN_SLUGS.has(item.slug) ? "object-contain object-top p-10 sm:p-16" : "object-cover";
   // Reduced-motion still gets the card -- it just gets the poster frame,
   // not the loop. autoPlay is the only thing gated; the <video> element
   // itself renders either way so the poster still shows as a still image.
   const reduce = useReducedMotion();
-
-  // See `playbackRate` on WorkReelItem. defaultPlaybackRate too, not just
-  // playbackRate: the media load algorithm resets playbackRate to the
-  // default on every (re)load, which would silently snap the clip back to 1x.
-  const videoRef = useRef<HTMLVideoElement>(null);
-  useEffect(() => {
-    const el = videoRef.current;
-    if (!el || !item.playbackRate) return;
-    el.defaultPlaybackRate = item.playbackRate;
-    el.playbackRate = item.playbackRate;
-  }, [item.playbackRate]);
+  const videoRef = useClipRate(item.playbackRate);
 
   return (
-    // Fills its wrapper exactly -- see ReelCard's padded wrapper div for
-    // where the visible margin around this card actually comes from now.
     // bg-surface-1 is the letterbox color for contain mode; invisible in
     // cover mode since the image fills the box edge to edge regardless.
-    // object-top (contain mode only) pins the image to the top of its box
-    // instead of centering it -- centered, a short-and-wide strip lands
-    // right in the middle of the card, exactly where the title sits, and
-    // the two overlap illegibly (caught live: HEALTH OPTIMISATION PLATFORM
-    // ran straight across the score panel's chart lines). Pinning it up top
-    // keeps the whole bottom band clear for the title, every time, no
-    // per-image tuning needed regardless of how tall or short the image is.
     <div className="relative h-full w-full bg-surface-1">
       {item.video ? (
         <video
@@ -135,7 +221,7 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
           loop
           muted
           playsInline
-          className={`absolute inset-0 h-full w-full ${contain ? "object-contain object-top p-10 sm:p-16" : topAnchor ? "object-cover object-top" : "object-cover"}`}
+          className={`absolute inset-0 h-full w-full ${fit}`}
         />
       ) : (
         <Image
@@ -143,7 +229,7 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
           alt={item.image.alt}
           fill
           sizes="(min-width: 640px) 90vw, 100vw"
-          className={contain ? "object-contain object-top p-10 sm:p-16" : topAnchor ? "object-cover object-top" : "object-cover"}
+          className={fit}
           priority={index === 0}
         />
       )}
@@ -151,46 +237,18 @@ function CoverCard({ item, tone, index }: { item: WorkReelItem; tone: string; in
           via-black/15): contain mode's backdrop is light, and a crop-free
           screenshot can still be bright right up to the title zone, so the
           scrim has to guarantee contrast on its own rather than counting on
-          the photo already being dark underneath -- this is the fix for the
-          exact "SPOTTER ELD"/"STREAK" white-on-white bug the old two-layout
-          split was built to dodge, applied to the scrim instead of routing
-          around it with a different card shape. */}
+          the photo already being dark underneath. */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent" />
-      <span
-        className={`nums absolute top-6 left-6 inline-flex h-9 w-11 items-center justify-center rounded-full text-[13px] font-semibold text-pastel-ink sm:top-8 sm:left-8 ${tone}`}
-      >
-        {String(index + 1).padStart(2, "0")}
-      </span>
-      {/* Resting state matches the b3 reference: title + one pill only, big
-          and with real bottom air, not jammed flush to the card edge. No
-          blurb on the face at all any more -- matches viens-la's own cards,
-          which never show body copy over the photo either (the blurb still
-          exists, just on the case-study page itself). The case-study link
-          stays in the DOM for a11y/SEO but fades in only on hover/focus. No
-          Dock-specific inset needed here any more: the card itself now ends
-          well above the Dock (see the 76svh height above), so ordinary
-          bottom air is already clear of it. */}
+      <IndexChip index={index} tone={tone} />
       <div className="absolute inset-x-6 bottom-10 sm:inset-x-10 sm:bottom-14">
-        {/* The gradient above handles most images fine, but a tall
-            landscape screenshot (contain mode, height-constrained) can fill
-            the box edge to edge with little room left for the gradient to
-            darken before the title -- made-to-measure-shopify's own shirts
-            sat close enough to white behind the title that it read as
-            borderline even with the stronger scrim. A drop-shadow on the
-            text itself is a second, independent guarantee: near-invisible
-            against an already-dark backdrop, decisive against a bright one. */}
-        <h3 className="[font-family:var(--font-card-title)] [text-shadow:0_4px_24px_rgba(0,0,0,0.6)] text-[clamp(2.6rem,9vw,5.75rem)] leading-[0.9] tracking-[-0.01em] text-balance text-white uppercase">
-          {item.title}
-        </h3>
-        <div className="mt-5">
-          <FactPill text={item.caption} tone={captionTone} />
-        </div>
-        <span className="mono mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-sun opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
-          View case study <span aria-hidden="true">&rarr;</span>
-        </span>
+        <CardCaption item={item} index={index} />
       </div>
     </div>
   );
+}
+
+function CardFace(props: { item: WorkReelItem; tone: string; index: number }) {
+  return SCENE_SLUGS.has(props.item.slug) && props.item.video ? <SceneCard {...props} /> : <CoverCard {...props} />;
 }
 
 // Replaces the native pointer over a card with a circular "View" badge that
@@ -354,7 +412,7 @@ function ReelCard({
         }}
         onMouseLeave={() => setCursor((c) => ({ ...c, visible: false }))}
       >
-        <CoverCard item={item} tone={tone} index={index} />
+        <CardFace item={item} tone={tone} index={index} />
         <CardCursor x={cursor.x} y={cursor.y} visible={cursor.visible} />
       </Link>
     </motion.div>
@@ -402,7 +460,7 @@ function PlainStack({ items }: { items: WorkReelItem[] }) {
               data-unit={`work:${item.slug}`}
               className="group relative block h-full w-full overflow-hidden rounded-[1.75rem] border border-line shadow-[0_20px_50px_rgba(8,16,12,0.45)] sm:rounded-[2.5rem]"
             >
-              <CoverCard item={item} tone={tone} index={i} />
+              <CardFace item={item} tone={tone} index={i} />
             </Link>
           </li>
         );
