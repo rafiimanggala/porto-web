@@ -1,4 +1,5 @@
 import { profile } from "@/data/portfolio";
+import HeroArt from "@/components/pixel/HeroArt";
 import { stagger } from "./stagger";
 import s from "./home.module.css";
 
@@ -45,51 +46,59 @@ function Tagline() {
 }
 
 export default function Hero() {
+  // Text left, the pixel desk right from 1024px; below that the desk follows the
+  // buttons. The headline steps down a size beside the desk so it keeps its lines.
   return (
     <section
       id="home"
       aria-labelledby="home-h"
-      className="relative flex flex-col gap-10 px-4 pt-16 pb-16 sm:px-8 sm:pt-24 sm:pb-24"
+      className="relative grid items-center gap-12 px-4 pt-16 pb-16 sm:px-8 sm:pt-24 sm:pb-24 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]"
     >
-      <Tagline />
+      <div className="flex flex-col gap-10">
+        <Tagline />
 
-      <div className="flex flex-col items-start gap-6">
-        <h1
-          id="home-h"
-          className={`${s.rise} font-display max-w-[16ch] text-balance text-[clamp(3rem,10vw,7rem)] leading-[0.95] font-normal tracking-[-0.01em] text-accent`}
-          style={stagger(1)}
-        >
-          {profile.tagline}
-        </h1>
-        <p
-          className={`${s.rise} max-w-[46ch] text-base leading-relaxed text-dim sm:text-lg`}
-          style={stagger(2)}
-        >
-          {SUPPORTING_LINE}
-        </p>
-        <div className={`${s.rise} flex flex-wrap gap-3`} style={stagger(3)}>
-          <a
-            href="#work"
-            data-unit="cta:work"
-            className={`${BUTTON} bg-accent text-white hover:bg-[#8f3a0c]`}
+        <div className="flex flex-col items-start gap-6">
+          <h1
+            id="home-h"
+            className={`${s.rise} font-display max-w-[16ch] text-balance text-[clamp(3rem,10vw,7rem)] leading-[0.95] font-normal tracking-[-0.01em] text-accent lg:text-[clamp(3rem,5.4vw,5.5rem)]`}
+            style={stagger(1)}
           >
-            See what I build
-          </a>
-          <a
-            href="#contact"
-            data-unit="cta:contact"
-            className={`${BUTTON} border-2 border-accent text-fg hover:bg-surface-2`}
+            {profile.tagline}
+          </h1>
+          <p
+            className={`${s.rise} max-w-[46ch] text-base leading-relaxed text-dim sm:text-lg`}
+            style={stagger(2)}
           >
-            Get in touch
-          </a>
+            {SUPPORTING_LINE}
+          </p>
+          <div className={`${s.rise} flex flex-wrap gap-3`} style={stagger(3)}>
+            <a
+              href="#work"
+              data-unit="cta:work"
+              className={`${BUTTON} bg-accent text-white hover:bg-[#8f3a0c]`}
+            >
+              See what I build
+            </a>
+            <a
+              href="#contact"
+              data-unit="cta:contact"
+              className={`${BUTTON} border-2 border-accent text-fg hover:bg-surface-2`}
+            >
+              Get in touch
+            </a>
+          </div>
         </div>
+      </div>
+
+      <div className={s.rise} style={stagger(4)}>
+        <HeroArt />
       </div>
 
       <a
         href={`mailto:${profile.email}`}
         aria-label="Email Rafii"
-        className={`${s.rise} absolute top-5 right-4 grid size-14 place-items-center rounded-full bg-sky text-pastel-ink transition-transform hover:-translate-y-0.5 sm:right-8 min-[1280px]:top-[34%]`}
-        style={stagger(4)}
+        className={`${s.rise} absolute top-5 right-4 grid size-14 place-items-center rounded-full bg-sky text-pastel-ink transition-transform hover:-translate-y-0.5 sm:right-8`}
+        style={stagger(5)}
       >
         <EnvelopeIcon />
       </a>

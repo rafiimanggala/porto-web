@@ -6,7 +6,7 @@ import Arrow from "@/components/ui/Arrow";
 export const metadata: Metadata = {
   title: "Lab · Rafii Manggala",
   description:
-    "Three small browser experiments, each on its own route and opt-in: a WebGL halftone, a draggable card row with a live readout, and a grid that hides a game of Snake.",
+    "Four small browser experiments, each on its own route and opt-in: a WebGL halftone, a draggable card row with a live readout, a grid that hides a game of Snake, and four pixel scenes drawn entirely in code.",
   alternates: { canonical: "/lab" },
 };
 
@@ -28,6 +28,12 @@ const experiments = [
     name: "Grid trail, then Snake",
     line: "A grid that lights up where your pointer has been. Keep going and it offers you a game of Snake.",
     cost: "Plain DOM grid, no canvas. Desktop only: on touch you get a note instead of a game.",
+  },
+  {
+    href: "/lab/pixel-scenes",
+    name: "Pixel scenes",
+    line: "Four places drawn entirely in code, from a lagoon in Raja Ampat to Jakarta at two in the morning. No image files: every pixel is worked out as you watch.",
+    cost: "Plain 2D canvas, no WebGL. Each scene rests on a still frame until you press Play.",
   },
 ];
 
@@ -56,7 +62,7 @@ export default function LabPage() {
         <div className="eyebrow">Lab</div>
         <h1 className="t-hero mt-4 max-w-[16ch]">Small experiments</h1>
         <p className="t-lead mt-6 max-w-[58ch] text-dim">
-          Three toys that do not belong in a case study. Each lives on its own
+          Four toys that do not belong in a case study. Each lives on its own
           page and starts only when you touch it. Nothing here autoplays, and
           the cost of each one is written on its card.
         </p>
@@ -76,7 +82,7 @@ export default function LabPage() {
         <h2 id="lab-list" className="sr-only">
           Experiments
         </h2>
-        <ul className="grid gap-4 md:grid-cols-3">
+        <ul className="grid gap-4 md:grid-cols-2">
           {experiments.map((e) => (
             <li key={e.href} className="flex">
               <ExperimentCard {...e} />

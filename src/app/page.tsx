@@ -7,6 +7,8 @@ import Hero from "@/components/home/Hero";
 import Dock from "@/components/home/Dock";
 import DirectoryHead from "@/components/home/DirectoryHead";
 import WorkReel from "@/components/home/WorkReel";
+import AgentHQ from "@/components/pixel/AgentHQ";
+import Journey from "@/components/pixel/Journey";
 
 export const metadata: Metadata = {
   title: "Rafii Manggala · Web apps, AI features, automation",
@@ -15,13 +17,20 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-// Section ids the floating dock relies on: #home (hero), #directory, #faq, #contact.
+// Section ids the floating dock relies on, in page order: #home (hero), #work,
+// #agents, #journey, #directory, #faq, #contact. The pixel sections (hero desk,
+// Agent HQ, journey level, the dock's jukung) tell the story; the work reel and
+// the case studies are the proof.
 export default function Home() {
   return (
     <main className="theme-green relative min-h-screen pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))]">
       <Hero />
 
       <WorkReel />
+
+      <AgentHQ />
+
+      <Journey />
 
       <section
         id="directory"
