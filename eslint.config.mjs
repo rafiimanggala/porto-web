@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // The pixel canvas modules are plain browser scripts ported as-is from the
+    // prototype (window.PETA); the typed surface is src/components/pixel.
+    "src/pixel/**/*.js",
   ]),
 ]);
 

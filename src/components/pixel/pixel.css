@@ -1,0 +1,310 @@
+/* Pixel pieces of the home page (hero desk, Agent HQ, journey level, the dock's
+   jukung) and the /lab pixel scenes. Everything is scoped under .px-scope,
+   because the canvas modules write plain class names (tag, chip, btn, plate)
+   that must not reach the rest of the site. The values are the site's green
+   theme tokens; the frames are notched pixel borders drawn as SVG. */
+
+.px-scope {
+  --px-page: #23473a;
+  --px-surface: #1c3a2f;
+  --px-surface-2: #2c5645;
+  --px-surface-3: #3a7059;
+  --px-fg: #f3f1e6;
+  --px-dim: #b9c8bd;
+  --px-mute: #9fb8a4;
+  --px-accent-lit: #e8743a;
+  --px-ink: #152012;
+  --px-sun: #ffe375;
+  --px-sky: #a6e8fa;
+  --px-st-live: #9cf0cb;
+  --px-st-call: #a6e8fa;
+  --px-st-proto: #ffe375;
+  --px-st-paused: #b7bfb2;
+  --px-display: var(--font-titan), ui-rounded, "Arial Rounded MT Bold", system-ui, sans-serif;
+  --px-ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --px-ease-in-out: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  --px-gutter: clamp(16px, 4vw, 32px);
+  /* Notched pixel corners for flat chips and tags. */
+  --px-notch: polygon(0 2px, 2px 2px, 2px 0, calc(100% - 2px) 0, calc(100% - 2px) 2px, 100% 2px, 100% calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) 100%, 2px 100%, 2px calc(100% - 2px), 0 calc(100% - 2px));
+  /* Notched pixel frames: ink outline, 1px bevel, flat fill. The accent frame
+     fills with the dark orange so light text on it clears AA (6.9:1). */
+  --px-frame-panel: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' shape-rendering='crispEdges'%3E%3Cpath fill='%23152012' d='M2 0h14v2h2v14h-2v2H2v-2H0V2h2z'/%3E%3Cpath fill='%232c5645' d='M2 2h14v14H2z'/%3E%3Cpath fill='%231c3a2f' d='M3 3h12v12H3z'/%3E%3C/svg%3E");
+  --px-frame-sun: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' shape-rendering='crispEdges'%3E%3Cpath fill='%23152012' d='M2 0h14v2h2v14h-2v2H2v-2H0V2h2z'/%3E%3Cpath fill='%23fff3b8' d='M2 2h14v14H2z'/%3E%3Cpath fill='%23ffe375' d='M3 3h12v12H3z'/%3E%3C/svg%3E");
+  --px-frame-button: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' shape-rendering='crispEdges'%3E%3Cpath fill='%23152012' d='M2 0h14v2h2v14h-2v2H2v-2H0V2h2z'/%3E%3Cpath fill='%233a7059' d='M2 2h14v14H2z'/%3E%3Cpath fill='%232c5645' d='M3 3h12v12H3z'/%3E%3C/svg%3E");
+  --px-frame-button-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' shape-rendering='crispEdges'%3E%3Cpath fill='%23152012' d='M2 0h14v2h2v14h-2v2H2v-2H0V2h2z'/%3E%3Cpath fill='%234a876d' d='M2 2h14v14H2z'/%3E%3Cpath fill='%233a7059' d='M3 3h12v12H3z'/%3E%3C/svg%3E");
+  --px-frame-accent: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' shape-rendering='crispEdges'%3E%3Cpath fill='%23152012' d='M2 0h14v2h2v14h-2v2H2v-2H0V2h2z'/%3E%3Cpath fill='%23c94e12' d='M2 2h14v14H2z'/%3E%3Cpath fill='%238e3510' d='M3 3h12v12H3z'/%3E%3C/svg%3E");
+  --px-frame-accent-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' shape-rendering='crispEdges'%3E%3Cpath fill='%23152012' d='M2 0h14v2h2v14h-2v2H2v-2H0V2h2z'/%3E%3Cpath fill='%23e8743a' d='M2 2h14v14H2z'/%3E%3Cpath fill='%238e3510' d='M3 3h12v12H3z'/%3E%3C/svg%3E");
+  /* Small 3px frames for the door plates on the building. */
+  --px-frame-plate: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' shape-rendering='crispEdges'%3E%3Cpath fill='%23152012' d='M1 0h7v1h1v7h-1v1H1v-1H0V1h1z'/%3E%3Cpath fill='%233a7059' d='M1 1h7v7H1z'/%3E%3Cpath fill='%231c3a2f' d='M2 2h5v5H2z'/%3E%3C/svg%3E");
+  --px-frame-plate-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' shape-rendering='crispEdges'%3E%3Cpath fill='%23152012' d='M1 0h7v1h1v7h-1v1H1v-1H0V1h1z'/%3E%3Cpath fill='%23e8743a' d='M1 1h7v7H1z'/%3E%3Cpath fill='%231c3a2f' d='M2 2h5v5H2z'/%3E%3C/svg%3E");
+  --px-frame-plate-sun: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' shape-rendering='crispEdges'%3E%3Cpath fill='%23152012' d='M1 0h7v1h1v7h-1v1H1v-1H0V1h1z'/%3E%3Cpath fill='%23fff3b8' d='M1 1h7v7H1z'/%3E%3Cpath fill='%23ffe375' d='M2 2h5v5H2z'/%3E%3C/svg%3E");
+}
+
+.px-scope .sr {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.px-wrap { width: 100%; max-width: 1264px; margin-inline: auto; padding-inline: var(--px-gutter); }
+.px-scope .px-frame {
+  display: inline-block;
+  border: 6px solid transparent;
+  border-image: var(--px-frame-panel) 6 fill / 6px;
+  line-height: 0;
+}
+.px-scope .px-frame canvas { display: block; image-rendering: pixelated; }
+.px-scope .px-panel {
+  border: 6px solid transparent;
+  border-image: var(--px-frame-panel) 6 fill / 6px;
+}
+
+/* ---- buttons, tags and status pips (the canvas modules write these) ---- */
+.px-scope .btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 6px solid transparent;
+  border-image: var(--px-frame-button) 6 fill / 6px;
+  background: none;
+  color: var(--px-fg);
+  font: 600 16px/1.3 var(--font-sans);
+  text-decoration: none;
+  cursor: pointer;
+}
+.px-scope .btn:hover { border-image: var(--px-frame-button-hover) 6 fill / 6px; }
+.px-scope .btn.primary { border-image: var(--px-frame-accent) 6 fill / 6px; }
+.px-scope .btn.primary:hover { border-image: var(--px-frame-accent-hover) 6 fill / 6px; }
+.px-scope .btn[aria-pressed="true"] { border-image: var(--px-frame-sun) 6 fill / 6px; color: var(--px-ink); }
+.px-scope .btn:focus-visible, .px-scope a:focus-visible, .px-scope button:focus-visible { outline: 3px solid var(--px-sun); outline-offset: 2px; }
+.px-scope .btn svg { width: 16px; height: 16px; flex: none; fill: currentColor; }
+.px-scope .tag {
+  display: inline-block;
+  padding: 0 6px;
+  font: 600 12px/20px var(--font-sans);
+  color: var(--px-ink);
+  background: var(--px-sun);
+  clip-path: var(--px-notch);
+  white-space: nowrap;
+}
+.px-scope .st-live { --st: var(--px-st-live); }
+.px-scope .st-call { --st: var(--px-st-call); }
+.px-scope .st-proto { --st: var(--px-st-proto); }
+.px-scope .st-paused { --st: var(--px-st-paused); }
+.px-scope .tag[class*="st-"] { background: var(--st); }
+.px-scope .pip {
+  display: inline-block; flex: none;
+  width: 8px; height: 8px;
+  background: var(--st, var(--px-sun));
+  outline: 2px solid var(--px-ink);
+}
+.px-scope .chip {
+  display: inline-block;
+  padding: 0 8px;
+  font: 500 14px/24px var(--font-sans);
+  background: var(--px-surface-2);
+  color: var(--px-fg);
+  clip-path: var(--px-notch);
+}
+
+/* ---- hero desk ---------------------------------------------------------- */
+.px-hero { display: grid; justify-items: center; gap: 12px; min-width: 0; margin: 0; }
+.px-hero canvas {
+  /* Holds about the art's size until the module sets whole-pixel sizes
+     (3x on a wide screen, the column width less the frame on a phone). */
+  width: min(504px, calc(100vw - 44px));
+  aspect-ratio: 168 / 116;
+  background: var(--px-surface);
+}
+.px-hero figcaption { font-size: 14px; color: var(--px-mute); text-align: center; }
+.px-hero time { color: var(--px-fg); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* ---- Agent HQ ----------------------------------------------------------- */
+.px-hq .legend { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 24px 0 0; font-size: 16px; color: var(--px-dim); }
+.px-hq .legend li { display: inline-flex; align-items: center; gap: 8px; }
+.px-hq .legend b { color: var(--px-fg); font-weight: 600; font-variant-numeric: tabular-nums; }
+.px-hq .hq-body { display: grid; gap: 24px; margin-top: 40px; }
+.px-hq[data-mode="side"] .hq-body { grid-template-columns: minmax(0, 1fr) 300px; align-items: start; }
+.px-hq .hq-stage { min-width: 0; }
+.px-hq .hq-board {
+  position: relative;
+  margin: 0 auto;
+  box-sizing: content-box;
+  border: 6px solid transparent;
+  border-image: var(--px-frame-panel) 6 fill / 6px;
+}
+.px-hq #hq-canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+.px-hq .hq-grid { position: absolute; inset: 0; }
+.px-hq .hq-row { position: absolute; inset: 0; pointer-events: none; }
+.px-hq .hq-sign, .px-hq .hq-cell { position: absolute; pointer-events: auto; }
+.px-hq .hq-sign {
+  display: flex; align-items: center; gap: 12px;
+  padding-inline: 8px;
+  font-size: 12px; line-height: 16px;
+  white-space: nowrap;
+  user-select: none;
+}
+.px-hq .sg-name { font-weight: 600; color: var(--px-fg); }
+.px-hq .sg-note { color: var(--px-dim); }
+.px-hq .hq-room {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  margin: 0; padding: 0; border: 0;
+  background: transparent;
+  color: var(--px-fg);
+  font: inherit; text-align: left;
+  cursor: pointer;
+}
+.px-hq .hq-room:focus-visible { outline: 3px solid var(--px-sun); outline-offset: -3px; }
+.px-hq .plate {
+  position: absolute; left: 4px;
+  top: max(0px, calc((var(--hq-s, 2) * 15px - 20px) / 2));
+  display: inline-flex; align-items: center; gap: 7px;
+  max-width: calc(100% - 8px);
+  padding: 0 4px;
+  border: 3px solid transparent;
+  border-image: var(--px-frame-plate) 3 fill / 3px;
+  font: 600 12px/14px var(--font-sans);
+  white-space: nowrap;
+}
+.px-hq .plate .pip { width: 6px; height: 6px; outline-width: 1px; }
+.px-hq .hq-room:hover .plate { border-image: var(--px-frame-plate-hover) 3 fill / 3px; }
+.px-hq [aria-selected="true"] > .hq-room .plate { border-image: var(--px-frame-plate-sun) 3 fill / 3px; color: var(--px-ink); }
+.px-hq [aria-selected="true"] > .hq-room { box-shadow: inset 0 0 0 2px var(--px-sun); }
+.px-hq .hq-note { margin: 16px auto 0; max-width: 72ch; font-size: 14px; color: var(--px-mute); text-align: center; }
+.px-hq .hq-note time { color: var(--px-fg); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.px-hq .hq-card { position: sticky; top: 24px; padding: 20px 20px 24px; min-width: 0; color: var(--px-fg); }
+.px-hq .hq-card h3 { margin: 0 48px 0 0; font: 400 24px/1.1 var(--px-display); }
+.px-hq .hq-card h3:focus { outline: none; }
+.px-hq .card-x { position: absolute; right: 8px; top: 8px; width: 44px; padding: 0; }
+.px-hq .c-status { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 12px 0 0; font-size: 14px; color: var(--px-dim); }
+.px-hq .c-does { margin: 16px 0 0; line-height: 1.6; }
+.px-hq .c-facts { display: grid; gap: 8px; margin: 16px 0 0; font-size: 14px; }
+.px-hq .c-facts div { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; }
+.px-hq .c-facts dt { color: var(--px-mute); }
+.px-hq .c-h { margin: 20px 0 8px; font: 600 14px/1.4 var(--font-sans); color: var(--px-mute); }
+.px-hq .c-verbs { padding-left: 20px; list-style: disc; }
+.px-hq .c-verbs li + li { margin-top: 2px; }
+.px-hq .c-stack { display: flex; flex-wrap: wrap; gap: 8px; }
+.px-hq .c-link { margin-top: 20px; }
+.px-hq[data-mode="sheet"] .hq-card {
+  position: fixed; z-index: 60;
+  left: 8px; right: 8px; top: auto;
+  bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  max-height: 72svh; overflow: auto;
+  filter: drop-shadow(0 6px 0 rgba(6, 18, 12, 0.55));
+}
+@media (min-width: 700px) {
+  /* Above the dock and its boat. */
+  .px-hq[data-mode="sheet"] .hq-card { left: auto; right: 16px; width: 420px; bottom: calc(112px + env(safe-area-inset-bottom, 0px)); }
+}
+/* The text list the building replaces once it is up; crawlers and a failed
+   start still get every agent. */
+.px-hq .hq-list { display: grid; gap: 16px; margin-top: 40px; }
+.px-hq .hq-list h3 { font: 400 20px/1.2 var(--px-display); }
+.px-hq .hq-list p { margin-top: 4px; color: var(--px-dim); }
+.px-hq[data-art="ready"] .hq-list { display: none; }
+.px-hq:not([data-art="starting"]):not([data-art="ready"]) .hq-body { display: none; }
+
+/* ---- journey -------------------------------------------------------------- */
+.px-journey .journey-body {
+  display: grid; gap: 48px;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: start;
+  margin-top: 40px;
+}
+.px-journey .level-wrap { position: sticky; top: 24px; min-width: 0; }
+/* The level shows once its module is measuring or running; before that (and
+   if it fails) the month list reads on its own. */
+.px-journey:not([data-art="starting"]):not([data-art="ready"]) .level-wrap { display: none; }
+.px-journey .level-cap { margin: 12px 0 0; font-size: 14px; color: var(--px-mute); }
+.px-journey .month { position: relative; padding: 0 0 48px 36px; }
+.px-journey .month::before {
+  content: ""; position: absolute; left: 7px; top: 8px; bottom: 0; width: 2px;
+  background: repeating-linear-gradient(var(--px-surface-3) 0 6px, transparent 6px 12px);
+}
+.px-journey .month:last-child { padding-bottom: 32px; }
+.px-journey .m-mark {
+  position: absolute; left: 0; top: 4px;
+  width: 16px; height: 16px;
+  background: var(--px-surface-2);
+  outline: 2px solid var(--px-ink);
+}
+.px-journey .month.is-active .m-mark { background: var(--px-sun); }
+.px-journey .month.is-active .m-mark::after {
+  content: ""; position: absolute; inset: 0;
+  outline: 3px solid var(--px-sun);
+  animation: px-ping 1.5s var(--px-ease-in-out) both;
+}
+.px-journey .m-when { font-size: 14px; font-weight: 600; color: var(--px-sun); }
+.px-journey .month h3 { margin-top: 2px; font: 400 24px/1.15 var(--px-display); color: var(--px-fg); }
+.px-journey .m-items { display: grid; gap: 12px; margin-top: 16px; }
+.px-journey .m-items li { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 12px; line-height: 1.6; }
+.px-journey .m-items time { padding-top: 1px; font-size: 14px; font-weight: 600; color: var(--px-mute); font-variant-numeric: tabular-nums; }
+.px-journey .m-got { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 16px; }
+.px-journey .m-got-l, .px-journey .m-born-l { font-size: 14px; color: var(--px-mute); }
+.px-journey .m-unlocks { display: flex; flex-wrap: wrap; gap: 8px; }
+.px-journey .unlock { display: inline-flex; align-items: center; gap: 8px; }
+.px-journey .unlock::before {
+  content: ""; width: 8px; height: 8px; flex: none;
+  background: var(--px-sun); outline: 1px solid var(--px-ink);
+}
+.px-journey .m-born { margin-top: 12px; font-size: 14px; color: var(--px-dim); }
+.px-journey .months-end { padding-left: 36px; color: var(--px-dim); }
+.px-journey .months-end a { display: inline-block; padding-block: 2px; font-weight: 600; color: var(--px-fg); text-decoration: underline; text-decoration-color: var(--px-accent-lit); text-underline-offset: 3px; }
+
+/* ---- the dock's sea and boat --------------------------------------------- */
+.px-dock-sea {
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+.px-dock-sea canvas, .px-dock-boat {
+  position: absolute; left: 0; top: 0;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+/* ---- /lab pixel scenes (the lab's own dark look) ------------------------------ */
+.px-lab.scenes { display: grid; gap: 48px 32px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.px-lab .scene { min-width: 0; }
+.px-lab .scene-screen {
+  display: grid; place-items: center; width: 100%;
+  background: #0b1a14;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  outline: 2px solid transparent; outline-offset: 3px;
+  line-height: 0;
+  transition: outline-color 200ms ease-out;
+}
+.px-lab .scene-screen canvas { display: block; }
+.px-lab .scene-screen.is-live { outline-color: var(--color-sun); }
+.px-lab .scene-missing .scene-screen { min-height: 120px; }
+
+/* ---- motion (Animista names and default timings) ------------------------------ */
+@keyframes px-slide-in-bottom { 0% { transform: translateY(1000px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+@keyframes px-ping { 0% { transform: scale(0.2); opacity: 0.8; } 80% { transform: scale(1.2); opacity: 0; } 100% { transform: scale(2.2); opacity: 0; } }
+.px-hq .hq-card.entering { animation: px-slide-in-bottom 0.5s var(--px-ease-out-quad) both; }
+
+/* ---- smaller screens ------------------------------------------------------------ */
+@media (max-width: 1023px) {
+  .px-hero { justify-items: start; }
+  .px-hero figcaption { text-align: left; }
+}
+@media (max-width: 900px) {
+  .px-journey .journey-body { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .px-journey .level-wrap {
+    top: 0; z-index: 5;
+    margin-inline: calc(-1 * var(--px-gutter));
+    padding: calc(8px + env(safe-area-inset-top, 0px)) var(--px-gutter) 8px;
+    background: var(--px-page);
+  }
+  .px-journey .level-cap { display: none; }
+  .px-lab.scenes { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .px-scope *, .px-scope *::before, .px-scope *::after { animation: none !important; transition: none !important; }
+}
+
+/* If a canvas cannot start, its text still reads. */
+.px-scope[data-art="failed"] canvas { display: none; }
